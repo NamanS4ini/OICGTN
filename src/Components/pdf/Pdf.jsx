@@ -851,14 +851,15 @@ const Pdf = ({ type }) => {
                   }}
                   className="text-blue-500 cursor-pointer"
                 >
+                  {"("}
                   {formFields.map((item, index) => {
                     return (
                       <span key={index}>
-                        {"("}
                         {item[0].replace(/^./, (char) => char.toUpperCase())}
                         {item[0] === "" || item[0] === undefined ? "" : " "}
                         {item[1].replace(/^./, (char) => char.toUpperCase())}
                         {item[1] === "" || item[1] === undefined ? "" : " "}
+                        {index < formFields.length - 1 ? " & " : ""}
                       </span>
                     );
                   })}
@@ -866,10 +867,11 @@ const Pdf = ({ type }) => {
                     ""
                   ) : (
                     <>
+                      {", "}
                       {booksCitation.year}
-                      {")"}
                     </>
                   )}
+                  {")"}
                 </p>
               </div>
             </div>

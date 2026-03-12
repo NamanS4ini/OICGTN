@@ -837,14 +837,15 @@ const BooksForm = ({ type }) => {
 
               <span className="text-gray-400 w-24">Parenthetical</span>
               <p onClick={(e) =>{copytext(e)}} className="text-blue-500 cursor-pointer">
+                {"("}
                 {formFields.map((item, index) => {
                   return (
                     <span key={index}>
-                    {"("}
                       {item[0].replace(/^./, char => char.toUpperCase())}
                       {item[0] === "" || item[0] === undefined ? "" : " "}
                       {item[1].replace(/^./, char => char.toUpperCase())}
                       {item[1] === "" || item[1] === undefined ? "" : ""}
+                      {index < formFields.length - 1 ? " & " : ""}
                     </span>
                   );
                 })}
@@ -852,7 +853,7 @@ const BooksForm = ({ type }) => {
                   ""
                 ) : (
                   <>
-                  {" "}
+                    {", "}
                     {booksCitation.year}
                   </>
                 )}

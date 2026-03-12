@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 
 const videoList = [
-  "https://youtu.be/HR0cHR70NBY",
-  "https://youtu.be/oDqmwCPVGg8",
+  "https://youtu.be/9GIMNuycyeU",
+  "https://youtu.be/E6Mx9u2yBe4",
 ];
 
 const getYouTubeId = (url) => {
