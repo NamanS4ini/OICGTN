@@ -77,10 +77,12 @@ const Tutorials = () => {
                     >
                       <iframe
                         className="absolute inset-0 w-full h-full"
-                        src={`https://www.youtube.com/embed/${id}`}
+                        src={`https://www.youtube.com/embed/${id}?modestbranding=1&rel=0`}
                         title={meta.title}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        frameBorder="0"
+                        allow="autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
+                        referrerPolicy="strict-origin-when-cross-origin"
                       />
                     </div>
                   ) : meta.thumbnail ? (
@@ -123,7 +125,7 @@ const Tutorials = () => {
           </p>
           <div className="rounded-xl overflow-hidden shadow-lg border border-gray-200">
             <iframe
-              src="/DEMO.pdf"
+              src="/How To Use OICGT Guide.pdf"
               title="User Guide"
               className="w-full"
               style={{ height: "80vh" }}
@@ -131,7 +133,7 @@ const Tutorials = () => {
           </div>
           <div className="mt-3 text-right">
             <a
-              href="/DEMO.pdf"
+              href="/How To Use OICGT Guide.pdf"
               download
               className="inline-block text-sm text-blue-600 hover:text-blue-800 underline"
             >
