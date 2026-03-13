@@ -11,11 +11,11 @@ const Faq = () => {
           {[
             {
               question: "What is Online Citation Tool?",
-              answer: "Online Bibliographic Citation Tool is one which generates the citation of a particular source in a specific reference style."
+              answer: "Online Indian Citation Tool is one which generates the citation of a particular source in a specific reference style."
             },
             {
               question: "Who should use it?",
-              answer: "The Online Citation Tool may be used by the academic community who desire to generate references in a particular reference style."
+              answer: "The Online India Citation Tool may be used by the academic community who desire to generate references in a particular reference style."
             },
             {
               question: "Citations of which reference style does it generate?",
@@ -31,8 +31,8 @@ const Faq = () => {
                 <>
                   Follow these steps to generate the citation:
                   <ul className="mt-2 pl-6 list-disc">
-                    <li>Step 1: Choose the source you want to cite by clicking on it.</li>
-                    <li>Step 2: A form will open up; fill in the details and submit the form to generate a citation in the Indian Bibliographic Reference Style.</li>
+                    <li>Step 1: Choose the source you want to cite by clicking on it. Whether is Autofill option or Manual Citation</li>
+                    <li>Step 2: Type in the keyword or Title or DOI, or Url in the search box. Then it will show you various relevant sources and choose one of your desired source. Accordingly, a form will open up with some of columns already filled; Rest of columns you may fill and submit the form to generate a citation in the Indian Bibliographic Reference Style by clicking on Get Citation.</li>
                     <li>Step 3: Copy the result and paste it into your Word file for use.</li>
                   </ul>
                 </>
@@ -40,7 +40,7 @@ const Faq = () => {
             },
             {
               question: "What features does it offer?",
-              answer: "It offers the ability to copy and paste the citation directly into MS Word."
+              answer: "It offers the following features: 1. Autofill of information source's details; 2. It provides bibliographic details of available information sources for auto fill. 3. It lists various information sources for citing. 4. It offers list of sources to choose from. 5. Ability to copy and paste the citation directly into MS Word."
             },
             {
               question: "How long does it save my references?",
