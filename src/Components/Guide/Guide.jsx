@@ -213,15 +213,13 @@ const Guide = () => {
                   </p>
                 </div>
                 <div className="mt-4">
-                  <h4 className="text-lg font-semibold">Narrative</h4>
-                  <p className="mt-1 pl-4 border-l-4 border-gray-300 text-gray-700">
-                    {item.narrativeExample}
+                  <p className="text-lg font-semibold">
+                    Narrative: <span className="font-normal text-gray-700">{item.narrativeExample}</span>
                   </p>
                 </div>
                 <div className="mt-4">
-                  <h4 className="text-lg font-semibold">Parenthetical</h4>
-                  <p className="mt-1 pl-4 border-l-4 border-gray-300 text-gray-700">
-                    {item.parentheticalExample}
+                  <p className="text-lg font-semibold">
+                    Parenthetical: <span className="font-normal text-gray-700">{item.parentheticalExample}</span>
                   </p>
                 </div>
               </div>
