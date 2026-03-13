@@ -6,7 +6,7 @@ const Guide = () => {
       <div className="w-full h-full rounded-lg bg-blue-50 flex items-center flex-col p-6 shadow-lg">
         <div className="max-w-7xl mx-auto md:px-4 py-8">
           <h1 className="md:text-4xl font-extrabold text-center mb-8 text-blue-800">
-            Reference Guide of Indian Bibliographic Standard
+            Reference Guide of Indian Bibliographic Reference Style
           </h1>
 
           <div className="space-y-8">
@@ -24,6 +24,9 @@ const Guide = () => {
                     format: "Name of Creator LAST NAME (YEAR)",
                   },
                 ],
+                example: `ASHRAF, Tariq, KUMAR, Naresh, [2017]. Interdisciplinary Digital Preservation Tools and Technologies IGI Global, 2017, [viewed 23-01-2026]. ISBN 10.4018/978-1-5225-1653-8.`,
+                narrativeExample: `Tariq Ashraf Naresh Kumar (2017)`,
+                parentheticalExample: `(Tariq Ashraf Naresh Kumar 2017)`,
               },
               {
                 title: "2. e-Book",
@@ -38,6 +41,9 @@ const Guide = () => {
                     format: "Name of Creator LAST NAME (YEAR)",
                   },
                 ],
+                example: `ALAGH, Yoginder K., SRIDHARAN, Eswaran, KALAM, A P J Abdul, RAJAN, Y S, [2023]. India 2020 [Online]. 1st. United Nations, 2023-04-21, [viewed 23-01-2026]. ISBN 9789351184560. Available from: https://www.flipkart.com/india-2020/p/itmeb2c4ef9cc47b.`,
+                narrativeExample: `Yoginder K. AlaghEswaran SridharanA P J Abdul KalamY S Rajan (2023)`,
+                parentheticalExample: `(Yoginder K. Alagh Eswaran Sridharan A P J Abdul Kalam Y S Rajan 2023)`,
               },
               {
                 title: "3. Contribution within a Book",
@@ -54,6 +60,9 @@ const Guide = () => {
                       "Name of Creator LAST NAME (YEAR, Range of page number(s) of the contribution)",
                   },
                 ],
+                example: `KUMAR, Naresh, CASAROSA, Vittore, [2017]. Expressing Needs of Digital Audio-Visual Applications in Different Communities of Practice for Long-Term Preservation. In: Naresh Kumar and Tariq Ashraf, ed. Interdisciplinary Digital Preservation Tools and Technologies. [Print]. New York: IGI Global, 2017, ISBN 10.4018/978-1-5225-1653-8.ch004.`,
+                narrativeExample: `Naresh KumarVittore Casarosa (2017)`,
+                parentheticalExample: `(Naresh Kumar(Vittore Casarosa 2017)`,
               },
               {
                 title: "4. Journal",
@@ -65,6 +74,9 @@ const Guide = () => {
                   },
                   { type: "Narrative", format: "Title of the Journal (YEAR)" },
                 ],
+                example: `Annals of Library and Information Studies. [Print]. [2005]. CSIR-National Institute of Science Communication and Policy Research (NIScPR), 54, 2. [viewed 2026-01-28]. ISSN UOM:39015081496690. Available from: http://books.google.co.in/books?id=SNjgAAAAMAAJ&dq=Annals+of+Library+and+Information+Studies&hl=&source=gbs_api`,
+                narrativeExample: `Annals of Library and Information Studies (2005)`,
+                parentheticalExample: `(Annals of Library and Information Studies 2005)`,
               },
               {
                 title: "5. Contribution within Journal",
@@ -81,6 +93,9 @@ const Guide = () => {
                       "Name of Creator LAST NAME (YEAR, Range of page number(s) of the contribution)",
                   },
                 ],
+                example: `DUAN, Xiaoyan, CHEN, Shiyi, TIAN, Feiyan, CHU, Ganghui, DUAN, xiaoyan, CHU, ganghui, TIAN, Feiyang, [2025]. Bimetallic ScAg-MOFs as peroxide-mimicking enzymes combined with NIR spectroscopy for rapid prediction of uric acid. In: Crossref. Informa UK Limited, 2025-11-02. 15, 6. pp. 915-926, [viewed 23-01-2026]. Available from: https://doi.org/10.1080/22297928.2025.2567998.`,
+                narrativeExample: `Xiaoyan DuanShiyi ChenFeiyan TianGanghui ChuXiaoyan DuanGanghui ChuFeiyang Tian (2025, 915-926)`,
+                parentheticalExample: `(Xiaoyan Duan Shiyi Chen Feiyan Tian Ganghui Chu Xiaoyan Duan Ganghui Chu Feiyang Tian 2025, 915-926)`,
               },
               {
                 title: "6. e-Journal",
@@ -95,6 +110,9 @@ const Guide = () => {
                     format: "Name of Creator LAST NAME (YEAR)",
                   },
                 ],
+                example: `Annals of Library and Information Studies. [Online]. [2005]. CSIR-National Institute of Science Communication and Policy Research (NIScPR), 54, 2. [viewed 2026-01-28]. ISSN UOM:39015081496690. Available from: http://books.google.co.in/books?id=SNjgAAAAMAAJ&dq=Annals+of+Library+and+Information+Studies&hl=&source=gbs_api.`,
+                narrativeExample: `Annals of Library and Information Studies (2005)`,
+                parentheticalExample: `(Annals of Library and Information Studies 2005)`,
               },
               {
                 title: "7. e-Research Article in Journal",
@@ -111,6 +129,9 @@ const Guide = () => {
                       "Name of Creator LAST NAME (YEAR, Range of page number(s) of the contribution)",
                   },
                 ],
+                example: `DUAN, Xiaoyan, CHEN, Shiyi, TIAN, Feiyan, CHU, Ganghui, DUAN, xiaoyan, CHU, ganghui, TIAN, Feiyang, [2025]. Bimetallic ScAg-MOFs as peroxide-mimicking enzymes combined with NIR spectroscopy for rapid prediction of uric acid. In: Crossref. Informa UK Limited, 2025-11-02. 15, 6. pp. 915-926, [viewed 23-01-2026]. Available from: https://doi.org/10.1080/22297928.2025.2567998.`,
+                narrativeExample: `Xiaoyan DuanShiyi ChenFeiyan TianGanghui ChuXiaoyan DuanGanghui ChuFeiyang Tian (2025, 915-926)`,
+                parentheticalExample: `(Xiaoyan Duan Shiyi Chen Feiyan Tian Ganghui Chu Xiaoyan Duan Ganghui Chu Feiyang Tian 2025, 915-926)`,
               },
               {
                 title: "8. Websites",
@@ -127,6 +148,9 @@ const Guide = () => {
                       "Name of Creator LAST NAME OR Page Title OR Website Title (YEAR)",
                   },
                 ],
+                example: `Doctoral theses, University of Delhi. In: University of Delhi. DU. 2010 [viewed 2026-03-11]. Available from: www.du.ac.in.`,
+                narrativeExample: `Doctoral theses, University of Delhi (2010)`,
+                parentheticalExample: `(Doctoral theses, University of Delhi 2010)`,
               },
               {
                 title: "9. Electronic Message",
@@ -141,6 +165,9 @@ const Guide = () => {
                     format: "Name of Creator LAST NAME (YEAR)",
                   },
                 ],
+                example: `KUMAR, Vinay, [2026]. Refread Remote Access Software is accessible now. WhatsApp. [Online]. 20.02.2026; 10:00 viewed [10-03-2026].`,
+                narrativeExample: `Vinay Kumar (2026)`,
+                parentheticalExample: `(Vinay Kumar 2026)`,
               },
               {
                 title: "10. Patents",
@@ -152,6 +179,9 @@ const Guide = () => {
                   },
                   { type: "Narrative", format: "Name of Creator LAST NAME" },
                 ],
+                example: `MISRA, HO, BHARAGAVA, SK, India. Testing Water For Its Purity. 25/05/2001 . 184946. Available from: [https://iitr.res.in/En/patent_grand.aspx]. [viewed 10-03-2026].`,
+                narrativeExample: `HO MisraSK Bharagava`,
+                parentheticalExample: `(HO Misra & SK Bharagava)`,
               },
             ].map((item, index) => (
               <div
@@ -175,6 +205,24 @@ const Guide = () => {
                       {citation.format}
                     </p>
                   ))}
+                </div>
+                <div className="mt-4">
+                  <h3 className="text-lg font-semibold">Example</h3>
+                  <p className="mt-2 pl-4 border-l-4 border-gray-300 text-gray-700">
+                    {item.example}
+                  </p>
+                </div>
+                <div className="mt-4">
+                  <h4 className="text-lg font-semibold">Narrative</h4>
+                  <p className="mt-1 pl-4 border-l-4 border-gray-300 text-gray-700">
+                    {item.narrativeExample}
+                  </p>
+                </div>
+                <div className="mt-4">
+                  <h4 className="text-lg font-semibold">Parenthetical</h4>
+                  <p className="mt-1 pl-4 border-l-4 border-gray-300 text-gray-700">
+                    {item.parentheticalExample}
+                  </p>
                 </div>
               </div>
             ))}
