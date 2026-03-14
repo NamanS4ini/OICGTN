@@ -45,7 +45,7 @@ export default function Footer() {
       >
         <div className="footer-left" style={{flex:"3", borderLeft:"solid white 2px", paddingLeft:"5%"}}>
         
-        <p style={{fontSize:"130%"}}><b>Naresh Kumar</b></p><a href="https://orcid.org/0000-0002-8539-2730"> https://orcid.org/0000-0002-8539-2730 </a>
+        <p style={{fontSize:"130%"}}><b>Mr. Naresh Kumar</b></p><a href="https://orcid.org/0000-0002-8539-2730"> https://orcid.org/0000-0002-8539-2730 </a>
         <p></p>
         {/* <p><b>Prof. Madhusudhan Margam</b></p><a href="http://atfi.dlis.du.ac.in/drmadhusudhan.php"> http://atfi.dlis.du.ac.in/drmadhusudhan.php </a> */}
         </div>
