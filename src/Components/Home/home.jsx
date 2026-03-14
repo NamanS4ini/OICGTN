@@ -251,9 +251,9 @@ const HomeComponent = () => {
       {/* <div className=" w-full flex justify-center h-[800px] items-end rounded-lg bg-no-repeat bg-cover bg-center"> */}
       <div className="rounded-lg mt-4 justify-around gap-4 md:flex-row flex-col flex w-full md:px-10">
         <div className="w-full rounded-lg bg-blue-100 flex p-2 items-center flex-col">
-          <h3 className="mt-4 font-bold font-sans fs-1 text-[#2986ea]">
+          <h5 className="mt-4 font-bold font-sans text-lg text-[#2986ea]">
             Cite a Book
-          </h3>
+          </h5>
           <p className="col-lg-10 fs-5 text-center">
             Generate a Citation for a book of your choice, just by entering some
             details!
@@ -282,9 +282,9 @@ const HomeComponent = () => {
         </div>
 
         <div className="w-full flex rounded-lg items-center font-sans p-2 flex-col bg-green-100">
-          <h3 className="mt-4 font-bold font-oswald fs-1 text-[#28A745]">
+          <h5 className="mt-4 font-bold font-oswald text-lg text-[#28A745]">
             Cite a Journal
-          </h3>
+          </h5>
           <p className="col-lg-10 fs-5 text-center">
             Generate a Citation for a Journal of your choice, just by entering
             some details!
@@ -305,9 +305,9 @@ const HomeComponent = () => {
           </div>
         </div>
         <div className="w-full  rounded-lg flex font-sans items-center p-2 flex-col bg-purple-100">
-          <h3 className="mt-4 font-bold font-sans fs-1 text-center text-[#9C27B0]">
+          <h5 className="mt-4 font-bold font-sans text-lg text-center text-[#9C27B0]">
             You can also Cite
-          </h3>
+          </h5>
           <p className="col-lg-10 fs-5 text-center">
             Generate a Citation for any one of the following, just by entering
             some details!
@@ -362,9 +362,9 @@ const HomeComponent = () => {
       {/* </div> */}
 
       <div className="w-70 mt-10 md:ml-20 md:mr-20 rounded-lg flex font-sans justify-center items-center flex-col bg-gray-200">
-        <h3 className="mt-4 md:p-0 p-2 font-bold text-center font-sans ">
+        <h4 className="mt-4 md:p-0 p-2 font-bold text-center font-sans text-base">
           About Online Indian Citation Generation Tool
-        </h3>
+        </h4>
         <p className="col-lg-10 md:p-0 p-2 fs-5">
           The Online Indian Citation Generation Tool (OICGT) is a web-based
           application developed by Mr. Naresh Kumar and Prof. Margam Madhusudhan
