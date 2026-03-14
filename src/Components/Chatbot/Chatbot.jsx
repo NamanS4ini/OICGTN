@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "./chatbot.css";
 import { searchAll } from "../../api/searchApis";
 import siteContent from "../../data/siteContent.json";
@@ -156,7 +156,7 @@ const Chatbot = () => {
           top.join("\n");
         push({ from: "saathi", text });
         if (speaking) speak(text, lang);
-      } catch (err) {
+      } catch {
         const text =
           lang === "hi" ? "खोज में त्रुटि हुई।" : "Error during search.";
         push({ from: "saathi", text });

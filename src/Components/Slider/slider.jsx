@@ -9,8 +9,8 @@ import {
 
 import { Swiper, SwiperSlide } from "swiper/react";
 
-import slide1 from "../../../img/Slide1.jpg";
-import slide2 from "../../../img/Slide2.jpg";
+import slide1 from "../../../img/slide1.png";
+import slide2 from "../../../img/slide2.png";
 import slide3 from "../../../img/Slide3.jpg";
 
 // Import Swiper styles

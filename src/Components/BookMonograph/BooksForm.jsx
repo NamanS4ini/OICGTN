@@ -1,4 +1,5 @@
-import React, { useRef, useState, useEffect, useContext } from "react";
+import { useRef, useState, useEffect, useContext } from "react";
+import PropTypes from 'prop-types';
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import {ToastContainer, toast } from "react-toastify";
@@ -168,7 +169,7 @@ const BooksForm = ({ type }) => {
                     />
                   </Form.Group>
                   {formFields.length !== 1 ? (
-                    <div as={Col} className="col-sm-1">
+                    <Col className="col-sm-1">
                       <Button
                         className="removebutton md:!mt-0 !mt-2"
                         onClick={() =>
@@ -177,12 +178,12 @@ const BooksForm = ({ type }) => {
                       >
                         Remove
                       </Button>
-                    </div>
+                    </Col>
                   ) : (
                     <></>
                   )}
                   {formFields.length - 1 === index && (
-                    <div as={Col} className="col-sm-1">
+                    <Col className="col-sm-1">
                       <Button
                         className="addbutton md:!mt-0 !mt-2"
                         onClick={() =>
@@ -191,7 +192,7 @@ const BooksForm = ({ type }) => {
                       >
                         ADD
                       </Button>
-                    </div>
+                    </Col>
                   )}
                 </Row>
               );
@@ -246,27 +247,27 @@ const BooksForm = ({ type }) => {
                   </Form.Group>
 
                   {medium.length !== 1 ? (
-                    <div as={Col} className="col-sm-1">
+                    <Col className="col-sm-1">
                       <Button
                         className="removebutton md:!mt-0 !mt-2"
                         onClick={() => removeField(setMedium, medium, index)}
                       >
                         Remove
                       </Button>
-                    </div>
+                    </Col>
                   ) : (
                     <></>
                   )}
 
                   {medium.length - 1 === index && (
-                    <div as={Col} className="col-sm-1">
+                    <Col className="col-sm-1">
                       <Button
                         className="addbutton md:!mt-0 !mt-2"
                         onClick={() => addField(setMedium, medium, "")}
                       >
                         ADD
                       </Button>
-                    </div>
+                    </Col>
                   )}
                 </Row>
               );
@@ -336,26 +337,26 @@ const BooksForm = ({ type }) => {
                     />
                   </Form.Group>
                   {edition.length !== 1 ? (
-                    <div as={Col} className="col-sm-1">
+                    <Col className="col-sm-1">
                       <Button
                         className="removebutton md:!mt-0 !mt-2"
                         onClick={() => removeField(setEdition, edition, index)}
                       >
                         Remove
                       </Button>
-                    </div>
+                    </Col>
                   ) : (
                     <></>
                   )}
                   {edition.length - 1 === index && (
-                    <div as={Col} className="col-sm-1">
+                    <Col className="col-sm-1">
                       <Button
                         className="addbutton md:!mt-0 !mt-2"
                         onClick={() => addField(setEdition, edition, "")}
                       >
                         ADD
                       </Button>
-                    </div>
+                    </Col>
                   )}
                 </Row>
               );
@@ -424,7 +425,7 @@ const BooksForm = ({ type }) => {
                     </Form.Group>
 
                     {publisher.length !== 1 ? (
-                      <div as={Col} className="col-sm-1">
+                      <Col className="col-sm-1">
                         <Button
                           className="removebutton"
                           onClick={() =>
@@ -433,19 +434,19 @@ const BooksForm = ({ type }) => {
                         >
                           Remove
                         </Button>
-                      </div>
+                      </Col>
                     ) : (
                       <></>
                     )}
                     {publisher.length - 1 === index && (
-                      <div as={Col} className="col-sm-1">
+                      <Col className="col-sm-1">
                         <Button
                           className="addbutton"
                           onClick={() => addField(setPublisher, publisher, "")}
                         >
                           ADD
                         </Button>
-                      </div>
+                      </Col>
                     )}
                   </Row>
                 );
@@ -527,7 +528,7 @@ const BooksForm = ({ type }) => {
                     />
                   </Form.Group>
                   {standardIdentifier.length !== 1 ? (
-                    <div as={Col} className="col-sm-1">
+                    <Col className="col-sm-1">
                       <Button
                         className="removebutton md:!mt-0 !mt-2"
                         onClick={() =>
@@ -540,12 +541,12 @@ const BooksForm = ({ type }) => {
                       >
                         Remove
                       </Button>
-                    </div>
+                    </Col>
                   ) : (
                     <></>
                   )}
                   {standardIdentifier.length - 1 === index && (
-                    <div as={Col} className="col-sm-1">
+                    <Col className="col-sm-1">
                       <Button
                         className="addbutton md:!mt-0 !mt-2"
                         onClick={() =>
@@ -554,7 +555,7 @@ const BooksForm = ({ type }) => {
                       >
                         ADD
                       </Button>
-                    </div>
+                    </Col>
                   )}
                 </Row>
               );
@@ -592,7 +593,7 @@ const BooksForm = ({ type }) => {
                       />
                     </Form.Group>
                     {availability.length !== 1 ? (
-                      <div as={Col} className="col-sm-1">
+                      <Col className="col-sm-1">
                         <Button
                           className="removebutton md:!mt-0 !mt-2"
                           onClick={() =>
@@ -601,12 +602,12 @@ const BooksForm = ({ type }) => {
                         >
                           Remove
                         </Button>
-                      </div>
+                      </Col>
                     ) : (
                       <></>
                     )}
                     {availability.length - 1 === index && (
-                      <div as={Col} className="col-sm-1">
+                      <Col className="col-sm-1">
                         <Button
                           className="addbutton md:!mt-0 !mt-2"
                           onClick={() =>
@@ -615,7 +616,7 @@ const BooksForm = ({ type }) => {
                         >
                           ADD
                         </Button>
-                      </div>
+                      </Col>
                     )}
                   </Row>
                 );
@@ -730,7 +731,7 @@ const BooksForm = ({ type }) => {
                   ""
                 ) : (
                   <>
-                    {publisher.map((item, index, key) => {
+                    {publisher.map((item, index) => {
                       return (
                         <span key={index}>
                           {publisher[index]}
@@ -872,6 +873,10 @@ const BooksForm = ({ type }) => {
       )}
     </>
   );
+};
+
+BooksForm.propTypes = {
+  type: PropTypes.string.isRequired,
 };
 
 export default BooksForm;

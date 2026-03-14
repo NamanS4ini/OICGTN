@@ -24,9 +24,9 @@ const Guide = () => {
                     format: "Name of Creator LAST NAME (YEAR)",
                   },
                 ],
-                example: `ASHRAF, Tariq, KUMAR, Naresh, [2017]. Interdisciplinary Digital Preservation Tools and Technologies IGI Global, 2017, [viewed 23-01-2026]. ISBN 10.4018/978-1-5225-1653-8.`,
-                narrativeExample: `Tariq Ashraf Naresh Kumar (2017)`,
-                parentheticalExample: `(Tariq Ashraf Naresh Kumar 2017)`,
+                example: `KUMAR, Naresh, [2017]. Interdisciplinary Digital Preservation Tools and Technologies IGI Global, 2017, [viewed 23-01-2026]. ISBN 10.4018/978-1-5225-1653-8.`,
+                narrativeExample: `Naresh Kumar (2017)`,
+                parentheticalExample: `(Naresh Kumar 2017)`,
               },
               {
                 title: "2. e-Book",
@@ -229,12 +229,12 @@ const Guide = () => {
         <div className="mt-12 py-8 border-t border-gray-300">
           <h2 className="text-center text-lg font-medium text-gray-700">
             For any query, contact —{" "}
-            <span className="font-semibold">Naresh Kumar</span>{" "}
+            <span className="font-semibold">Mr. Naresh Kumar</span>{" "}
             <a
               href="mailto:nareshkumar@cuh.ac.in"
               className="text-blue-600 underline"
             >
-              nareshkumar@cuh.ac.in
+              nkumar@libinfosci.du
             </a>{" "}
             or <span className="font-semibold">Dr. Margam Madhusudhan</span>{" "}
             <a
