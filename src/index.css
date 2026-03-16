@@ -16,16 +16,16 @@ code {
 
 
 #outputBox{
-  margin-top: 5%;
+  margin-top: clamp(3%, 5vw, 5%);
   background-color: aliceblue;
-  padding-top: 3%;
-  padding-bottom: 3%;
+  padding-top: clamp(2%, 3vw, 3%);
+  padding-bottom: clamp(2%, 3vw, 3%);
 }
 
 
 #output{
-  width: 70%;
-  padding: 2%;
+  width: clamp(80%, 90vw, 70%);
+  padding: clamp(1%, 2vw, 2%);
   border-radius: 15px;
   background-color: #fff;
 }
@@ -70,4 +70,15 @@ a{
 }
 .drop {
   z-index: 100;
+}
+
+/* Additional responsive utilities */
+@media (max-width: 640px) {
+  .search-box {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .search-btn {
+    width: 100%;
+  }
 }

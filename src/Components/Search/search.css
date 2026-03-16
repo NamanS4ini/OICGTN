@@ -5,49 +5,50 @@
   border: 2px solid #1e40af;
   border-radius: 14px;
   background: #fff;
-  padding: 20px 24px 18px;
+  padding: clamp(1rem, 3vw, 1.25rem) clamp(1.5rem, 4vw, 1.5rem) clamp(1.125rem, 3vw, 1.125rem);
   box-shadow: 0 4px 20px rgba(30, 64, 175, 0.12);
 }
 
 .search-panel-label {
-  font-size: 15px;
+  font-size: clamp(0.875rem, 2vw, 0.9375rem);
   font-weight: 700;
   color: #1e40af;
   letter-spacing: 0.3px;
-  margin-bottom: 10px;
+  margin-bottom: 0.625rem;
 }
 
 /* ── Search Box ── */
 .search-box {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.5rem;
   position: relative;
   max-width: 900px;
   width: 100%;
+  flex-wrap: wrap; /* Allow wrapping on small screens */
 }
 .search-box input {
-  padding: 10px 14px;
+  padding: clamp(0.625rem, 2vw, 0.625rem) clamp(0.875rem, 2vw, 0.875rem);
   border-radius: 6px;
   border: 1px solid #ccc;
   flex: 1;
   min-width: 0;
-  font-size: 15px;
+  font-size: clamp(0.875rem, 2vw, 0.9375rem);
 }
 .search-box .search-target {
-  padding: 10px 10px;
+  padding: clamp(0.625rem, 2vw, 0.625rem) clamp(0.625rem, 2vw, 0.625rem);
   border-radius: 6px;
   border: 1px solid #ccc;
   background: #fff;
-  font-size: 15px;
+  font-size: clamp(0.875rem, 2vw, 0.9375rem);
 }
 .search-btn {
   background: #f6c90e;
   border: none;
-  padding: 12px 28px;
+  padding: clamp(0.75rem, 2vw, 0.75rem) clamp(1.75rem, 4vw, 1.75rem);
   border-radius: 8px;
   cursor: pointer;
-  font-size: 17px;
+  font-size: clamp(1rem, 2vw, 1.0625rem);
   font-weight: 700;
   white-space: nowrap;
   letter-spacing: 0.3px;
@@ -65,12 +66,12 @@
 }
 .search-results {
   position: absolute;
-  top: 48px;
+  top: 3rem;
   left: 0;
   right: 0;
   background: #fff;
   border: 1px solid #ddd;
-  max-height: 320px;
+  max-height: 20rem;
   overflow: auto;
   z-index: 40;
   padding: 0;
@@ -78,7 +79,7 @@
   list-style: none;
 }
 .search-results li {
-  padding: 8px;
+  padding: 0.5rem;
   border-bottom: 1px solid #eee;
   cursor: pointer;
 }
@@ -89,10 +90,10 @@
   font-weight: 600;
 }
 .r-sub {
-  font-size: 12px;
+  font-size: clamp(0.75rem, 1.5vw, 0.75rem);
   color: #666;
 }
 .r-id {
-  font-size: 11px;
+  font-size: clamp(0.6875rem, 1.5vw, 0.6875rem);
   color: #999;
 }

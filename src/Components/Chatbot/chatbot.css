@@ -1,36 +1,36 @@
 .saathi-widget {
   position: fixed;
-  right: 20px;
-  bottom: 20px;
+  right: clamp(1rem, 3vw, 1.25rem);
+  bottom: clamp(1rem, 3vw, 1.25rem);
   z-index: 2000;
   font-family: Inter, system-ui, Arial;
 }
 .saathi-button {
   width: auto;
-  min-width: 56px;
-  height: 48px;
-  padding: 0 18px;
+  min-width: clamp(3.5rem, 8vw, 3.5rem);
+  height: clamp(3rem, 6vw, 3rem);
+  padding: 0 clamp(1rem, 3vw, 1.125rem);
   border-radius: 999px;
   background: linear-gradient(135deg, #f6c90e, #f59e0b);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 0.5rem;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
   cursor: pointer;
 }
 .saathi-avatar {
-  font-size: 20px;
+  font-size: clamp(1.25rem, 3vw, 1.25rem);
   line-height: 1;
 }
 .saathi-label {
   font-weight: 700;
-  font-size: 14px;
+  font-size: clamp(0.875rem, 2vw, 0.875rem);
   color: #103050;
   white-space: nowrap;
 }
 .saathi-panel {
-  width: 360px;
+  width: clamp(18rem, 40vw, 22.5rem);
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
@@ -42,7 +42,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 12px;
+  padding: clamp(0.625rem, 2vw, 0.625rem) clamp(0.75rem, 2vw, 0.75rem);
   background: #103050;
   color: #fff;
 }
@@ -50,50 +50,50 @@
   font-weight: 700;
 }
 .saathi-controls select {
-  margin-right: 8px;
-  padding: 4px;
+  margin-right: 0.5rem;
+  padding: 0.25rem;
   border-radius: 6px;
   border: none;
 }
 .saathi-messages {
-  padding: 12px;
-  height: 260px;
+  padding: clamp(0.75rem, 2vw, 0.75rem);
+  height: clamp(16.25rem, 30vh, 16.25rem);
   overflow: auto;
   background: linear-gradient(180deg, #f8fafc, #ffffff);
 }
 .msg {
-  margin-bottom: 10px;
+  margin-bottom: 0.625rem;
 }
 .msg.saathi .msg-text {
   background: #103050;
   color: #fff;
-  padding: 8px 10px;
+  padding: clamp(0.5rem, 1.5vw, 0.5rem) clamp(0.625rem, 1.5vw, 0.625rem);
   border-radius: 10px;
   display: inline-block;
 }
 .msg.user .msg-text {
   background: #eef2ff;
   color: #103050;
-  padding: 8px 10px;
+  padding: clamp(0.5rem, 1.5vw, 0.5rem) clamp(0.625rem, 1.5vw, 0.625rem);
   border-radius: 10px;
   display: inline-block;
 }
 .saathi-input {
   display: flex;
-  padding: 10px;
+  padding: clamp(0.625rem, 2vw, 0.625rem);
   border-top: 1px solid #eee;
 }
 .saathi-input input {
   flex: 1;
-  padding: 8px;
+  padding: clamp(0.5rem, 1.5vw, 0.5rem);
   border-radius: 8px;
   border: 1px solid #ddd;
-  margin-right: 8px;
+  margin-right: 0.5rem;
 }
 .saathi-input button {
   background: #103050;
   color: #fff;
-  padding: 8px 12px;
+  padding: clamp(0.5rem, 1.5vw, 0.5rem) clamp(0.75rem, 2vw, 0.75rem);
   border-radius: 8px;
   border: none;
 }

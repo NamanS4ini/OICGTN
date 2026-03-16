@@ -1,17 +1,20 @@
 const people = [
   {
-name: "Mr. Naresh Kumar",
-role: "Research Scholar",
-dept: "Department of Library & Information Science, II Floor, Tutorial Building University of Delhi, Delhi-7",
-email: "nkumar@libinfosci.du.ac.in; nareshiiim.kumar@gmail.com",
+    name: "Mr. Naresh Kumar",
+    role: "Research Scholar",
+    dept: "Department of Library & Information Science, II Floor, Tutorial Building University of Delhi, Delhi-7",
+    phone: "+91-9015590393",
+    email: "nkumar@libinfosci.du.ac.in;    nareshiiim.kumar@gmail.com",
+    details: "For more details : https://orcid.org/0000-0002-8539-2730",
   },
   {
-name: "Dr. Margam Madhusudhan",
-role: "Professor",
-dept: "Department of Library & Information Science, II Floor, Tutorial Building University of Delhi, Delhi-7",
-Phone: "Ph: 011-27666656  +91-9911817540",
-email: "mmadhusudhan@libinfosci.du.ac.in, madhumargam@gmail.com"
-},
+    name: "Dr. Margam Madhusudhan",
+    role: "Professor & Principle Investigilator",
+    dept: "Department of Library & Information Science, II Floor, Tutorial Building University of Delhi, Delhi-7",
+    phone: "Ph: 011-27666656  +91-9911817540",
+    email: "mmadhusudhan@libinfosci.du.ac.in; madhumargam@gmail.com",
+    details: "For more details : http://atfi.dlis.du.ac.in/drmadhusudhan.php",
+  },
 ];
 
 const Contact = () => {
@@ -31,12 +34,25 @@ const Contact = () => {
               <h2 className="text-xl font-bold text-black">{p.name}</h2>
               <p className="text-black font-medium">{p.role}</p>
               <p className="text-black text-sm">{p.dept}</p>
+              {p.phone && (
+                <p className="text-black text-sm">{p.phone}</p>
+              )}
               <a
                 href={`mailto:${p.email}`}
                 className="mt-3 text-black hover:text-gray-800 font-medium break-all transition-colors"
               >
                 {p.email}
               </a>
+              {p.details && (
+                <a
+                  href={p.details.split(": ")[1]}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-2 text-blue-600 hover:text-blue-800 font-medium break-all transition-colors"
+                >
+                  {p.details}
+                </a>
+              )}
             </div>
           ))}
         </div>

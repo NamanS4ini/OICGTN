@@ -26,7 +26,7 @@ export default () => {
       style={{
         "--swiper-navigation-color": "rgba(255, 255, 255, .4)",
         "--swiper-pagination-color": "#fff",
-        height: "410px",
+        height: "clamp(200px, 40vh, 410px)",
       }}
       // install Swiper modules
       modules={[Autoplay, Navigation, Pagination, Scrollbar, A11y]}

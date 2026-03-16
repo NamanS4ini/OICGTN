@@ -4,7 +4,7 @@
     justify-content: center;
     align-items: center;
     /* border: 1px solid red; */
-    margin-top: 50px;
+    margin-top: clamp(2rem, 8vw, 3.125rem);
 }
 
 .title{
