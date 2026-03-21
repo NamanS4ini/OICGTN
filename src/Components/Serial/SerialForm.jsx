@@ -32,7 +32,7 @@ const SerialForm = ({type}) => {
   const ref = useRef()
   const [result, setResult] = useState(false);
   const [medium, setMedium] = useState([""]);
-  const [numeration, setNumeration] = useState([""]);
+  const [numeration, setNumeration] = useState([{type: "", value: ""}]);
 
   const { metadata } = useContext(MetadataContext);
   useEffect(() => {
@@ -64,6 +64,18 @@ const SerialForm = ({type}) => {
     let data = [...stateName];
     data[index] = event.target.value;
     UseStateName(data);
+  };
+
+  const handleTypeChange = (event, index) => {
+    let data = [...numeration];
+    data[index].type = event.target.value;
+    setNumeration(data);
+  };
+
+  const handleValueChange = (event, index) => {
+    let data = [...numeration];
+    data[index].value = event.target.value;
+    setNumeration(data);
   };
 
   const addField = (UseStateName, stateName, obj)=>{
@@ -250,10 +262,10 @@ const SerialForm = ({type}) => {
                 <Row key={index} className="mt-2">
                   <Form.Group as={Col} controlId="formGridState">
                     <Form.Select
-                      name="numeration"
-                      defaultValue="Choose..."
+                      value={item.type}
+                      onChange={(event) => handleTypeChange(event, index)}
                     >
-                      <option value>Choose...</option>
+                      <option value="">Choose...</option>
                       <option>Volume</option>
                       <option>Number</option>
                       <option>Issue</option>
@@ -262,16 +274,8 @@ const SerialForm = ({type}) => {
                   </Form.Group>
                   <Form.Group as={Col} controlId="formRange">
                     <Form.Control
-                      onChange={(event) =>
-                        handleInputChange(
-                          event,
-                          setNumeration,
-                          numeration,
-                          index
-                        )
-                      }
-                      value={item}
-                      name="rangeOfPageNumbersOfTheContribution"
+                      value={item.value}
+                      onChange={(event) => handleValueChange(event, index)}
                       type="text"
                       placeholder="Enter Numeration "
                     />
@@ -296,7 +300,7 @@ const SerialForm = ({type}) => {
                     <div as={Col} className="col-sm-1">
                       <Button
                         className="addbutton md:!mt-0 !mt-2 "
-                        onClick={() => addField(setNumeration, numeration, "")}
+                        onClick={() => addField(setNumeration, numeration, {type: "", value: ""})}
                       >
                         ADD
                       </Button>
@@ -462,22 +466,27 @@ const SerialForm = ({type}) => {
                     {serialCitation.dateOfPublication}{". "}
                   </>)
                 }
-                {numeration.length <= 1 &&
-                (numeration[0] === "" || numeration[0] === undefined) ? (
-                  ""
-                ) : (
-                  <>
-                    {numeration.map((item, index) => {
-                      return (
-                        <span key={index}>
-                          {numeration[index]}
-                          {index < numeration.length - 1 && ", "}
-                        </span>
-                      );
-                    })}
-                    {". "}
-                  </>
-                )}
+                {(() => {
+                  let volume = "";
+                  let number = "";
+                  let issue = "";
+                  numeration.forEach(item => {
+                    if (item.type === "Volume" && item.value.trim()) volume = item.value.trim();
+                    if (item.type === "Number" && item.value.trim()) number = item.value.trim();
+                    if (item.type === "Issue" && item.value.trim()) issue = item.value.trim();
+                  });
+                  let numStr = "";
+                  if (volume) {
+                    numStr += volume;
+                    if (number) numStr += `(${number})`;
+                    else if (issue) numStr += `(${issue})`;
+                  } else if (number) {
+                    numStr += number;
+                  } else if (issue) {
+                    numStr += issue;
+                  }
+                  return numStr ? `${numStr}. ` : "";
+                })()}
                 { serialCitation.dateOfCitation === "" ? "" : (<>
                   [viewed {serialCitation.dateOfCitation}]{". "}  
                 </>)}

@@ -83,7 +83,7 @@ const SerialContributionForm = () => {
   const [formFields, setFormFields] = useState([["", ""]]);
   const [medium, setMedium] = useState([""]);
   const [edition, setEdition] = useState([""]);
-  const [numeration, setNumeration] = useState([""]);
+  const [numeration, setNumeration] = useState([{type: "", value: ""}]);
   const [publisher, setPublisher] = useState([""]);
   const [standardIdentifier, setStandarIdentifier] = useState([""]);
   const [availability, setAvailability] = useState([""]);
@@ -103,11 +103,26 @@ const SerialContributionForm = () => {
       rangeOfPageNumbers: metadata.pages || prev.rangeOfPageNumbers,
       availabilityAndAccess: metadata.url || metadata.doi || prev.availabilityAndAccess,
     }));
+    if (metadata.volume) {
+      setNumeration([{type: "Volume", value: metadata.volume}]);
+    }
     if (metadata.authors && metadata.authors.length > 0) {
       const newFields = metadata.authors.map((a) => [a.firstName || "", a.lastName || ""]);
       setFormFields(newFields.length ? newFields : [["", ""]]);
     }
   }, [metadata, chosenForm]);
+
+  const handleTypeChange = (event, index) => {
+    let data = [...numeration];
+    data[index].type = event.target.value;
+    setNumeration(data);
+  };
+
+  const handleValueChange = (event, index) => {
+    let data = [...numeration];
+    data[index].value = event.target.value;
+    setNumeration(data);
+  };
 
   const addField = (UseStateName, stateName, obj) => {
     UseStateName([...stateName, obj]);
@@ -406,13 +421,16 @@ const SerialContributionForm = () => {
             </Form.Group>
           </Row>
           <Row className="mb-3">
-            <Form.Label>Numeration (of volume)</Form.Label>
+            <Form.Label>Numeration</Form.Label>
             {numeration.map((item, index) => {
               return (
                 <Row key={index} className="mt-2">
                   <Form.Group as={Col} controlId="formGridState">
-                    <Form.Select>
-                      <option value>Choose...</option>
+                    <Form.Select
+                      value={item.type}
+                      onChange={(event) => handleTypeChange(event, index)}
+                    >
+                      <option value="">Choose...</option>
                       <option>Volume</option>
                       <option>Number</option>
                       <option>Issue</option>
@@ -421,16 +439,8 @@ const SerialContributionForm = () => {
                   </Form.Group>
                   <Form.Group as={Col} controlId="formRange">
                     <Form.Control
-                      onChange={(event) =>
-                        handleInputChange(
-                          event,
-                          setNumeration,
-                          numeration,
-                          index
-                        )
-                      }
-                      value={item}
-                      name="numeration"
+                      value={item.value}
+                      onChange={(event) => handleValueChange(event, index)}
                       type="text"
                       placeholder="Enter Numeration"
                     />
@@ -454,7 +464,7 @@ const SerialContributionForm = () => {
                     <div as={Col} className="col-sm-1">
                       <Button
                         className="addbutton md:!mt-0 !mt-2"
-                        onClick={() => addField(setNumeration, numeration, "")}
+                        onClick={() => addField(setNumeration, numeration, {type: "", value: ""})}
                       >
                         ADD
                       </Button>
@@ -742,22 +752,27 @@ const SerialContributionForm = () => {
                     {serialContributionCitation.dateOfPublication}{". "}
                   </>)
                 }
-                {numeration.length <= 1 &&
-                (numeration[0] === "" || numeration[0] === undefined) ? (
-                  ""
-                ) : (
-                  <>
-                    {numeration.map((item, index) => {
-                      return (
-                        <span key={index}>
-                          {numeration[index]}
-                          {index < numeration.length - 1 && ", "}
-                        </span>
-                      );
-                    })}
-                    {". "}
-                  </>
-                )}
+                {(() => {
+                  let volume = "";
+                  let number = "";
+                  let issue = "";
+                  numeration.forEach(item => {
+                    if (item.type === "Volume" && item.value.trim()) volume = item.value.trim();
+                    if (item.type === "Number" && item.value.trim()) number = item.value.trim();
+                    if (item.type === "Issue" && item.value.trim()) issue = item.value.trim();
+                  });
+                  let numStr = "";
+                  if (volume) {
+                    numStr += volume;
+                    if (number) numStr += `(${number})`;
+                    else if (issue) numStr += `(${issue})`;
+                  } else if (number) {
+                    numStr += number;
+                  } else if (issue) {
+                    numStr += issue;
+                  }
+                  return numStr ? `${numStr}. ` : "";
+                })()}
                 {
                   serialContributionCitation.rangeOfPageNumbers === "" ? "" : (<>
                     {"pp. "}{serialContributionCitation.rangeOfPageNumbers}{", "}
