@@ -22,6 +22,9 @@ import Pdf from "./Components/pdf/Pdf.jsx";
 import Guide from "./Components/Guide/Guide.jsx";
 import Tutorials from "./Components/Tutorials/Tutorials.jsx";
 import Chatbot from "./Components/Chatbot/Chatbot";
+import CiteBook from "./Pages/CiteBook";
+import CiteJournal from "./Pages/CiteJournal";
+import CiteOther from "./Pages/CiteOther";
 
 const App = () => {
   return (
@@ -52,6 +55,9 @@ const App = () => {
               path="/contribution-within-book"
               element={<ContributionWithinBook />}
             />
+            <Route path="/cite-book" element={<CiteBook />} />
+            <Route path="/cite-journal" element={<CiteJournal />} />
+            <Route path="/cite-other" element={<CiteOther />} />
             <Route path="/example" element={<Example />} />
             <Route path="/pdf" element={<Pdf />} />
             <Route path="/contact" element={<Contact />} />

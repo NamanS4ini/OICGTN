@@ -14,21 +14,12 @@ const BooksForm = ({ type }) => {
     // creatorName: [{ firstName: "", lastName: "" }],
     year: "",
     titleOfTheItem: "",
-    mediumDesignation: "",
-    mapSeriesDesignation: "",
-    scale: "",
-    subsidiaryTitles: "",
-    edition: "",
-    subsidiaryCreator: "",
     place: "",
     publisher: "",
-    dateOfPublication: "",
     dateOfUpdate: "",
     dateOfCitation: "",
     seriesTitleAndNumber: "",
     standardIdentifier: "ISBN ",
-    availiabilityAndAccess: "",
-    location: "",
     // eLink:""
   });
   const ref = useRef();
@@ -71,11 +62,8 @@ const BooksForm = ({ type }) => {
   // multi field inputs (first name ,last name, type, medium designation, edition, publisher, standard identifier, availability and access)
 
   const [formFields, setFormFields] = useState([["", ""]]);
-  const [medium, setMedium] = useState([""]);
-  const [edition, setEdition] = useState([""]);
   const [publisher, setPublisher] = useState([""]);
   const [standardIdentifier, setStandarIdentifier] = useState([""]);
-  const [availability, setAvailability] = useState([""]);
 
   const addField = (UseStateName, stateName, obj) => {
     UseStateName([...stateName, obj]);
@@ -98,9 +86,6 @@ const BooksForm = ({ type }) => {
       year: (metadata.year && metadata.year.toString) ? metadata.year : metadata.year || prev.year,
       publisher: metadata.publisher || prev.publisher,
       place: metadata.place || prev.place,
-      dateOfPublication: metadata.dateOfPublication || prev.dateOfPublication,
-      availiabilityAndAccess: metadata.url || metadata.doi || prev.availiabilityAndAccess,
-      edition: metadata.edition || prev.edition,
       seriesTitleAndNumber: metadata.series || prev.seriesTitleAndNumber,
     }));
 
@@ -126,12 +111,13 @@ const BooksForm = ({ type }) => {
   return (
     <>
     <ToastContainer />
-      <div className="bookform">
+      <div className="bookform mx-auto max-w-4xl px-4">
         <Form
           onSubmit={(e) => {
             e.preventDefault();
             setResult(true);
           }}
+          className="max-w-3xl mx-auto"
         >
           <Row className="mb-3">
             <Form.Label>
@@ -141,7 +127,7 @@ const BooksForm = ({ type }) => {
             {formFields.map((item, index) => {
               return (
                 <Row key={index} className="mt-2">
-                  <Form.Group as={Col} controlId="formLname">
+                  <Form.Group as={Col} md={3} controlId="formLname">
                     <Form.Select name="lastName" defaultValue="Choose...">
                       <option>---Select Type ---</option>
                       <option>Author</option>
@@ -150,7 +136,7 @@ const BooksForm = ({ type }) => {
                       <option>Translator</option>
                     </Form.Select>
                   </Form.Group>
-                  <Form.Group as={Col} controlId="formFname">
+                  <Form.Group as={Col} md={3} controlId="formFname">
                     <Form.Control
                       onChange={(event) => handleFormChange(event, index)}
                       value={item[0]}
@@ -159,7 +145,7 @@ const BooksForm = ({ type }) => {
                       placeholder="Enter First Name"
                     />
                   </Form.Group>
-                  <Form.Group as={Col} controlId="formLname">
+                  <Form.Group as={Col} md={3} controlId="formLname">
                     <Form.Control
                       onChange={(event) => handleFormChange(event, index)}
                       value={item[1]}
@@ -200,7 +186,7 @@ const BooksForm = ({ type }) => {
           </Row>
 
           <Row className="mb-3">
-            <Form.Group as={Col} controlId="formYear">
+            <Form.Group as={Col} md={4} controlId="formYear">
               <Form.Label>Year</Form.Label>
               <Form.Control
                 onChange={(e) => onChanging(e)}
@@ -210,7 +196,7 @@ const BooksForm = ({ type }) => {
                 placeholder="Enter Year"
               />
             </Form.Group>
-            <Form.Group as={Col} controlId="formTitle">
+            <Form.Group as={Col} md={8} controlId="formTitle">
               <Form.Label>Title of the Items</Form.Label>
               <Form.Control
                 onChange={(e) => onChanging(e)}
@@ -221,70 +207,6 @@ const BooksForm = ({ type }) => {
               />
             </Form.Group>
           </Row>
-
-          <Row className="mb-3">
-            <Form.Label>Medium Designation</Form.Label>
-            {medium.map((item, index) => {
-              return (
-                <Row key={index} className="mt-2">
-                  <Form.Group as={Col} controlId="formDegination">
-                    <Form.Select defaultValue="Choose...">
-                      <option>---Select Medium Designation---</option>
-                      <option>Online</option>
-                      <option>Print</option>
-                    </Form.Select>
-                  </Form.Group>
-                  <Form.Group as={Col} controlId="formTitle">
-                    <Form.Control
-                      onChange={(event) =>
-                        handleInputChange(event, setMedium, medium, index)
-                      }
-                      value={item}
-                      name="mediumD"
-                      type="text"
-                      placeholder="Enter Medium Designation"
-                    />
-                  </Form.Group>
-
-                  {medium.length !== 1 ? (
-                    <Col className="col-sm-1">
-                      <Button
-                        className="removebutton md:!mt-0 !mt-2"
-                        onClick={() => removeField(setMedium, medium, index)}
-                      >
-                        Remove
-                      </Button>
-                    </Col>
-                  ) : (
-                    <></>
-                  )}
-
-                  {medium.length - 1 === index && (
-                    <Col className="col-sm-1">
-                      <Button
-                        className="addbutton md:!mt-0 !mt-2"
-                        onClick={() => addField(setMedium, medium, "")}
-                      >
-                        ADD
-                      </Button>
-                    </Col>
-                  )}
-                </Row>
-              );
-            })}
-          </Row>
-          {/* <Row classNamr="mb-3">
-            <Form.Group as={Col} controlId="formMap">
-              <Form.Label>Map series designation</Form.Label>
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={booksCitation.mapSeriesDesignation}
-                name="mapSeriesDesignation"
-                type="text"
-                placeholder="Enter Map Series"
-              />
-            </Form.Group>
-          </Row> */}
 
           <Row className="my-3">
             {/* <Form.Group as={Col} controlId="formScale">
@@ -310,58 +232,6 @@ const BooksForm = ({ type }) => {
             </Form.Group>
           </Row>
 
-          <Row className="mb-3">
-            <Form.Label>Edition</Form.Label>
-            {edition.map((item, index) => {
-              return (
-                <Row key={index} className="mt-2">
-                  <Form.Group as={Col} controlId="formEdition">
-                    <Form.Select defaultValue="Choose...">
-                      <option>---Select Edition---</option>
-                      <option>Edition</option>
-                      <option>Version</option>
-                      <option>Level</option>
-                      <option>Update</option>
-                      <option>Revised Edition</option>
-                    </Form.Select>
-                  </Form.Group>
-                  <Form.Group as={Col} controlId="formPlace">
-                    <Form.Control
-                      onChange={(event) =>
-                        handleInputChange(event, setEdition, edition, index)
-                      }
-                      value={item}
-                      name="editionN"
-                      type="text"
-                      placeholder="Enter edition"
-                    />
-                  </Form.Group>
-                  {edition.length !== 1 ? (
-                    <Col className="col-sm-1">
-                      <Button
-                        className="removebutton md:!mt-0 !mt-2"
-                        onClick={() => removeField(setEdition, edition, index)}
-                      >
-                        Remove
-                      </Button>
-                    </Col>
-                  ) : (
-                    <></>
-                  )}
-                  {edition.length - 1 === index && (
-                    <Col className="col-sm-1">
-                      <Button
-                        className="addbutton md:!mt-0 !mt-2"
-                        onClick={() => addField(setEdition, edition, "")}
-                      >
-                        ADD
-                      </Button>
-                    </Col>
-                  )}
-                </Row>
-              );
-            })}
-          </Row>
           {/* <Row className="my-3">
             <Form.Group as={Col} controlId="formCreatore">
               <Form.Label>Subsidiary Creator</Form.Label>
@@ -375,7 +245,7 @@ const BooksForm = ({ type }) => {
             </Form.Group>
           </Row> */}
           <Row className="my-3">
-            <Form.Group as={Col} controlId="formPlace">
+            <Form.Group as={Col} md={8} controlId="formPlace">
               <Form.Label>Place</Form.Label>
               <Form.Control
                 onChange={(e) => onChanging(e)}
@@ -400,13 +270,6 @@ const BooksForm = ({ type }) => {
               {publisher.map((item, index) => {
                 return (
                   <Row key={index} className="mt-2">
-                    <Form.Group as={Col} controlId="formPlace">
-                      <Form.Select defaultValue="Choose...">
-                        <option>---Select Publisher---</option>
-                        <option>Publisher</option>
-                      </Form.Select>
-                    </Form.Group>
-
                     <Form.Group as={Col} controlId="formPublisher">
                       <Form.Control
                         onChange={(event) =>
@@ -455,16 +318,6 @@ const BooksForm = ({ type }) => {
           </Row>
 
           <Row className="mb-3">
-            <Form.Group as={Col} controlId="formPublication">
-              <Form.Label>Date of Publication</Form.Label>
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={booksCitation.dateOfPublication}
-                name="dateOfPublication"
-                type="text"
-                placeholder="Enter Date"
-              />
-            </Form.Group>
             {/* <Form.Group as={Col} controlId="formUpdate">
               <Form.Label>Date of update/revision</Form.Label>
               <Form.Control
@@ -477,7 +330,7 @@ const BooksForm = ({ type }) => {
             </Form.Group> */}
           </Row>
           <Row className="mb-3">
-            <Form.Group as={Col} controlId="formCitation">
+            <Form.Group as={Col} md={6} controlId="formCitation">
               <Form.Label>Date of citation</Form.Label>
               <Form.Control
                 onChange={(e) => onChanging(e)}
@@ -487,7 +340,7 @@ const BooksForm = ({ type }) => {
                 placeholder="Enter Date"
               />
             </Form.Group>
-            <Form.Group as={Col} controlId="formPlace">
+            <Form.Group as={Col} md={6} controlId="formPlace">
               <Form.Label>Series title and number</Form.Label>
               <Form.Control
                 onChange={(e) => onChanging(e)}
@@ -560,83 +413,7 @@ const BooksForm = ({ type }) => {
                 </Row>
               );
             })}
-
-            <Row className="mb-3">
-              {/* <Form.Label>Standard Identifier</Form.Label> */}
-              <Form.Label>Availability and access</Form.Label>
-              {availability.map((item, index) => {
-                return (
-                  <Row key={index} className="mt-2">
-                    <Form.Group as={Col} controlId="formAvailability">
-                      <Form.Select defaultValue="Choose...">
-                        <option>---Select Availability and Access---</option>
-                        <option>DOI</option>
-                        <option>URI</option>
-                        <option>URL</option>
-                      </Form.Select>
-                    </Form.Group>
-                    <Form.Group as={Col} controlId="formAvailability">
-                      {/* <Form.Label>Location</Form.Label> */}
-                      <Form.Control
-                        onChange={(event) =>
-                          handleInputChange(
-                            event,
-                            setAvailability,
-                            availability,
-                            index
-                          )
-                        }
-                        value={item}
-                        name="availabilityY"
-                        type="text"
-                        placeholder={"Enter availability"}
-                      />
-                    </Form.Group>
-                    {availability.length !== 1 ? (
-                      <Col className="col-sm-1">
-                        <Button
-                          className="removebutton md:!mt-0 !mt-2"
-                          onClick={() =>
-                            removeField(setAvailability, availability, index)
-                          }
-                        >
-                          Remove
-                        </Button>
-                      </Col>
-                    ) : (
-                      <></>
-                    )}
-                    {availability.length - 1 === index && (
-                      <Col className="col-sm-1">
-                        <Button
-                          className="addbutton md:!mt-0 !mt-2"
-                          onClick={() =>
-                            addField(setAvailability, availability, "")
-                          }
-                        >
-                          ADD
-                        </Button>
-                      </Col>
-                    )}
-                  </Row>
-                );
-              })}
-            </Row>
           </Row>
-          {type ? null : (
-            <Row className="mb-3">
-              <Form.Group as={Col} controlId="formLocation">
-                <Form.Label>Location</Form.Label>
-                <Form.Control
-                  onChange={(e) => onChanging(e)}
-                  value={booksCitation.location}
-                  name="location"
-                  type="text"
-                  placeholder="Enter Location"
-                />
-              </Form.Group>
-            </Row>
-          )}
           <div>
             <center>
               <Button variant="primary" type="submit">
@@ -682,49 +459,6 @@ const BooksForm = ({ type }) => {
                   </>
                 )}
                 <span className="title">{booksCitation.titleOfTheItem}</span>{" "}
-                {medium.length <= 1 &&
-                (medium[0] === "" || medium[0] === undefined) ? (
-                  ""
-                ) : (
-                  <>
-                    [
-                    {medium.map((item, key) => {
-                      return (
-                        <span key={key}>
-                          {item}
-                          {key < medium.length - 1 && ", "}
-                        </span>
-                      );
-                    })}
-                    ]{". "}
-                  </>
-                )}
-                {booksCitation.subsidiaryTitles === "" ? (
-                  ""
-                ) : (
-                  <>
-                    <span className="title">
-                      {booksCitation.subsidiaryTitles}
-                    </span>
-                    {". "}
-                  </>
-                )}
-                {edition.length <= 1 &&
-                (edition[0] === "" || edition[0] === undefined) ? (
-                  ""
-                ) : (
-                  <>
-                    {edition.map((item, index) => {
-                      return (
-                        <span key={index}>
-                          {edition[index]}
-                          {index < edition.length - 1 && ", "}
-                        </span>
-                      );
-                    })}
-                    {". "}
-                  </>
-                )}
                 {booksCitation.place === "" ? "" : <>{booksCitation.place}: </>}
                 {publisher.length <= 1 &&
                 (publisher[0] === "" || publisher[0] === undefined) ? (
@@ -739,14 +473,6 @@ const BooksForm = ({ type }) => {
                         </span>
                       );
                     })}
-                    {", "}
-                  </>
-                )}
-                {booksCitation.dateOfPublication === "" ? (
-                  ""
-                ) : (
-                  <>
-                    {booksCitation.dateOfPublication}
                     {", "}
                   </>
                 )}
@@ -782,29 +508,6 @@ const BooksForm = ({ type }) => {
                     {". "}
                   </>
                 )}
-                {availability.length <= 1 &&
-                (availability[0] === "" || availability[0] === undefined) ? (
-                  ""
-                ) : (
-                  <>
-                    Available from:{" "}
-                    {availability.map((item, index) => {
-                      return (
-                        <span key={index}>
-                          {availability[index]}
-                          {index < availability.length - 1 && ", "}
-                        </span>
-                      );
-                    })}
-                    {". "}
-                  </>
-                )}
-                {booksCitation.location === "" ? (
-                  ""
-                ) : (
-                  <>At:[{booksCitation.location}].</>
-                )}
-                {/* {booksCitation.eLink === ""? "": `[${booksCitation.eLink}]`} */}
               </p>
               
               <Copy refs={ref} />

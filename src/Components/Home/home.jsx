@@ -220,16 +220,11 @@ const HomeComponent = () => {
   };
   return (
     <>
-      {/* Slider Section */}
-      <div className="w-[850px] mx-auto">
-        <Slider />
-      </div>
-
-      {/* Autofill Search Box – directly below slider */}
+      {/* Autofill Search Box */}
       <div className="w-full flex justify-center px-4 mt-6">
         <div className="search-panel-hero">
           <p className="search-panel-label">
-            🔍 Search &amp; Autofill Citation
+            🔍 Search &amp; Autocite Citation
           </p>
           <SearchBox />
         </div>
@@ -248,118 +243,46 @@ const HomeComponent = () => {
         citation
       </p>
 
-      {/* <div className=" w-full flex justify-center h-[800px] items-end rounded-lg bg-no-repeat bg-cover bg-center"> */}
-      <div className="rounded-lg mt-4 justify-around gap-4 md:flex-row flex-col flex w-full md:px-10">
-        <div className="w-full rounded-lg bg-blue-100 flex p-2 items-center flex-col">
-          <h5 className="mt-4 font-bold font-sans text-lg text-[#2986ea]">
-            Cite a Book
-          </h5>
-          <p className="col-lg-10 fs-5 text-center">
-            Generate a Citation for a book of your choice, just by entering some
-            details!
-          </p>
-
-          <div className="flex flex-col gap-3 h-full justify-center">
+      {/* Sections converted to page links for streamlined same-page experiences */}
+      <div className="w-[850px] mx-auto mt-4">
+        <div className="flex flex-col md:flex-row gap-4 justify-between min-h-[75px]">
+          <div className="flex-1 rounded-lg p-4 bg-blue-50 border border-blue-100">
             <button
-              onClick={() => navigate("/book-and-monograph")}
-              className="btn1"
+              onClick={() => navigate('/cite-book')}
+              className="font-bold text-lg text-[#2986ea] hover:underline"
             >
-              Book
+              Cite a Book
             </button>
-            <button
-              onClick={() => navigate("/E-book-and-monograph")}
-              className="btn1"
-            >
-              E-Book
-            </button>
-            <button
-              onClick={() => navigate("/contribution-within-book")}
-              className="btn1"
-            >
-              Book Contribution
-            </button>
+            <p className="text-gray-600 text-sm mt-1">Book | e-Book | Book Contribution on one page</p>
           </div>
-        </div>
 
-        <div className="w-full flex rounded-lg items-center font-sans p-2 flex-col bg-green-100">
-          <h5 className="mt-4 font-bold font-oswald text-lg text-[#28A745]">
-            Cite a Journal
-          </h5>
-          <p className="col-lg-10 fs-5 text-center">
-            Generate a Citation for a Journal of your choice, just by entering
-            some details!
-          </p>
-          <div className="flex flex-col  gap-3 h-full justify-center">
-            <button onClick={() => navigate("/serial")} className="btn2">
-              Journal
-            </button>
-            <button onClick={() => navigate("/E-serial")} className="btn2">
-              E-Journal
-            </button>
+          <div className="flex-1 rounded-lg p-4 bg-green-50 border border-green-100">
             <button
-              onClick={() => navigate("/serial-contributions")}
-              className="btn2"
+              onClick={() => navigate('/cite-journal')}
+              className="font-bold text-lg text-[#28A745] hover:underline"
             >
-              Journal Contribution
+              Cite a Journal
             </button>
+            <p className="text-gray-600 text-sm mt-1">Journal | E-Journal | Journal Contribution on one page</p>
           </div>
-        </div>
-        <div className="w-full  rounded-lg flex font-sans items-center p-2 flex-col bg-purple-100">
-          <h5 className="mt-4 font-bold font-sans text-lg text-center text-[#9C27B0]">
-            You can also Cite
-          </h5>
-          <p className="col-lg-10 fs-5 text-center">
-            Generate a Citation for any one of the following, just by entering
-            some details!
-          </p>
-          <div className="flex flex-col gap-3 h-full justify-center">
-            <button onClick={() => navigate("/websites")} className="btn3">
-              Websites
-            </button>
+
+          <div className="flex-1 rounded-lg p-4 bg-purple-50 border border-purple-100">
             <button
-              onClick={() => navigate("/electronic-messages")}
-              className="btn3"
+              onClick={() => navigate('/cite-other')}
+              className="font-bold text-lg text-[#9C27B0] hover:underline"
             >
-              Electronic Messages
+              Cite Other Sources
             </button>
-            <button onClick={() => navigate("/patents")} className="btn3">
-              Patents
-            </button>
+            <p className="text-gray-600 text-sm mt-1">Websites | Electronic Messages | Patents on one page</p>
           </div>
         </div>
       </div>
-      <div className="flex w-full justify-center items-center">
-        <label
-          className="bg-blue-500 hover:bg-blue-600 transition-all duration-300 mt-2 cursor-pointer flex justify-center items-center p-2 text-white font-bold rounded-md"
-          htmlFor="file"
-        >
-          <svg
-            className="w-6 h-5 mt-1 mr-3  text-white"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 20 16"
-          >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-            />
-          </svg>
-          Upload a PDF
-          <input
-            type="file"
-            id="file"
-            className="hidden"
-            onChange={handleFileChange}
-            accept="application/pdf"
-          />
-        </label>
-      </div>
+      {/* Upload PDF removed per request */}
 
-      {/* </div> */}
+      {/* Slider Section (moved below Upload PDF area) */}
+      <div className="w-[850px] mx-auto mt-8">
+        <Slider />
+      </div>
 
       <div className="w-70 mt-10 md:ml-20 md:mr-20 rounded-lg flex font-sans justify-center items-center flex-col bg-gray-200">
         <h4 className="mt-4 md:p-0 p-2 font-bold text-center font-sans text-base">
@@ -367,7 +290,7 @@ const HomeComponent = () => {
         </h4>
         <p className="col-lg-10 md:p-0 p-2 fs-5">
           The Online Indian Citation Generation Tool (OICGT) is a web-based
-          application developed by Mr. Naresh Kumar and Prof. Margam Madhusudhan
+          application developed according to Name and Date system citation method as per IS 2381:2014 and ISO 690: 2021(E) by Mr. Naresh Kumar and Prof. Margam Madhusudhan
           and released in 2026. OICGT enables users
           to generate citations and reference entries for a wide range of
           information resources, including books, serial publications, websites,

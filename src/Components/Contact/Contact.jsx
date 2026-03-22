@@ -5,7 +5,7 @@ const people = [
     dept: "Department of Library & Information Science, II Floor, Tutorial Building University of Delhi, Delhi-7",
     phone: "+91-9015590393",
     email: "nkumar@libinfosci.du.ac.in;    nareshiiim.kumar@gmail.com",
-    details: "For more details : https://orcid.org/0000-0002-8539-2730",
+    details: "For more details : https://kumarnaresh.weebly.com/",
   },
   {
     name: "Dr. Margam Madhusudhan",

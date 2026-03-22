@@ -34,7 +34,7 @@ export default function Footer() {
       className="text-white d-flex flex-column align-items-center mt-5 pt-3"
       style={{ backgroundColor: "#192F59" }}
     >
-      <span className="text-center px-2" style={{fontSize: "clamp(1rem, 3vw, 1.3rem)"}}>Planning, Content, Design and Development By</span>
+      <span className="text-center px-2" style={{fontSize: "clamp(1rem, 3vw, 1.3rem)"}}>Designed Developed and Maintained by</span>
       <div
       className="footer-row"
         style={{
@@ -45,7 +45,7 @@ export default function Footer() {
       >
         <div className="footer-left" style={{flex:"3", borderLeft:"solid white 2px", paddingLeft:"clamp(1rem, 5vw, 5%)"}}>
         
-        <p style={{fontSize:"clamp(1rem, 3vw, 1.3rem)"}}><b>Mr. Naresh Kumar</b></p><a href="https://orcid.org/0000-0002-8539-2730"> https://orcid.org/0000-0002-8539-2730 </a>
+        <p style={{fontSize:"clamp(1rem, 3vw, 1.3rem)"}}><b>Mr. Naresh Kumar</b></p><a href="https://kumarnaresh.weebly.com/"> https://kumarnaresh.weebly.com/ </a>
         <p></p>
         {/* <p><b>Prof. Madhusudhan Margam</b></p><a href="http://atfi.dlis.du.ac.in/drmadhusudhan.php"> http://atfi.dlis.du.ac.in/drmadhusudhan.php </a> */}
         </div>
