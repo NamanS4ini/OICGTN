@@ -36,9 +36,29 @@ const ContributionForm = () => {
   const copytext = (e) => {
     navigator.clipboard.writeText(e.target.innerText);
     toast.success("Copied to Clipboard");
-  }
-  const ref = useRef()
+  };
+
+  const formatCreatorForCitation = (firstName, lastName) => {
+    const safeFirst = (firstName || "").trim();
+    const safeLast = (lastName || "").trim();
+    const firstInitial = safeFirst ? `${safeFirst.charAt(0).toUpperCase()}.` : "";
+    const upperLast = safeLast ? safeLast.toUpperCase() : "";
+    if (!upperLast && !firstInitial) return "";
+    if (!upperLast) return `${firstInitial}, `;
+    if (!firstInitial) return `${upperLast}, `;
+    return `${upperLast}, ${firstInitial}, `;
+  };
+
+  const formatCreatorInline = (firstName, lastName) => {
+    const safeFirst = (firstName || "").trim();
+    const safeLast = (lastName || "").trim();
+    const firstInitial = safeFirst ? `${safeFirst.charAt(0).toUpperCase()}.` : "";
+    const upperLast = safeLast ? safeLast.toUpperCase() : "";
+    return [firstInitial, upperLast].filter(Boolean).join(" ");
+  };
+  const ref = useRef();
   const [result, setResult] = useState(false);
+  const [showMoreOptions, setShowMoreOptions] = useState(false);
   const onChanging = (e) => {
     const name = e.target.name;
     setContributionCitation({
@@ -66,6 +86,12 @@ const ContributionForm = () => {
     setFormFields(data);
   };
 
+  const handleCreatorTypeChange = (event, index) => {
+    const data = [...creatorTypes];
+    data[index] = event.target.value;
+    setCreatorTypes(data);
+  };
+
   const handleInputChange = (event, UseStateName, stateName, index) => {
     let data = [...stateName];
     data[index] = event.target.value;
@@ -75,7 +101,7 @@ const ContributionForm = () => {
   // multi field inputs (first name ,last name, type, medium designation, edition, publisher, standard identifier, availability and access)
 
   const [formFields, setFormFields] = useState([["", ""]]);
-  const [addGenInfo, setAddGenInfo] = useState([""]);
+  const [creatorTypes, setCreatorTypes] = useState([""]);
   const [creatorHost, setCreatorHost] = useState([""]);
   const [medium, setMedium] = useState([""]);
   const [edition, setEdition] = useState([""]);
@@ -87,7 +113,8 @@ const ContributionForm = () => {
   const { metadata, chosenForm } = useContext(MetadataContext);
   useEffect(() => {
     if (!metadata) return;
-    if (chosenForm && chosenForm !== "book-contribution" && chosenForm !== "") return;
+    if (chosenForm && chosenForm !== "book-contribution" && chosenForm !== "")
+      return;
     // map relevant fields
     setContributionCitation((prev) => ({
       ...prev,
@@ -98,24 +125,45 @@ const ContributionForm = () => {
       place: metadata.place || prev.place,
       dateOfPublication: metadata.dateOfPublication || prev.dateOfPublication,
       numeration: metadata.volume || prev.numeration,
-      rangeOfPageNumbersOfTheContribution: metadata.pages || prev.rangeOfPageNumbersOfTheContribution,
-      availiabilityAndAccess: metadata.url || metadata.doi || prev.availiabilityAndAccess,
+      rangeOfPageNumbersOfTheContribution:
+        metadata.pages || prev.rangeOfPageNumbersOfTheContribution,
+      availiabilityAndAccess:
+        metadata.url || metadata.doi || prev.availiabilityAndAccess,
       edition: metadata.edition || prev.edition,
     }));
 
     if (metadata.authors && metadata.authors.length > 0) {
-      const newFields = metadata.authors.map((a) => [a.firstName || "", a.lastName || ""]);
+      const newFields = metadata.authors.map((a) => [
+        a.firstName || "",
+        a.lastName || "",
+      ]);
       setFormFields(newFields.length ? newFields : [["", ""]]);
+      setCreatorTypes(newFields.map(() => ""));
     }
-    if (metadata.isbn || metadata.doi) setStandarIdentifier([metadata.isbn || metadata.doi]);
+    if (metadata.isbn || metadata.doi)
+      setStandarIdentifier([metadata.isbn || metadata.doi]);
   }, [metadata, chosenForm]);
 
   const addField = (UseStateName, stateName, obj) => {
     UseStateName([...stateName, obj]);
   };
+  const addCreatorField = () => {
+    const previousType = creatorTypes[creatorTypes.length - 1] || "";
+    setFormFields([...formFields, ["", ""]]);
+    setCreatorTypes([...creatorTypes, previousType]);
+  };
   const removeField = (UseStateName, stateName, index) => {
     stateName.splice(index, 1);
     UseStateName([...stateName]);
+  };
+
+  const removeCreatorField = (index) => {
+    const nextFields = [...formFields];
+    const nextTypes = [...creatorTypes];
+    nextFields.splice(index, 1);
+    nextTypes.splice(index, 1);
+    setFormFields(nextFields);
+    setCreatorTypes(nextTypes);
   };
 
   return (
@@ -134,14 +182,15 @@ const ContributionForm = () => {
                 <Row key={index} className="mt-2">
                   <Form.Group as={Col} controlId="formLname">
                     <Form.Select
-                      defaultValue="Choose..."
+                      value={creatorTypes[index] || ""}
+                      onChange={(event) =>
+                        handleCreatorTypeChange(event, index)
+                      }
                     >
                       <option value>Choose...</option>
                       <option>Author</option>
                       <option>Editor</option>
-                                   
-                                   
-                                       
+
                       <option>Reviewer</option>
                       <option>Reviser</option>
                       <option>Translator</option>
@@ -170,9 +219,7 @@ const ContributionForm = () => {
                     <div as={Col} className="col-sm-1">
                       <Button
                         className="removebutton md:!mt-0 !mt-2"
-                        onClick={() =>
-                          removeField(setFormFields, formFields, index)
-                        }
+                        onClick={() => removeCreatorField(index)}
                       >
                         Remove
                       </Button>
@@ -180,21 +227,16 @@ const ContributionForm = () => {
                   ) : (
                     <></>
                   )}
-                  {formFields.length - 1 === index && (
-                    <div as={Col} className="col-sm-1">
-                      <Button
-                        className="addbutton md:!mt-0 !mt-2"
-                        onClick={() =>
-                          addField(setFormFields, formFields, ["", ""])
-                        }
-                      >
-                        ADD
-                      </Button>
-                    </div>
-                  )}
                 </Row>
               );
             })}
+            <Button
+              variant="link"
+              className="ps-0 text-decoration-none"
+              onClick={addCreatorField}
+            >
+              Add another Creator
+            </Button>
           </Row>
 
           <Row className="mb-3">
@@ -222,71 +264,6 @@ const ContributionForm = () => {
           </Row>
 
           <Row className="mb-3">
-            <Form.Label>Additional General Information</Form.Label>
-            {addGenInfo.map((item, index) => {
-              return (
-                <Row key={index} className="mt-2">
-                  <Form.Group as={Col} controlId="formAdditional">
-                    <Form.Select
-                      //  onChange={(e) => onChanging(e)}
-                      //  value={contributionCitation.additionalGeneralInformation}
-                      //  name="additionalGeneralInformation"
-                      defaultValue="Choose..."
-                    >
-                      <option value>Choose...</option>
-                      <option>Classification</option>
-                      <option>Price and availability</option>
-                      <option>Languages</option>
-                      <option>Other information</option>
-                    </Form.Select>
-                  </Form.Group>
-                  <Form.Group as={Col} controlId="formAdditional">
-                    <Form.Control
-                      onChange={(event) =>
-                        handleInputChange(
-                          event,
-                          setAddGenInfo,
-                          addGenInfo,
-                          index
-                        )
-                      }
-                      value={item}
-                      name="additionalGeneralInformation"
-                      type="text"
-                      placeholder="Enter Additional General Information"
-                    />
-                  </Form.Group>
-                  {addGenInfo.length !== 1 ? (
-                    <div as={Col} className="col-sm-1">
-                      <Button
-                        className="removebutton md:!mt-0 !mt-2"
-                        onClick={() =>
-                          removeField(setAddGenInfo, addGenInfo, index)
-                        }
-                      >
-                        Remove
-                      </Button>
-                    </div>
-                  ) : (
-                    <></>
-                  )}
-
-                  {addGenInfo.length - 1 === index && (
-                    <div as={Col} className="col-sm-1">
-                      <Button
-                        className="addbutton md:!mt-0 !mt-2"
-                        onClick={() => addField(setAddGenInfo, addGenInfo, "")}
-                      >
-                        ADD
-                      </Button>
-                    </div>
-                  )}
-                </Row>
-              );
-            })}
-          </Row>
-
-          <Row className="mb-3">
             <Form.Label>Name of creators of the host item</Form.Label>
             {creatorHost.map((item, index) => {
               return (
@@ -295,7 +272,7 @@ const ContributionForm = () => {
                     <Form.Select defaultValue="Choose...">
                       <option value>Choose...</option>
                       <option>Author</option>
-                                           
+
                       <option>Editor</option>
                       <option>Reviewer</option>
                       <option>Reviser</option>
@@ -309,7 +286,7 @@ const ContributionForm = () => {
                           event,
                           setCreatorHost,
                           creatorHost,
-                          index
+                          index,
                         )
                       }
                       value={item}
@@ -364,58 +341,6 @@ const ContributionForm = () => {
             </Form.Group>
           </Row>
 
-          <Row className="mb-3">
-            <Form.Label>Medium Designation</Form.Label>
-            {medium.map((item, index) => {
-              return (
-                <Row key={index} className="mt-2">
-                  <Form.Group as={Col} controlId="formMedia">
-                    <Form.Select defaultValue="Choose...">
-                      <option value>Choose...</option>
-                      <option>Online</option>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
-                    </Form.Select>
-                  </Form.Group>
-                  <Form.Group as={Col} controlId="formMap">
-                    {/* <Form.Label>Map series designation</Form.Label> */}
-                    <Form.Control
-                      onChange={(event) =>
-                        handleInputChange(event, setMedium, medium, index)
-                      }
-                      value={item}
-                      name="mapSeriesDesignation"
-                      type="text"
-                      placeholder="Enter Medium Designation "
-                    />
-                  </Form.Group>
-                  {medium.length !== 1 ? (
-                    <div as={Col} className="col-sm-1">
-                      <Button
-                        className="removebutton md:!mt-0 !mt-2"
-                        onClick={() => removeField(setMedium, medium, index)}
-                      >
-                        Remove
-                      </Button>
-                    </div>
-                  ) : (
-                    <></>
-                  )}
-
-                  {medium.length - 1 === index && (
-                    <div as={Col} className="col-sm-1">
-                      <Button
-                        className="addbutton md:!mt-0 !mt-2"
-                        onClick={() => addField(setMedium, medium, "")}
-                      >
-                        ADD
-                      </Button>
-                    </div>
-                  )}
-                </Row>
-              );
-            })}
-          </Row>
-
           {/* <Row className="mb-3">
             <Form.Group as={Col} controlId="formMap">
               <Form.Label>Map series designation</Form.Label>
@@ -428,90 +353,7 @@ const ContributionForm = () => {
               />
             </Form.Group>
           </Row> */}
-          <Row className="mb-3">
-            {/* <Form.Group as={Col} controlId="formScale">
-              <Form.Label>Scale</Form.Label>
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={contributionCitation.scale}
-                name="scale"
-                type="text"
-                placeholder="Enter Scale"
-              />
-            </Form.Group> */}
-            <Form.Group as={Col} controlId="formSubsidiary">
-              <Form.Label>Subsidiary Titles</Form.Label>
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={contributionCitation.subsidiaryTitles}
-                name="subsidiaryTitles"
-                type="text"
-                placeholder="Enter Title "
-              />
-            </Form.Group>
-          </Row>
-          <Row className="mb-3">
-            <Form.Label>Edition</Form.Label>
-            {edition.map((item, index) => {
-              return (
-                <Row key={index} className="mt-2">
-                  <Form.Group as={Col} controlId="formEdition">
-                    <Form.Select defaultValue="Choose...">
-                      <option>---Select Edition---</option>
-                      <option>Edition</option>
-                      <option>Version</option>
-                      <option>Revised Edition</option>
-                    </Form.Select>
-                  </Form.Group>
-                  <Form.Group as={Col} controlId="formPlace">
-                    <Form.Control
-                      onChange={(event) =>
-                        handleInputChange(event, setEdition, edition, index)
-                      }
-                      value={item}
-                      name="editionN"
-                      type="text"
-                      placeholder="Enter edition"
-                    />
-                  </Form.Group>
-                  {edition.length !== 1 ? (
-                    <div as={Col} className="col-sm-1">
-                      <Button
-                        className="removebutton md:!mt-0 !mt-2"
-                        onClick={() => removeField(setEdition, edition, index)}
-                      >
-                        Remove
-                      </Button>
-                    </div>
-                  ) : (
-                    <></>
-                  )}
-                  {edition.length - 1 === index && (
-                    <div as={Col} className="col-sm-1">
-                      <Button
-                        className="addbutton md:!mt-0 !mt-2"
-                        onClick={() => addField(setEdition, edition, "")}
-                      >
-                        ADD
-                      </Button>
-                    </div>
-                  )}
-                </Row>
-              );
-            })}
-          </Row>
-          <Row className="mb-3">
-            <Form.Group as={Col} controlId="formCreator">
-              <Form.Label>Subsidiary Creator of host item</Form.Label>
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={contributionCitation.subsidiaryCreatorOfTheHostItem}
-                name="subsidiaryCreatorOfTheHostItem"
-                type="text"
-                placeholder="Enter Subsidiary Creator"
-              />
-            </Form.Group>
-          </Row>
+
           <Row className="mb-3">
             <Form.Group as={Col} controlId="formPlace">
               <Form.Label>Place</Form.Label>
@@ -529,16 +371,6 @@ const ContributionForm = () => {
             {publisher.map((item, index) => {
               return (
                 <Row key={index} className="mt-2">
-                  <Form.Group as={Col} controlId="formGridState">
-                    <Form.Select
-                      name="publisher"
-                      defaultValue="Choose..."
-                    >
-                      <option value>Choose...</option>
-                      <option>Publisher</option>
-                                                                                                                                    
-                    </Form.Select>
-                  </Form.Group>
                   <Form.Group as={Col} controlId="formGridState">
                     <Form.Control
                       onChange={(event) =>
@@ -579,78 +411,7 @@ const ContributionForm = () => {
               );
             })}
           </Row>
-          <Row className="mb-3">
-            <Form.Group as={Col} controlId="formPublication">
-              <Form.Label>Date of Publication</Form.Label>
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={contributionCitation.dateOfPublication}
-                name="dateOfPublication"
-                type="text"
-                placeholder="Enter Date"
-              />
-            </Form.Group>
-          </Row>
-          <Row className="mb-3">
-            <Form.Label>Numeration (of volume)</Form.Label>
-            {numeration.map((item, index) => {
-              return (
-                <Row key={index} className="mt-2">
-                  <Form.Group as={Col} controlId="formGridState">
-                    <Form.Select name="numeration" defaultValue="Choose...">
-                      <option value>Choose...</option>
-                      <option>Volume</option>
-                      <option>Number</option>
-                      <option>Issue</option>
-                                                                                                                                                          
-                    </Form.Select>
-                  </Form.Group>
-                  <Form.Group as={Col} controlId="formRange">
-                    <Form.Control
-                      onChange={(event) =>
-                        handleInputChange(
-                          event,
-                          setNumeration,
-                          numeration,
-                          index
-                        )
-                      }
-                      value={item}
-                      name="rangeOfPageNumbersOfTheContribution"
-                      type="text"
-                      placeholder="Enter Numeration "
-                    />
-                  </Form.Group>
 
-                  {numeration.length !== 1 ? (
-                    <div as={Col} className="col-sm-1">
-                      <Button
-                        className="removebutton md:!mt-0 !mt-2"
-                        onClick={() =>
-                          removeField(setNumeration, numeration, index)
-                        }
-                      >
-                        Remove
-                      </Button>
-                    </div>
-                  ) : (
-                    <></>
-                  )}
-
-                  {numeration.length - 1 === index && (
-                    <div as={Col} className="col-sm-1">
-                      <Button
-                        className="addbutton md:!mt-0 !mt-2"
-                        onClick={() => addField(setNumeration, numeration, "")}
-                      >
-                        ADD
-                      </Button>
-                    </div>
-                  )}
-                </Row>
-              );
-            })}
-          </Row>
           <Row className="mb-3">
             <Form.Group as={Col} controlId="formRange">
               <Form.Label>
@@ -665,180 +426,278 @@ const ContributionForm = () => {
               />
             </Form.Group>
           </Row>
-          <Row className="mb-3">
-            {/* <Form.Group as={Col} controlId="formUpdate">
-              <Form.Label>Date of update/revision</Form.Label>
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={contributionCitation.dateOfUpdate}
-                name="dateOfUpdate"
-                type="text"
-                placeholder="Enter Date"
-              />
-            </Form.Group> */}
-            <Form.Group as={Col} controlId="formCitation">
-              <Form.Label>Date of citation</Form.Label>
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={contributionCitation.dateOfCitation}
-                name="dateOfCitation"
-                type="text"
-                placeholder="Enter Date"
-              />
-            </Form.Group>
-          </Row>
+          <Button
+            variant="link"
+            className="ps-0 text-decoration-none"
+            onClick={() => setShowMoreOptions((prev) => !prev)}
+          >
+            {showMoreOptions ? "Hide More Options" : "More Options"}
+          </Button>
 
-          <Row className="mb-3">
-            <Form.Group as={Col} controlId="formTitle">
-              <Form.Label>Series title and number</Form.Label>
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={contributionCitation.seriesTitleAndNumber}
-                name="seriesTitleAndNumber"
-                type="text"
-                placeholder="Enter Title "
-              />
-            </Form.Group>
-          </Row>
+          {showMoreOptions && (
+            <>
+              <Row className="mb-3">
+                <Form.Label>Edition</Form.Label>
+                {edition.map((item, index) => {
+                  return (
+                    <Row key={index} className="mt-2">
+                      <Form.Group as={Col} controlId="formPlace">
+                        <Form.Control
+                          onChange={(event) =>
+                            handleInputChange(event, setEdition, edition, index)
+                          }
+                          value={item}
+                          name="editionN"
+                          type="text"
+                          placeholder="Enter edition"
+                        />
+                      </Form.Group>
+                      {edition.length !== 1 ? (
+                        <div as={Col} className="col-sm-1">
+                          <Button
+                            className="removebutton md:!mt-0 !mt-2"
+                            onClick={() =>
+                              removeField(setEdition, edition, index)
+                            }
+                          >
+                            Remove
+                          </Button>
+                        </div>
+                      ) : (
+                        <></>
+                      )}
+                      {edition.length - 1 === index && (
+                        <div as={Col} className="col-sm-1">
+                          <Button
+                            className="addbutton md:!mt-0 !mt-2"
+                            onClick={() => addField(setEdition, edition, "")}
+                          >
+                            ADD
+                          </Button>
+                        </div>
+                      )}
+                    </Row>
+                  );
+                })}
+              </Row>
 
-          <Row className="mb-3">
-            <Form.Label>Standard Identifier</Form.Label>
-            {standardIdentifier.map((item, index) => {
-              return (
-                <Row key={index} className="mt-2">
-                  <Form.Group as={Col} controlId="formIdentifier">
-                    <Form.Select defaultValue="Choose...">
-                      <option value>Choose...</option>
-                      <option>ISBN</option>
-                      <option>eISBN</option>
-                                       
-                      <option>DOI</option>
-                    </Form.Select>
-                  </Form.Group>
-                  <Form.Group as={Col} controlId="formTitle">
-                    <Form.Control
-                      onChange={(event) =>
-                        handleInputChange(
-                          event,
-                          setStandarIdentifier,
-                          standardIdentifier,
-                          index
-                        )
-                      }
-                      value={item}
-                      name="seriesTitleAndNumber"
-                      type="text"
-                      placeholder="Enter Title "
-                    />
-                  </Form.Group>
+              <Row className="mb-3">
+                <Form.Label>Numeration (of volume)</Form.Label>
+                {numeration.map((item, index) => {
+                  return (
+                    <Row key={index} className="mt-2">
+                      <Form.Group as={Col} controlId="formGridState">
+                        <Form.Select name="numeration" defaultValue="Choose...">
+                          <option value>Choose...</option>
+                          <option>Volume</option>
+                          <option>Number</option>
+                          <option>Issue</option>
+                        </Form.Select>
+                      </Form.Group>
+                      <Form.Group as={Col} controlId="formRange">
+                        <Form.Control
+                          onChange={(event) =>
+                            handleInputChange(
+                              event,
+                              setNumeration,
+                              numeration,
+                              index,
+                            )
+                          }
+                          value={item}
+                          name="rangeOfPageNumbersOfTheContribution"
+                          type="text"
+                          placeholder="Enter Numeration "
+                        />
+                      </Form.Group>
+                      {numeration.length !== 1 ? (
+                        <div as={Col} className="col-sm-1">
+                          <Button
+                            className="removebutton md:!mt-0 !mt-2"
+                            onClick={() =>
+                              removeField(setNumeration, numeration, index)
+                            }
+                          >
+                            Remove
+                          </Button>
+                        </div>
+                      ) : (
+                        <></>
+                      )}
+                      {numeration.length - 1 === index && (
+                        <div as={Col} className="col-sm-1">
+                          <Button
+                            className="addbutton md:!mt-0 !mt-2"
+                            onClick={() =>
+                              addField(setNumeration, numeration, "")
+                            }
+                          >
+                            ADD
+                          </Button>
+                        </div>
+                      )}
+                    </Row>
+                  );
+                })}
+              </Row>
 
-                  {standardIdentifier.length !== 1 ? (
-                    <div as={Col} className="col-sm-1">
-                      <Button
-                        className="removebutton md:!mt-0 !mt-2"
-                        onClick={() =>
-                          removeField(
-                            setStandarIdentifier,
-                            standardIdentifier,
-                            index
-                          )
-                        }
-                      >
-                        Remove
-                      </Button>
-                    </div>
-                  ) : (
-                    <></>
-                  )}
+              <Row className="mb-3">
+                <Form.Group as={Col} controlId="formCitation">
+                  <Form.Label>Date of citation</Form.Label>
+                  <Form.Control
+                    onChange={(e) => onChanging(e)}
+                    value={contributionCitation.dateOfCitation}
+                    name="dateOfCitation"
+                    type="text"
+                    placeholder="Enter Date"
+                  />
+                </Form.Group>
+              </Row>
 
-                  {standardIdentifier.length - 1 === index && (
-                    <div as={Col} className="col-sm-1">
-                      <Button
-                        className="addbutton md:!mt-0 !mt-2"
-                        onClick={() =>
-                          addField(setStandarIdentifier, standardIdentifier, "")
-                        }
-                      >
-                        ADD
-                      </Button>
-                    </div>
-                  )}
-                </Row>
-              );
-            })}
-          </Row>
-          <Row className="mb-3">
-            <Form.Label>Availability and access</Form.Label>
-            {availability.map((item, index) => {
-              return (
-                <Row key={index} className="mt-2">
-                  <Form.Group as={Col} controlId="formAccess">
-                    <Form.Select defaultValue="Choose...">
-                      <option value>Choose...</option>
-                      <option>DOI</option>
-                      <option>URI</option>
-                      <option>URL</option>
-                                                                  
-                    </Form.Select>
-                  </Form.Group>
-                  <Form.Group as={Col} controlId="formLocation">
-                    <Form.Control
-                      onChange={(event) =>
-                        handleInputChange(
-                          event,
-                          setAvailability,
-                          availability,
-                          index
-                        )
-                      }
-                      value={item}
-                      name="availiabilityAndAccess"
-                      type="text"
-                      placeholder="Enter Availability and access"
-                    />
-                  </Form.Group>
-                  {availability.length !== 1 ? (
-                    <div as={Col} className="col-sm-1">
-                      <Button
-                        className="removebutton md:!mt-0 !mt-2"
-                        onClick={() =>
-                          removeField(setAvailability, availability, index)
-                        }
-                      >
-                        Remove
-                      </Button>
-                    </div>
-                  ) : (
-                    <></>
-                  )}
-                  {availability.length - 1 === index && (
-                    <div as={Col} className="col-sm-1">
-                      <Button
-                        className="addbutton md:!mt-0 !mt-2"
-                        onClick={() =>
-                          addField(setAvailability, availability, "")
-                        }
-                      >
-                        ADD
-                      </Button>
-                    </div>
-                  )}
-                </Row>
-              );
-            })}
-          </Row>
-          <Row className="mb-3">
-            <Form.Group as={Col} controlId="formLocation">
-              <Form.Label>Location</Form.Label>
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={contributionCitation.location}
-                name="location"
-                type="text"
-                placeholder="Enter Location"
-              />
-            </Form.Group>
-          </Row>
+              <Row className="mb-3">
+                <Form.Group as={Col} controlId="formTitle">
+                  <Form.Label>Series title and number</Form.Label>
+                  <Form.Control
+                    onChange={(e) => onChanging(e)}
+                    value={contributionCitation.seriesTitleAndNumber}
+                    name="seriesTitleAndNumber"
+                    type="text"
+                    placeholder="Enter Title "
+                  />
+                </Form.Group>
+              </Row>
+
+              <Row className="mb-3">
+                <Form.Label>Standard Identifier</Form.Label>
+                {standardIdentifier.map((item, index) => {
+                  return (
+                    <Row key={index} className="mt-2">
+                      <Form.Group as={Col} controlId="formIdentifier">
+                        <Form.Select defaultValue="Choose...">
+                          <option value>Choose...</option>
+                          <option>ISBN</option>
+                          <option>eISBN</option>
+                          <option>DOI</option>
+                        </Form.Select>
+                      </Form.Group>
+                      <Form.Group as={Col} controlId="formTitle">
+                        <Form.Control
+                          onChange={(event) =>
+                            handleInputChange(
+                              event,
+                              setStandarIdentifier,
+                              standardIdentifier,
+                              index,
+                            )
+                          }
+                          value={item}
+                          name="seriesTitleAndNumber"
+                          type="text"
+                          placeholder="Enter Title "
+                        />
+                      </Form.Group>
+
+                      {standardIdentifier.length !== 1 ? (
+                        <div as={Col} className="col-sm-1">
+                          <Button
+                            className="removebutton md:!mt-0 !mt-2"
+                            onClick={() =>
+                              removeField(
+                                setStandarIdentifier,
+                                standardIdentifier,
+                                index,
+                              )
+                            }
+                          >
+                            Remove
+                          </Button>
+                        </div>
+                      ) : (
+                        <></>
+                      )}
+
+                      {standardIdentifier.length - 1 === index && (
+                        <div as={Col} className="col-sm-1">
+                          <Button
+                            className="addbutton md:!mt-0 !mt-2"
+                            onClick={() =>
+                              addField(
+                                setStandarIdentifier,
+                                standardIdentifier,
+                                "",
+                              )
+                            }
+                          >
+                            ADD
+                          </Button>
+                        </div>
+                      )}
+                    </Row>
+                  );
+                })}
+              </Row>
+
+              <Row className="mb-3">
+                <Form.Label>Availability and access</Form.Label>
+                {availability.map((item, index) => {
+                  return (
+                    <Row key={index} className="mt-2">
+                      <Form.Group as={Col} controlId="formAccess">
+                        <Form.Select defaultValue="Choose...">
+                          <option value>Choose...</option>
+                          <option>DOI</option>
+                          <option>URI</option>
+                          <option>URL</option>
+                        </Form.Select>
+                      </Form.Group>
+                      <Form.Group as={Col} controlId="formLocation">
+                        <Form.Control
+                          onChange={(event) =>
+                            handleInputChange(
+                              event,
+                              setAvailability,
+                              availability,
+                              index,
+                            )
+                          }
+                          value={item}
+                          name="availiabilityAndAccess"
+                          type="text"
+                          placeholder="Enter Availability and access"
+                        />
+                      </Form.Group>
+                      {availability.length !== 1 ? (
+                        <div as={Col} className="col-sm-1">
+                          <Button
+                            className="removebutton md:!mt-0 !mt-2"
+                            onClick={() =>
+                              removeField(setAvailability, availability, index)
+                            }
+                          >
+                            Remove
+                          </Button>
+                        </div>
+                      ) : (
+                        <></>
+                      )}
+                      {availability.length - 1 === index && (
+                        <div as={Col} className="col-sm-1">
+                          <Button
+                            className="addbutton md:!mt-0 !mt-2"
+                            onClick={() =>
+                              addField(setAvailability, availability, "")
+                            }
+                          >
+                            ADD
+                          </Button>
+                        </div>
+                      )}
+                    </Row>
+                  );
+                })}
+              </Row>
+            </>
+          )}
 
           <div>
             <center>
@@ -866,14 +725,11 @@ const ContributionForm = () => {
             <div id="output">
               <p ref={ref} id="outputResult">
                 {formFields.map((item, index) => {
+                  const formatted = formatCreatorForCitation(item[0], item[1]);
+                  if (!formatted) return null;
                   return (
                     <span key={index}>
-                      <span className="text-uppercase">
-                        {item[1]}
-                        {item[1] === "" || item[1] === undefined ? "" : ", "}
-                      </span>
-                      {item[0]}
-                      {item[0] === "" || item[0] === undefined ? "" : ", "}
+                      {formatted}
                     </span>
                   );
                 })}
@@ -944,9 +800,16 @@ const ContributionForm = () => {
                     ]{". "}
                   </>
                 )}
-                {contributionCitation.subsidiaryTitles === "" ? "" : (<>
-                  <span className="title">{contributionCitation.subsidiaryTitles}</span>{". "}
-                </>)}
+                {contributionCitation.subsidiaryTitles === "" ? (
+                  ""
+                ) : (
+                  <>
+                    <span className="title">
+                      {contributionCitation.subsidiaryTitles}
+                    </span>
+                    {". "}
+                  </>
+                )}
                 {edition.length <= 1 &&
                 (edition[0] === "" || edition[0] === undefined) ? (
                   ""
@@ -963,9 +826,14 @@ const ContributionForm = () => {
                     {". "}
                   </>
                 )}
-                {contributionCitation.subsidiaryCreatorOfTheHostItem === "" ? "" : (<>
-                  {contributionCitation.subsidiaryCreatorOfTheHostItem}{". "}
-                </>)}
+                {contributionCitation.subsidiaryCreatorOfTheHostItem === "" ? (
+                  ""
+                ) : (
+                  <>
+                    {contributionCitation.subsidiaryCreatorOfTheHostItem}
+                    {". "}
+                  </>
+                )}
                 {contributionCitation.place === "" ? (
                   ""
                 ) : (
@@ -1016,14 +884,17 @@ const ContributionForm = () => {
                   ""
                 ) : (
                   <>
-                    {"pp. "}{contributionCitation.rangeOfPageNumbersOfTheContribution}
-                     {". "}
+                    {"pp. "}
+                    {contributionCitation.rangeOfPageNumbersOfTheContribution}
+                    {". "}
                   </>
                 )}
                 {contributionCitation.dateOfCitation === "" ? (
                   ""
                 ) : (
-                  <>viewed [{contributionCitation.dateOfCitation}]{". "} </>
+                  <>
+                    viewed [{contributionCitation.dateOfCitation}]{". "}{" "}
+                  </>
                 )}
                 {contributionCitation.seriesTitleAndNumber === "" ? (
                   ""
@@ -1066,72 +937,81 @@ const ContributionForm = () => {
                     })}
                     ]{". "}
                   </>
-                )} {contributionCitation.location === "" ? (
+                )}{" "}
+                {contributionCitation.location === "" ? (
                   ""
                 ) : (
                   <>At: [{contributionCitation.location}].</>
                 )}
               </p>
               <Copy refs={ref} />
-            
-            <div className="md:flex  gap-10 mx-10">
 
-              <span className="text-gray-400 w-24">Narrative</span>
-              <p onClick={(e) =>{copytext(e)}} className="text-blue-500 cursor-pointer">
-                {formFields.map((item, index) => {
-                  return (
-                    <span key={index}>
-                      {item[0].replace(/^./, char => char.toUpperCase())}
-                      {item[0] === "" || item[0] === undefined ? "" : " "}
-                      {item[1].replace(/^./, char => char.toUpperCase())}
-                      {item[1] === "" || item[1] === undefined ? "" : ""}
-                    </span>
-                  );
-                })}
-                {" "}
-                {contributionCitation.year === "" ? (
-                  ""
-                ) : (
-                  <>
-                    {"("}
-                    {contributionCitation.year}
-                    {")"}  
-                  </>
-                )}
-                {contributionCitation.rangeOfPageNumbers === "" ? "" : ", "}
-                {contributionCitation.rangeOfPageNumbersOfTheContribution}
-                
-              </p>
-            </div>
               <div className="md:flex  gap-10 mx-10">
-
-              <span className="text-gray-400 w-24">Parenthetical</span>
-              <p onClick={(e) =>{copytext(e)}} className="text-blue-500 cursor-pointer">
-                {"("}
-                {formFields.map((item, index) => {
-                  return (
-                    <span key={index}>
-                      {item[0].replace(/^./, char => char.toUpperCase())}
-                      {item[0] === "" || item[0] === undefined ? "" : " "}
-                      {item[1].replace(/^./, char => char.toUpperCase())}
-                      {item[1] === "" || item[1] === undefined ? "" : ""}
-                      {index < formFields.length - 1 ? " & " : ""}
-                    </span>
-                  );
-                })}
-                {contributionCitation.year === "" ? (
+                <span className="text-gray-400 w-24">Narrative</span>
+                <p
+                  onClick={(e) => {
+                    copytext(e);
+                  }}
+                  className="text-blue-500 cursor-pointer"
+                >
+                  {formFields.map((item, index) => {
+                    const formatted = formatCreatorInline(item[0], item[1]);
+                    if (!formatted) return null;
+                    return (
+                      <span key={index}>
+                        {formatted}
+                        {index < formFields.length - 1 ? ", " : ""}
+                      </span>
+                    );
+                  })}{" "}
+                  {contributionCitation.year === "" ? (
+                    ""
+                  ) : (
+                    <>
+                      {"("}
+                      {contributionCitation.year}
+                      {")"}
+                    </>
+                  )}
+                  {contributionCitation.rangeOfPageNumbers === "" ? "" : ", "}
+                  {contributionCitation.rangeOfPageNumbersOfTheContribution}
+                </p>
+              </div>
+              <div className="md:flex  gap-10 mx-10">
+                <span className="text-gray-400 w-24">Parenthetical</span>
+                <p
+                  onClick={(e) => {
+                    copytext(e);
+                  }}
+                  className="text-blue-500 cursor-pointer"
+                >
+                  {"("}
+                  {formFields.map((item, index) => {
+                    const formatted = formatCreatorInline(item[0], item[1]);
+                    if (!formatted) return null;
+                    return (
+                      <span key={index}>
+                        {formatted}
+                        {index < formFields.length - 1 ? " & " : ""}
+                      </span>
+                    );
+                  })}
+                  {contributionCitation.year === "" ? (
+                    ""
+                  ) : (
+                    <>
+                      {", "}
+                      {contributionCitation.year}
+                    </>
+                  )}
+                  {contributionCitation.rangeOfPageNumbersOfTheContribution ===
                   ""
-                ) : (
-                  <>
-                    {", "}
-                    {contributionCitation.year}
-                  </>
-                )}
-                {contributionCitation.rangeOfPageNumbersOfTheContribution === "" ? "" : ", "}
-                {contributionCitation.rangeOfPageNumbersOfTheContribution}
-                {")"}
-              </p>
-            </div>
+                    ? ""
+                    : ", "}
+                  {contributionCitation.rangeOfPageNumbersOfTheContribution}
+                  {")"}
+                </p>
+              </div>
             </div>
             {/* <button
               className="btn btn-primary my-2"

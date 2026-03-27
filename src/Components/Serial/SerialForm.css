@@ -1,12 +1,13 @@
-.serial{
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    /* border: 1px solid red; */
-    margin-top: clamp(2rem, 8vw, 3.125rem);
+.serial {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 940px;
+  /* border: 1px solid red; */
+  margin-top: clamp(2rem, 8vw, 3.125rem);
 }
 
-.title{
-    font-style: italic;
+.title {
+  font-style: italic;
 }

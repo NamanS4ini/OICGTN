@@ -27,6 +27,7 @@ const PatentsForm = () => {
     relationships: "",
   });
   const ref = useRef(null);
+  const [showMoreOptions, setShowMoreOptions] = useState(false);
 
   const [result, setResult] = useState(false);
   const onChanging = (e) => {
@@ -103,6 +104,25 @@ const PatentsForm = () => {
   const copytext = (e) => {
     navigator.clipboard.writeText(e.target.innerText);
     toast.success("Copied to Clipboard");
+  };
+
+  const formatCreatorForCitation = (firstName, lastName) => {
+    const safeFirst = (firstName || "").trim();
+    const safeLast = (lastName || "").trim();
+    const firstInitial = safeFirst ? `${safeFirst.charAt(0).toUpperCase()}.` : "";
+    const upperLast = safeLast ? safeLast.toUpperCase() : "";
+    if (!upperLast && !firstInitial) return "";
+    if (!upperLast) return `${firstInitial}, `;
+    if (!firstInitial) return `${upperLast}, `;
+    return `${upperLast}, ${firstInitial}, `;
+  };
+
+  const formatCreatorInline = (firstName, lastName) => {
+    const safeFirst = (firstName || "").trim();
+    const safeLast = (lastName || "").trim();
+    const firstInitial = safeFirst ? `${safeFirst.charAt(0).toUpperCase()}.` : "";
+    const upperLast = safeLast ? safeLast.toUpperCase() : "";
+    return [firstInitial, upperLast].filter(Boolean).join(" ");
   };
 
   const addField = (UseStateName, stateName, obj) => {
@@ -195,27 +215,6 @@ const PatentsForm = () => {
             </Form.Group>
           </Row>
           <Row className="mb-3">
-            <Form.Label>
-              Standard Identifiers of creaters' public identities
-            </Form.Label>
-            <Form.Group as={Col} controlId="formGridState">
-              <Form.Select defaultValue="Choose...">
-                <option>Choose...</option>
-                <option>Orcid Id</option>
-              </Form.Select>
-            </Form.Group>
-            <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={patentsCitation.standardIdentifiersOfCreator}
-                name="standardIdentifiersOfCreator"
-                type="text"
-                placeholder="Enter Standard Identifiers Of Creator"
-              />
-            </Form.Group>
-          </Row>
-
-          <Row className="mb-3">
             <Form.Group as={Col} controlId="formGridEmail">
               <Form.Label>Title of the information resource</Form.Label>
               <Form.Control
@@ -226,29 +225,9 @@ const PatentsForm = () => {
                 placeholder="Enter Title"
               />
             </Form.Group>
-            <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label>Series Title</Form.Label>
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={patentsCitation.seriesTitle}
-                name="seriesTitle"
-                type="text"
-                placeholder="Enter Series Title"
-              />
-            </Form.Group>
           </Row>
 
           <Row className="mb-3">
-            <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label>Subsidiary creator</Form.Label>
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={patentsCitation.subsidiaryCreator}
-                name="subsidiaryCreator"
-                type="text"
-                placeholder="Enter Subsidiary creator"
-              />
-            </Form.Group>
             <Form.Group as={Col} controlId="formGridEmail">
               <Form.Label>Date Of Application</Form.Label>
               <Form.Control
@@ -283,75 +262,71 @@ const PatentsForm = () => {
               />
             </Form.Group>
           </Row>
+          <Button
+            variant="link"
+            className="ps-0 text-decoration-none"
+            onClick={() => setShowMoreOptions((prev) => !prev)}
+          >
+            {showMoreOptions ? "Hide More Options" : "More Options"}
+          </Button>
 
-          <Row className="mb-3">
-            <Form.Label>Persistent Identifiers</Form.Label>
-            <Form.Group as={Col} controlId="formGridState">
-              <Form.Select defaultValue="Choose...">
-                <option>Choose...</option>
-                <option>URL</option>
-                <option>URI</option>
-                <option>DOI</option>
-              </Form.Select>
-            </Form.Group>
-            <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={patentsCitation.persistentIdentifiers}
-                name="persistentIdentifiers"
-                type="text"
-                placeholder="Enter Item Persistent Identifiers"
-              />
-            </Form.Group>
-          </Row>
-          <Row className="mb-3">
-            <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label>Item Attributes</Form.Label>
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={patentsCitation.itemAttributes}
-                name="itemAttributes"
-                type="text"
-                placeholder="Enter Item Attributes"
-              />
-            </Form.Group>
-          </Row>
+          {showMoreOptions && (
+            <>
+              <Row className="mb-3">
+                <Form.Label>
+                  Standard Identifiers of creaters' public identities
+                </Form.Label>
+                <Form.Group as={Col} controlId="formGridState">
+                  <Form.Select defaultValue="Choose...">
+                    <option>Choose...</option>
+                    <option>Orcid Id</option>
+                  </Form.Select>
+                </Form.Group>
+                <Form.Group as={Col} controlId="formGridEmail">
+                  <Form.Control
+                    onChange={(e) => onChanging(e)}
+                    value={patentsCitation.standardIdentifiersOfCreator}
+                    name="standardIdentifiersOfCreator"
+                    type="text"
+                    placeholder="Enter Standard Identifiers Of Creator"
+                  />
+                </Form.Group>
+              </Row>
 
-          <Row className="mb-3">
-            <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label>Date of Citation</Form.Label>
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={patentsCitation.dateOfCitation}
-                name="dateOfCitation"
-                type="text"
-                placeholder="Enter Date"
-              />
-            </Form.Group>
-            <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label>Location</Form.Label>
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={patentsCitation.location}
-                name="location"
-                type="text"
-                placeholder="Enter Location"
-              />
-            </Form.Group>
-          </Row>
-
-          <Row className="mb-3">
-            <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label>Relationships</Form.Label>
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={patentsCitation.relationships}
-                name="relationships"
-                type="text"
-                placeholder="Enter Relationships"
-              />
-            </Form.Group>
-          </Row>
+              <Row className="mb-3">
+                <Form.Label>Persistent Identifiers</Form.Label>
+                <Form.Group as={Col} controlId="formGridState">
+                  <Form.Select defaultValue="Choose...">
+                    <option>Choose...</option>
+                    <option>URL</option>
+                    <option>URI</option>
+                    <option>DOI</option>
+                  </Form.Select>
+                </Form.Group>
+                <Form.Group as={Col} controlId="formGridEmail">
+                  <Form.Control
+                    onChange={(e) => onChanging(e)}
+                    value={patentsCitation.persistentIdentifiers}
+                    name="persistentIdentifiers"
+                    type="text"
+                    placeholder="Enter Item Persistent Identifiers"
+                  />
+                </Form.Group>
+              </Row>
+              <Row className="mb-3">
+                <Form.Group as={Col} controlId="formGridEmail">
+                  <Form.Label>Date of Citation</Form.Label>
+                  <Form.Control
+                    onChange={(e) => onChanging(e)}
+                    value={patentsCitation.dateOfCitation}
+                    name="dateOfCitation"
+                    type="text"
+                    placeholder="Enter Date"
+                  />
+                </Form.Group>
+              </Row>
+            </>
+          )}
 
           <div>
             <center>
@@ -378,14 +353,11 @@ const PatentsForm = () => {
             <div id="output">
               <p ref={ref} id="outputResult">
                 {formFields.map((item, index) => {
+                  const formatted = formatCreatorForCitation(item[0], item[1]);
+                  if (!formatted) return null;
                   return (
                     <span key={index}>
-                      <span className="text-uppercase">
-                        {item[1]}
-                        {item[1] === "" || item[1] === undefined ? "" : ", "}
-                      </span>
-                      {item[0]}
-                      {item[0] === "" || item[0] === undefined ? "" : ", "}
+                      {formatted}
                     </span>
                   );
                 })}
@@ -502,12 +474,12 @@ const PatentsForm = () => {
                   className="text-blue-500 cursor-pointer"
                 >
                   {formFields.map((item, index) => {
+                    const formatted = formatCreatorInline(item[0], item[1]);
+                    if (!formatted) return null;
                     return (
                       <span key={index}>
-                        {item[0].replace(/^./, (char) => char.toUpperCase())}
-                        {item[0] === "" || item[0] === undefined ? "" : " "}
-                        {item[1].replace(/^./, (char) => char.toUpperCase())}
-                        {item[1] === "" || item[1] === undefined ? "" : ""}
+                        {formatted}
+                        {index < formFields.length - 1 ? ", " : ""}
                       </span>
                     );
                   })}
@@ -523,12 +495,11 @@ const PatentsForm = () => {
                 >
                   {"("}
                   {formFields.map((item, index) => {
+                    const formatted = formatCreatorInline(item[0], item[1]);
+                    if (!formatted) return null;
                     return (
                       <span key={index}>
-                        {item[0].replace(/^./, (char) => char.toUpperCase())}
-                        {item[0] === "" || item[0] === undefined ? "" : " "}
-                        {item[1].replace(/^./, (char) => char.toUpperCase())}
-                        {item[1] === "" || item[1] === undefined ? "" : ""}
+                        {formatted}
                         {index < formFields.length - 1 ? " & " : ""}
                       </span>
                     );

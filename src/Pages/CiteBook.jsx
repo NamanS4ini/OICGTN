@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
-import BooksForm from '../Components/BookMonograph/BooksForm';
-import ContributionForm from '../Components/ContributionWithinBook/ContributionForm';
+import React, { useState } from "react";
+import BooksForm from "../Components/BookMonograph/BooksForm";
+import ContributionForm from "../Components/ContributionWithinBook/ContributionForm";
 
 const CiteBook = () => {
-  const [selectedForm, setSelectedForm] = useState('book');
+  const [selectedForm, setSelectedForm] = useState("book");
 
   const renderForm = () => {
     switch (selectedForm) {
-      case 'book':
+      case "book":
         return <BooksForm />;
-      case 'ebook':
+      case "ebook":
         return <BooksForm type="e" />;
-      case 'contribution':
+      case "contribution":
         return <ContributionForm />;
       default:
         return null;
@@ -20,46 +20,42 @@ const CiteBook = () => {
 
   return (
     <div className="w-full min-h-screen bg-gray-50 p-4">
-      {/* Top left navigation */}
-      <div className="flex items-center space-x-4 mb-8">
+      <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-center gap-3 mb-8">
         <button
-          onClick={() => setSelectedForm('book')}
+          onClick={() => setSelectedForm("book")}
           className={`px-4 py-2 font-semibold rounded-lg transition duration-300 ${
-            selectedForm === 'book'
-              ? 'bg-blue-600 text-white'
-              : 'bg-blue-500 text-white hover:bg-blue-600'
+            selectedForm === "book"
+              ? "bg-blue-600 text-white"
+              : "bg-blue-500 text-white hover:bg-blue-600"
           }`}
         >
           Book
         </button>
-        <span className="text-gray-400 text-xl">|</span>
+        <span className="text-gray-400 text-xl hidden sm:inline">|</span>
         <button
-          onClick={() => setSelectedForm('ebook')}
+          onClick={() => setSelectedForm("ebook")}
           className={`px-4 py-2 font-semibold rounded-lg transition duration-300 ${
-            selectedForm === 'ebook'
-              ? 'bg-blue-600 text-white'
-              : 'bg-blue-500 text-white hover:bg-blue-600'
+            selectedForm === "ebook"
+              ? "bg-blue-600 text-white"
+              : "bg-blue-500 text-white hover:bg-blue-600"
           }`}
         >
           e-Book
         </button>
-        <span className="text-gray-400 text-xl">|</span>
+        <span className="text-gray-400 text-xl hidden sm:inline">|</span>
         <button
-          onClick={() => setSelectedForm('contribution')}
+          onClick={() => setSelectedForm("contribution")}
           className={`px-4 py-2 font-semibold rounded-lg transition duration-300 ${
-            selectedForm === 'contribution'
-              ? 'bg-blue-600 text-white'
-              : 'bg-blue-500 text-white hover:bg-blue-600'
+            selectedForm === "contribution"
+              ? "bg-blue-600 text-white"
+              : "bg-blue-500 text-white hover:bg-blue-600"
           }`}
         >
           Book Contribution
         </button>
       </div>
 
-      {/* Form display area */}
-      <div className="w-full">
-        {renderForm()}
-      </div>
+      <div className="mx-auto w-full max-w-6xl">{renderForm()}</div>
     </div>
   );
 };

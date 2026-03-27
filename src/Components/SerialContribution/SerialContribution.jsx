@@ -30,12 +30,32 @@ const SerialContributionForm = () => {
     availabilityAndAccess: "",
     location: "",
   });
-    const copytext = (e) => {
-      navigator.clipboard.writeText(e.target.innerText);
-      toast.success("Copied to Clipboard");
-    }
+  const copytext = (e) => {
+    navigator.clipboard.writeText(e.target.innerText);
+    toast.success("Copied to Clipboard");
+  };
+
+  const formatCreatorForCitation = (firstName, lastName) => {
+    const safeFirst = (firstName || "").trim();
+    const safeLast = (lastName || "").trim();
+    const firstInitial = safeFirst ? `${safeFirst.charAt(0).toUpperCase()}.` : "";
+    const upperLast = safeLast ? safeLast.toUpperCase() : "";
+    if (!upperLast && !firstInitial) return "";
+    if (!upperLast) return `${firstInitial}, `;
+    if (!firstInitial) return `${upperLast}, `;
+    return `${upperLast}, ${firstInitial}, `;
+  };
+
+  const formatCreatorInline = (firstName, lastName) => {
+    const safeFirst = (firstName || "").trim();
+    const safeLast = (lastName || "").trim();
+    const firstInitial = safeFirst ? `${safeFirst.charAt(0).toUpperCase()}.` : "";
+    const upperLast = safeLast ? safeLast.toUpperCase() : "";
+    return [firstInitial, upperLast].filter(Boolean).join(" ");
+  };
   const ref = useRef();
   const [result, setResult] = useState(false);
+  const [showMoreOptions, setShowMoreOptions] = useState(false);
   const onChanging = (e) => {
     const name = e.target.name;
     setSerialContributionCitation({
@@ -72,6 +92,12 @@ const SerialContributionForm = () => {
     setFormFields(data);
   };
 
+  const handleCreatorTypeChange = (event, index) => {
+    let data = [...creatorTypes];
+    data[index] = event.target.value;
+    setCreatorTypes(data);
+  };
+
   const handleInputChange = (event, UseStateName, stateName, index) => {
     let data = [...stateName];
     data[index] = event.target.value;
@@ -81,34 +107,42 @@ const SerialContributionForm = () => {
   // multi field inputs (first name ,last name, type, medium designation, edition, publisher, standard identifier, availability and access)
 
   const [formFields, setFormFields] = useState([["", ""]]);
+  const [creatorTypes, setCreatorTypes] = useState([""]);
   const [medium, setMedium] = useState([""]);
   const [edition, setEdition] = useState([""]);
-  const [numeration, setNumeration] = useState([{type: "", value: ""}]);
+  const [numeration, setNumeration] = useState([{ type: "", value: "" }]);
   const [publisher, setPublisher] = useState([""]);
   const [standardIdentifier, setStandarIdentifier] = useState([""]);
   const [availability, setAvailability] = useState([""]);
   const { metadata, chosenForm } = useContext(MetadataContext);
   useEffect(() => {
     if (!metadata) return;
-    if (chosenForm && chosenForm !== "serial-contribution" && chosenForm !== "") return;
+    if (chosenForm && chosenForm !== "serial-contribution" && chosenForm !== "")
+      return;
     setSerialContributionCitation((prev) => ({
       ...prev,
       titleOfTheContribution: metadata.title || prev.titleOfTheContribution,
       year: metadata.year || prev.year,
-      titleOfTheHostSerial: metadata.websiteTitle || metadata.title || prev.titleOfTheHostSerial,
+      titleOfTheHostSerial:
+        metadata.websiteTitle || metadata.title || prev.titleOfTheHostSerial,
       publisher: metadata.publisher || prev.publisher,
       place: metadata.place || prev.place,
       dateOfPublication: metadata.dateOfPublication || prev.dateOfPublication,
       numeration: metadata.volume || prev.numeration,
       rangeOfPageNumbers: metadata.pages || prev.rangeOfPageNumbers,
-      availabilityAndAccess: metadata.url || metadata.doi || prev.availabilityAndAccess,
+      availabilityAndAccess:
+        metadata.url || metadata.doi || prev.availabilityAndAccess,
     }));
     if (metadata.volume) {
-      setNumeration([{type: "Volume", value: metadata.volume}]);
+      setNumeration([{ type: "Volume", value: metadata.volume }]);
     }
     if (metadata.authors && metadata.authors.length > 0) {
-      const newFields = metadata.authors.map((a) => [a.firstName || "", a.lastName || ""]);
+      const newFields = metadata.authors.map((a) => [
+        a.firstName || "",
+        a.lastName || "",
+      ]);
       setFormFields(newFields.length ? newFields : [["", ""]]);
+      setCreatorTypes(newFields.map(() => ""));
     }
   }, [metadata, chosenForm]);
 
@@ -127,9 +161,23 @@ const SerialContributionForm = () => {
   const addField = (UseStateName, stateName, obj) => {
     UseStateName([...stateName, obj]);
   };
+  const addCreatorField = () => {
+    const previousType = creatorTypes[creatorTypes.length - 1] || "";
+    setFormFields([...formFields, ["", ""]]);
+    setCreatorTypes([...creatorTypes, previousType]);
+  };
   const removeField = (UseStateName, stateName, index) => {
     stateName.splice(index, 1);
     UseStateName([...stateName]);
+  };
+
+  const removeCreatorField = (index) => {
+    const nextFields = [...formFields];
+    const nextTypes = [...creatorTypes];
+    nextFields.splice(index, 1);
+    nextTypes.splice(index, 1);
+    setFormFields(nextFields);
+    setCreatorTypes(nextTypes);
   };
 
   return (
@@ -146,14 +194,19 @@ const SerialContributionForm = () => {
                 <Row key={index} className="mt-2">
                   <Form.Group as={Col} controlId="formLname">
                     {/* <Form.Label>Last Name</Form.Label> */}
-                    <Form.Select>
+                    <Form.Select
+                      value={creatorTypes[index] || ""}
+                      onChange={(event) =>
+                        handleCreatorTypeChange(event, index)
+                      }
+                    >
                       <option value>Choose...</option>
                       <option>Author</option>
-                                                                               
+
                       <option>Editor</option>
-                                                                                                                                    
+
                       <option>Reviewer</option>
-                                                                                
+
                       <option>Translator</option>
                     </Form.Select>
                   </Form.Group>
@@ -182,9 +235,7 @@ const SerialContributionForm = () => {
                     <div as={Col} className="col-sm-1">
                       <Button
                         className="removebutton md:!mt-0 !mt-2"
-                        onClick={() =>
-                          removeField(setFormFields, formFields, index)
-                        }
+                        onClick={() => removeCreatorField(index)}
                       >
                         Remove
                       </Button>
@@ -192,21 +243,16 @@ const SerialContributionForm = () => {
                   ) : (
                     <></>
                   )}
-                  {formFields.length - 1 === index && (
-                    <div as={Col} className="col-sm-1">
-                      <Button
-                        className="addbutton md:!mt-0 !mt-2"
-                        onClick={() =>
-                          addField(setFormFields, formFields, ["", ""])
-                        }
-                      >
-                        ADD
-                      </Button>
-                    </div>
-                  )}
                 </Row>
               );
             })}
+            <Button
+              variant="link"
+              className="ps-0 text-decoration-none"
+              onClick={addCreatorField}
+            >
+              Add another Creator
+            </Button>
           </Row>
 
           <Row className="mb-3">
@@ -233,22 +279,38 @@ const SerialContributionForm = () => {
             </Form.Group>
           </Row>
 
+          {false && (
+            <Row className="mb-3">
+              <Form.Group as={Col} controlId="formAdditional">
+                <Form.Label>Additional General Information</Form.Label>
+                <Form.Select
+                  onChange={(e) => onChanging(e)}
+                  value={
+                    serialContributionCitation.additionalGeneralInformation
+                  }
+                  name="additionalGeneralInformation"
+                >
+                  <option value>Choose...</option>
+                  <option>Classification</option>
+                  <option>Price and availability</option>
+                  <option>Languages</option>
+                  <option>Other information</option>
+                </Form.Select>
+              </Form.Group>
+              <Form.Group as={Col} controlId="formHost">
+                <Form.Label>Title of the host Journal</Form.Label>
+                <Form.Control
+                  onChange={(e) => onChanging(e)}
+                  value={serialContributionCitation.titleOfTheHostSerial}
+                  name="titleOfTheHostSerial"
+                  type="text"
+                  placeholder="Enter Title "
+                />
+              </Form.Group>
+            </Row>
+          )}
+
           <Row className="mb-3">
-            <Form.Group as={Col} controlId="formAdditional">
-              <Form.Label>Additional General Information</Form.Label>
-              <Form.Select
-                onChange={(e) => onChanging(e)}
-                value={serialContributionCitation.additionalGeneralInformation}
-                name="additionalGeneralInformation"
-              
-              >
-                <option value>Choose...</option>
-                <option>Classification</option>
-                <option>Price and availability</option>
-                <option>Languages</option>
-                <option>Other information</option>
-              </Form.Select>
-            </Form.Group>
             <Form.Group as={Col} controlId="formHost">
               <Form.Label>Title of the host Journal</Form.Label>
               <Form.Control
@@ -261,165 +323,173 @@ const SerialContributionForm = () => {
             </Form.Group>
           </Row>
 
-          <Row className="mb-3">
-            <Form.Label>Medium Degination</Form.Label>
-            {medium.map((item, index) => {
-              return (
-                <Row key={index} className="mt-2">
-                  <Form.Group as={Col} controlId="formMedia">
-                    <Form.Select>
-                      <option value>Choose...</option>
-                      <option>Online</option>
-                      <option>Database Online</option>
-                      <option>Journal Online</option>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
-                    </Form.Select>
-                  </Form.Group>
-                  <Form.Group as={Col} controlId="formSubsidiary">
-                    <Form.Control
-                      onChange={(event) =>
-                        handleInputChange(event, setMedium, medium, index)
-                      }
-                      value={item}
-                      name="mediumDesignation"
-                      type="text"
-                      placeholder="Enter Medium Designation "
-                    />
-                  </Form.Group>
-                  {medium.length !== 1 ? (
-                    <div as={Col} className="col-sm-1">
-                      <Button
-                        className="removebutton md:!mt-0 !mt-2"
-                        onClick={() => removeField(setMedium, medium, index)}
-                      >
-                        Remove
-                      </Button>
-                    </div>
-                  ) : (
-                    <></>
-                  )}
+          {false && (
+            <Row className="mb-3">
+              <Form.Label>Medium Degination</Form.Label>
+              {medium.map((item, index) => {
+                return (
+                  <Row key={index} className="mt-2">
+                    <Form.Group as={Col} controlId="formMedia">
+                      <Form.Select>
+                        <option value>Choose...</option>
+                        <option>Online</option>
+                        <option>Database Online</option>
+                        <option>Journal Online</option>
+                      </Form.Select>
+                    </Form.Group>
+                    <Form.Group as={Col} controlId="formSubsidiary">
+                      <Form.Control
+                        onChange={(event) =>
+                          handleInputChange(event, setMedium, medium, index)
+                        }
+                        value={item}
+                        name="mediumDesignation"
+                        type="text"
+                        placeholder="Enter Medium Designation "
+                      />
+                    </Form.Group>
+                    {medium.length !== 1 ? (
+                      <div as={Col} className="col-sm-1">
+                        <Button
+                          className="removebutton md:!mt-0 !mt-2"
+                          onClick={() => removeField(setMedium, medium, index)}
+                        >
+                          Remove
+                        </Button>
+                      </div>
+                    ) : (
+                      <></>
+                    )}
 
-                  {medium.length - 1 === index && (
-                    <div as={Col} className="col-sm-1">
-                      <Button
-                        className="addbutton md:!mt-0 !mt-2"
-                        onClick={() => addField(setMedium, medium, "")}
-                      >
-                        ADD
-                      </Button>
-                    </div>
-                  )}
-                </Row>
-              );
-            })}
-          </Row>
-          <Row className="mb-3">
-            <Form.Group as={Col} controlId="formSubsidiary">
-              <Form.Label>Subsidiary Titles</Form.Label>
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={serialContributionCitation.subsidiaryTitles}
-                name="subsidiaryTitles"
-                type="text"
-                placeholder="Enter Title "
-              />
-            </Form.Group>
-          </Row>
+                    {medium.length - 1 === index && (
+                      <div as={Col} className="col-sm-1">
+                        <Button
+                          className="addbutton md:!mt-0 !mt-2"
+                          onClick={() => addField(setMedium, medium, "")}
+                        >
+                          ADD
+                        </Button>
+                      </div>
+                    )}
+                  </Row>
+                );
+              })}
+            </Row>
+          )}
+          {false && (
+            <Row className="mb-3">
+              <Form.Group as={Col} controlId="formSubsidiary">
+                <Form.Label>Subsidiary Titles</Form.Label>
+                <Form.Control
+                  onChange={(e) => onChanging(e)}
+                  value={serialContributionCitation.subsidiaryTitles}
+                  name="subsidiaryTitles"
+                  type="text"
+                  placeholder="Enter Title "
+                />
+              </Form.Group>
+            </Row>
+          )}
 
-          <Row className="mb-3">
-            <Form.Label>Edition</Form.Label>
-            {edition.map((item, index) => {
-              return (
-                <Row key={index} className="mt-2">
-                  <Form.Group as={Col} controlId="formEdition">
-                    <Form.Select>
-                      <option value>Choose...</option>
-                      <option>Edition</option>
-                      <option>Version</option>
-                      <option>Revised edition</option>
-                    </Form.Select>
-                  </Form.Group>
-                  <Form.Group as={Col} controlId="formPlace">
-                    <Form.Control
-                      onChange={(event) =>
-                        handleInputChange(event, setEdition, edition, index)
-                      }
-                      value={item}
-                      name="edition"
-                      type="text"
-                      placeholder="Enter Edition "
-                    />
-                  </Form.Group>
-                  {edition.length !== 1 ? (
-                    <div as={Col} className="col-sm-1">
-                      <Button
-                        className="removebutton md:!mt-0 !mt-2"
-                        onClick={() => removeField(setEdition, edition, index)}
-                      >
-                        Remove
-                      </Button>
-                    </div>
-                  ) : (
-                    <></>
-                  )}
-                  {edition.length - 1 === index && (
-                    <div as={Col} className="col-sm-1">
-                      <Button
-                        className="addbutton md:!mt-0 !mt-2"
-                        onClick={() => addField(setEdition, edition, "")}
-                      >
-                        ADD
-                      </Button>
-                    </div>
-                  )}
-                </Row>
-              );
-            })}
-          </Row>
-          <Row className="mb-3">
-            <Form.Group as={Col} controlId="formPlace">
-              <Form.Label>Place</Form.Label>
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={serialContributionCitation.place}
-                name="place"
-                type="text"
-                placeholder="Enter Place"
-              />
-            </Form.Group>
-            <Form.Group as={Col} controlId="formPublication">
-              <Form.Label>Date of Publication</Form.Label>
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={serialContributionCitation.dateOfPublication}
-                name="dateOfPublication"
-                type="text"
-                placeholder="Enter Date"
-              />
-            </Form.Group>
-          </Row>
-          <Row className="mb-3">
-            <Form.Label>Publisher</Form.Label>
-            <Form.Group as={Col} controlId="formGridState">
-              <Form.Select
-              
-              >
-                <option>Choose...</option>
-                <option>Publisher</option>
-                                                                                                
-              </Form.Select>
-            </Form.Group>
+          {false && (
+            <Row className="mb-3">
+              <Form.Label>Edition</Form.Label>
+              {edition.map((item, index) => {
+                return (
+                  <Row key={index} className="mt-2">
+                    <Form.Group as={Col} controlId="formEdition">
+                      <Form.Select>
+                        <option value>Choose...</option>
+                        <option>Edition</option>
+                        <option>Version</option>
+                        <option>Revised edition</option>
+                      </Form.Select>
+                    </Form.Group>
+                    <Form.Group as={Col} controlId="formPlace">
+                      <Form.Control
+                        onChange={(event) =>
+                          handleInputChange(event, setEdition, edition, index)
+                        }
+                        value={item}
+                        name="edition"
+                        type="text"
+                        placeholder="Enter Edition "
+                      />
+                    </Form.Group>
+                    {edition.length !== 1 ? (
+                      <div as={Col} className="col-sm-1">
+                        <Button
+                          className="removebutton md:!mt-0 !mt-2"
+                          onClick={() =>
+                            removeField(setEdition, edition, index)
+                          }
+                        >
+                          Remove
+                        </Button>
+                      </div>
+                    ) : (
+                      <></>
+                    )}
+                    {edition.length - 1 === index && (
+                      <div as={Col} className="col-sm-1">
+                        <Button
+                          className="addbutton md:!mt-0 !mt-2"
+                          onClick={() => addField(setEdition, edition, "")}
+                        >
+                          ADD
+                        </Button>
+                      </div>
+                    )}
+                  </Row>
+                );
+              })}
+            </Row>
+          )}
+          {false && (
+            <Row className="mb-3">
+              <Form.Group as={Col} controlId="formPlace">
+                <Form.Label>Place</Form.Label>
+                <Form.Control
+                  onChange={(e) => onChanging(e)}
+                  value={serialContributionCitation.place}
+                  name="place"
+                  type="text"
+                  placeholder="Enter Place"
+                />
+              </Form.Group>
+              <Form.Group as={Col} controlId="formPublication">
+                <Form.Label>Date of Publication</Form.Label>
+                <Form.Control
+                  onChange={(e) => onChanging(e)}
+                  value={serialContributionCitation.dateOfPublication}
+                  name="dateOfPublication"
+                  type="text"
+                  placeholder="Enter Date"
+                />
+              </Form.Group>
+            </Row>
+          )}
+          {false && (
+            <Row className="mb-3">
+              <Form.Label>Publisher</Form.Label>
+              <Form.Group as={Col} controlId="formGridState">
+                <Form.Select>
+                  <option>Choose...</option>
+                  <option>Publisher</option>
+                </Form.Select>
+              </Form.Group>
 
-            <Form.Group as={Col} controlId="formRange">
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={serialContributionCitation.publisher}
-                name="publisher"
-                type="text"
-                placeholder="Enter Publisher "
-              />
-            </Form.Group>
-          </Row>
+              <Form.Group as={Col} controlId="formRange">
+                <Form.Control
+                  onChange={(e) => onChanging(e)}
+                  value={serialContributionCitation.publisher}
+                  name="publisher"
+                  type="text"
+                  placeholder="Enter Publisher "
+                />
+              </Form.Group>
+            </Row>
+          )}
           <Row className="mb-3">
             <Form.Label>Numeration</Form.Label>
             {numeration.map((item, index) => {
@@ -434,7 +504,6 @@ const SerialContributionForm = () => {
                       <option>Volume</option>
                       <option>Number</option>
                       <option>Issue</option>
-                                                                                                                                                          
                     </Form.Select>
                   </Form.Group>
                   <Form.Group as={Col} controlId="formRange">
@@ -464,7 +533,12 @@ const SerialContributionForm = () => {
                     <div as={Col} className="col-sm-1">
                       <Button
                         className="addbutton md:!mt-0 !mt-2"
-                        onClick={() => addField(setNumeration, numeration, {type: "", value: ""})}
+                        onClick={() =>
+                          addField(setNumeration, numeration, {
+                            type: "",
+                            value: "",
+                          })
+                        }
                       >
                         ADD
                       </Button>
@@ -485,83 +559,100 @@ const SerialContributionForm = () => {
                 placeholder="Enter Range "
               />
             </Form.Group>
-
-            <Form.Group as={Col} controlId="formCitation">
-              <Form.Label>Date of citation</Form.Label>
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={serialContributionCitation.dateOfCitation}
-                name="dateOfCitation"
-                type="text"
-                placeholder="Enter Date"
-              />
-            </Form.Group>
           </Row>
-          <Row className="mb-3">
-            <Form.Label>Standard Identifier</Form.Label>
-            {standardIdentifier.map((item, index) => {
-              return (
-                <Row key={index} className="mt-2">
-                  <Form.Group as={Col} controlId="formIdentifier">
-                    <Form.Select>
-                      <option value>Choose...</option>
-                      <option>ISSN</option>
-                      <option>eISSN</option>
-                                                            
-                      <option>DOI</option>
-                    </Form.Select>
-                  </Form.Group>
-                  <Form.Group as={Col} controlId="formRange">
-                    <Form.Control
-                      onChange={(event) =>
-                        handleInputChange(
-                          event,
-                          setStandarIdentifier,
-                          standardIdentifier,
-                          index
-                        )
-                      }
-                      value={item}
-                      name="standardIdentifier"
-                      type="text"
-                      placeholder="Enter Standard Identifier "
-                    />
-                  </Form.Group>
-                  {standardIdentifier.length !== 1 ? (
-                    <div as={Col} className="col-sm-1">
-                      <Button
-                        className="removebutton md:!mt-0 !mt-2"
-                        onClick={() =>
-                          removeField(
+          <Button
+            variant="link"
+            className="ps-0 text-decoration-none"
+            onClick={() => setShowMoreOptions((prev) => !prev)}
+          >
+            {showMoreOptions ? "Hide More Options" : "More Options"}
+          </Button>
+
+          {showMoreOptions && (
+            <Row className="mb-3">
+              <Form.Group as={Col} controlId="formCitation">
+                <Form.Label>Date of citation</Form.Label>
+                <Form.Control
+                  onChange={(e) => onChanging(e)}
+                  value={serialContributionCitation.dateOfCitation}
+                  name="dateOfCitation"
+                  type="text"
+                  placeholder="Enter Date"
+                />
+              </Form.Group>
+            </Row>
+          )}
+          {showMoreOptions && (
+            <Row className="mb-3">
+              <Form.Label>Standard Identifier</Form.Label>
+              {standardIdentifier.map((item, index) => {
+                return (
+                  <Row key={index} className="mt-2">
+                    <Form.Group as={Col} controlId="formIdentifier">
+                      <Form.Select>
+                        <option value>Choose...</option>
+                        <option>ISSN</option>
+                        <option>eISSN</option>
+
+                        <option>DOI</option>
+                      </Form.Select>
+                    </Form.Group>
+                    <Form.Group as={Col} controlId="formRange">
+                      <Form.Control
+                        onChange={(event) =>
+                          handleInputChange(
+                            event,
                             setStandarIdentifier,
                             standardIdentifier,
-                            index
+                            index,
                           )
                         }
-                      >
-                        Remove
-                      </Button>
-                    </div>
-                  ) : (
-                    <></>
-                  )}
+                        value={item}
+                        name="standardIdentifier"
+                        type="text"
+                        placeholder="Enter Standard Identifier "
+                      />
+                    </Form.Group>
+                    {standardIdentifier.length !== 1 ? (
+                      <div as={Col} className="col-sm-1">
+                        <Button
+                          className="removebutton md:!mt-0 !mt-2"
+                          onClick={() =>
+                            removeField(
+                              setStandarIdentifier,
+                              standardIdentifier,
+                              index,
+                            )
+                          }
+                        >
+                          Remove
+                        </Button>
+                      </div>
+                    ) : (
+                      <></>
+                    )}
 
-                  {standardIdentifier.length - 1 === index && (
-                    <div as={Col} className="col-sm-1">
-                      <Button
-                        className="addbutton md:!mt-0 !mt-2"
-                        onClick={() =>
-                          addField(setStandarIdentifier, standardIdentifier, "")
-                        }
-                      >
-                        ADD
-                      </Button>
-                    </div>
-                  )}
-                </Row>
-              );
-            })}
-          </Row>
+                    {standardIdentifier.length - 1 === index && (
+                      <div as={Col} className="col-sm-1">
+                        <Button
+                          className="addbutton md:!mt-0 !mt-2"
+                          onClick={() =>
+                            addField(
+                              setStandarIdentifier,
+                              standardIdentifier,
+                              "",
+                            )
+                          }
+                        >
+                          ADD
+                        </Button>
+                      </div>
+                    )}
+                  </Row>
+                );
+              })}
+            </Row>
+          )}
           <Row className="mb-3">
             <Form.Label>Availability and access</Form.Label>
             {availability.map((item, index) => {
@@ -572,13 +663,11 @@ const SerialContributionForm = () => {
                       onChange={(e) => onChanging(e)}
                       value={serialContributionCitation.availabilityAndAccess}
                       name="availabilityAndAccess"
-                    
                     >
                       <option value>Choose...</option>
                       <option>DOI</option>
                       <option>URI</option>
                       <option>URL</option>
-                                          
                     </Form.Select>
                   </Form.Group>
                   <Form.Group as={Col} controlId="formRange">
@@ -588,7 +677,7 @@ const SerialContributionForm = () => {
                           event,
                           setAvailability,
                           availability,
-                          index
+                          index,
                         )
                       }
                       value={item}
@@ -627,18 +716,20 @@ const SerialContributionForm = () => {
               );
             })}
           </Row>
-          <Row className="mb-3">
-            <Form.Group as={Col} controlId="formLocation">
-              <Form.Label>Location</Form.Label>
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={serialContributionCitation.location}
-                name="location"
-                type="text"
-                placeholder="Enter Location"
-              />
-            </Form.Group>
-          </Row>
+          {false && (
+            <Row className="mb-3">
+              <Form.Group as={Col} controlId="formLocation">
+                <Form.Label>Location</Form.Label>
+                <Form.Control
+                  onChange={(e) => onChanging(e)}
+                  value={serialContributionCitation.location}
+                  name="location"
+                  type="text"
+                  placeholder="Enter Location"
+                />
+              </Form.Group>
+            </Row>
+          )}
 
           <div>
             <center>
@@ -665,40 +756,50 @@ const SerialContributionForm = () => {
           <center>
             <div id="output">
               <p ref={ref} id="outputResult">
-                
-              {formFields.map((item, index) => {
+                {formFields.map((item, index) => {
+                  const formatted = formatCreatorForCitation(item[0], item[1]);
+                  if (!formatted) return null;
                   return (
                     <span key={index}>
-                      <span className="text-uppercase">
-                        {item[1]}
-                        {item[1] === "" || item[1] === undefined ? "" : ", "}
-                      </span>
-                      {item[0]}
-                      {item[0] === "" || item[0] === undefined ? "" : ", "}
+                      {formatted}
                     </span>
                   );
                 })}
-                {
-                  serialContributionCitation.year === "" ? "": (<>
-                [{serialContributionCitation.year}]{". "}
-                  </>)
-                }
-                {
-                serialContributionCitation.titleOfTheContribution === "" ? "" : (<>
-                {serialContributionCitation.titleOfTheContribution}{". "}
-                </>)
-                }
-                {
-                  serialContributionCitation.additionalGeneralInformation === "" ? "" : (<>
-                    {serialContributionCitation.additionalGeneralInformation}{". "}
-                  </>)
-                }
-                {
-                  serialContributionCitation.titleOfTheHostSerial === "" ? "" : (<>
+                {serialContributionCitation.year === "" ? (
+                  ""
+                ) : (
+                  <>
+                    [{serialContributionCitation.year}]{". "}
+                  </>
+                )}
+                {serialContributionCitation.titleOfTheContribution === "" ? (
+                  ""
+                ) : (
+                  <>
+                    {serialContributionCitation.titleOfTheContribution}
+                    {". "}
+                  </>
+                )}
+                {serialContributionCitation.additionalGeneralInformation ===
+                "" ? (
+                  ""
+                ) : (
+                  <>
+                    {serialContributionCitation.additionalGeneralInformation}
+                    {". "}
+                  </>
+                )}
+                {serialContributionCitation.titleOfTheHostSerial === "" ? (
+                  ""
+                ) : (
+                  <>
                     In:{" "}
-                    <span className="title">{serialContributionCitation.titleOfTheHostSerial}</span>{". "}
-                  </>)
-                }
+                    <span className="title">
+                      {serialContributionCitation.titleOfTheHostSerial}
+                    </span>
+                    {". "}
+                  </>
+                )}
                 {medium.length <= 1 &&
                 (medium[0] === "" || medium[0] === undefined) ? (
                   ""
@@ -716,11 +817,16 @@ const SerialContributionForm = () => {
                     ]{". "}
                   </>
                 )}
-                {
-                serialContributionCitation.subsidiaryTitles === "" ? "" : (<>
-                <span className="title">{serialContributionCitation.subsidiaryTitles}</span>{". "}
-                </>)
-                }
+                {serialContributionCitation.subsidiaryTitles === "" ? (
+                  ""
+                ) : (
+                  <>
+                    <span className="title">
+                      {serialContributionCitation.subsidiaryTitles}
+                    </span>
+                    {". "}
+                  </>
+                )}
                 {edition.length <= 1 &&
                 (edition[0] === "" || edition[0] === undefined) ? (
                   ""
@@ -737,29 +843,41 @@ const SerialContributionForm = () => {
                     {". "}
                   </>
                 )}
-                {
-                  serialContributionCitation.place === "" ? "" : (<>
-                    {serialContributionCitation.place}{": "}
-                  </>)
-                }
-                {
-                  serialContributionCitation.publisher === "" ? "" : (<>
-                    {serialContributionCitation.publisher}{", "}
-                  </>)
-                }
-                {
-                  serialContributionCitation.dateOfPublication === "" ? "" : (<>
-                    {serialContributionCitation.dateOfPublication}{". "}
-                  </>)
-                }
+                {serialContributionCitation.place === "" ? (
+                  ""
+                ) : (
+                  <>
+                    {serialContributionCitation.place}
+                    {": "}
+                  </>
+                )}
+                {serialContributionCitation.publisher === "" ? (
+                  ""
+                ) : (
+                  <>
+                    {serialContributionCitation.publisher}
+                    {", "}
+                  </>
+                )}
+                {serialContributionCitation.dateOfPublication === "" ? (
+                  ""
+                ) : (
+                  <>
+                    {serialContributionCitation.dateOfPublication}
+                    {". "}
+                  </>
+                )}
                 {(() => {
                   let volume = "";
                   let number = "";
                   let issue = "";
-                  numeration.forEach(item => {
-                    if (item.type === "Volume" && item.value.trim()) volume = item.value.trim();
-                    if (item.type === "Number" && item.value.trim()) number = item.value.trim();
-                    if (item.type === "Issue" && item.value.trim()) issue = item.value.trim();
+                  numeration.forEach((item) => {
+                    if (item.type === "Volume" && item.value.trim())
+                      volume = item.value.trim();
+                    if (item.type === "Number" && item.value.trim())
+                      number = item.value.trim();
+                    if (item.type === "Issue" && item.value.trim())
+                      issue = item.value.trim();
                   });
                   let numStr = "";
                   if (volume) {
@@ -773,17 +891,23 @@ const SerialContributionForm = () => {
                   }
                   return numStr ? `${numStr}. ` : "";
                 })()}
-                {
-                  serialContributionCitation.rangeOfPageNumbers === "" ? "" : (<>
-                    {"pp. "}{serialContributionCitation.rangeOfPageNumbers}{", "}
-                  </>)
-                }
-                {
-                  serialContributionCitation.dateOfCitation === "" ? "" : (<>
-                  [viewed {serialContributionCitation.dateOfCitation}]{". "}
-                  </>)
-                 }
-                 {standardIdentifier.length <= 1 &&
+                {serialContributionCitation.rangeOfPageNumbers === "" ? (
+                  ""
+                ) : (
+                  <>
+                    {"pp. "}
+                    {serialContributionCitation.rangeOfPageNumbers}
+                    {", "}
+                  </>
+                )}
+                {serialContributionCitation.dateOfCitation === "" ? (
+                  ""
+                ) : (
+                  <>
+                    [viewed {serialContributionCitation.dateOfCitation}]{". "}
+                  </>
+                )}
+                {standardIdentifier.length <= 1 &&
                 (standardIdentifier[0] === "" ||
                   standardIdentifier[0] === undefined) ? (
                   ""
@@ -799,7 +923,8 @@ const SerialContributionForm = () => {
                     })}
                     {". "}
                   </>
-                )} {availability.length <= 1 &&
+                )}{" "}
+                {availability.length <= 1 &&
                 (availability[0] === "" || availability[0] === undefined) ? (
                   ""
                 ) : (
@@ -816,71 +941,83 @@ const SerialContributionForm = () => {
                     {". "}
                   </>
                 )}
-                {
-                  serialContributionCitation.location === "" ? "" : (<>
-                 At: [
-          {serialContributionCitation.location}]{". "}
-                  </>)
-                }
-              </p>
-                <Copy refs={ref} />
-                <div className="md:flex  gap-10 mx-10">
-
-              <span className="text-gray-400 w-24">Narrative</span>
-              <p onClick={(e) =>{copytext(e)}} className="text-blue-500 cursor-pointer">
-                {formFields.map((item, index) => {
-                  return (
-                    <span key={index}>
-                      {item[0].replace(/^./, char => char.toUpperCase())}
-                      {item[0] === "" || item[0] === undefined ? "" : " "}
-                      {item[1].replace(/^./, char => char.toUpperCase())}
-                      {item[1] === "" || item[1] === undefined ? "" : ""}
-                    </span>
-                  );
-                })}
-                {serialContributionCitation.year === "" ? (
+                {serialContributionCitation.location === "" ? (
                   ""
                 ) : (
                   <>
-                  {" "}
-                    {"("}
-                    {serialContributionCitation.year}
-                    {")"}  
+                    At: [{serialContributionCitation.location}]{". "}
                   </>
                 )}
-                {serialContributionCitation.rangeOfPageNumbers === "" ? "" : ", "}
-                {serialContributionCitation.rangeOfPageNumbers}
               </p>
-            </div>
+              <Copy refs={ref} />
               <div className="md:flex  gap-10 mx-10">
-
-              <span className="text-gray-400 w-24">Parenthetical</span>
-              <p onClick={(e) =>{copytext(e)}} className="text-blue-500 cursor-pointer">
-                {"("}
-                {formFields.map((item, index) => {
-                  return (
-                    <span key={index}>
-                      {item[0].replace(/^./, char => char.toUpperCase())}
-                      {item[0] === "" || item[0] === undefined ? "" : " "}
-                      {item[1].replace(/^./, char => char.toUpperCase())}
-                      {item[1] === "" || item[1] === undefined ? "" : ""}
-                      {index < formFields.length - 1 ? " & " : ""}
-                    </span>
-                  );
-                })}
-                {serialContributionCitation.year === "" ? (
-                  ""
-                ) : (
-                  <>
-                    {", "}
-                    {serialContributionCitation.year}
-                  </>
-                )}
-                {serialContributionCitation.rangeOfPageNumbers === "" ? "" : ", "}
-                {serialContributionCitation.rangeOfPageNumbers}
-                {")"}
-              </p>
-            </div>
+                <span className="text-gray-400 w-24">Narrative</span>
+                <p
+                  onClick={(e) => {
+                    copytext(e);
+                  }}
+                  className="text-blue-500 cursor-pointer"
+                >
+                  {formFields.map((item, index) => {
+                    const formatted = formatCreatorInline(item[0], item[1]);
+                    if (!formatted) return null;
+                    return (
+                      <span key={index}>
+                        {formatted}
+                        {index < formFields.length - 1 ? ", " : ""}
+                      </span>
+                    );
+                  })}
+                  {serialContributionCitation.year === "" ? (
+                    ""
+                  ) : (
+                    <>
+                      {" "}
+                      {"("}
+                      {serialContributionCitation.year}
+                      {")"}
+                    </>
+                  )}
+                  {serialContributionCitation.rangeOfPageNumbers === ""
+                    ? ""
+                    : ", "}
+                  {serialContributionCitation.rangeOfPageNumbers}
+                </p>
+              </div>
+              <div className="md:flex  gap-10 mx-10">
+                <span className="text-gray-400 w-24">Parenthetical</span>
+                <p
+                  onClick={(e) => {
+                    copytext(e);
+                  }}
+                  className="text-blue-500 cursor-pointer"
+                >
+                  {"("}
+                  {formFields.map((item, index) => {
+                    const formatted = formatCreatorInline(item[0], item[1]);
+                    if (!formatted) return null;
+                    return (
+                      <span key={index}>
+                        {formatted}
+                        {index < formFields.length - 1 ? " & " : ""}
+                      </span>
+                    );
+                  })}
+                  {serialContributionCitation.year === "" ? (
+                    ""
+                  ) : (
+                    <>
+                      {", "}
+                      {serialContributionCitation.year}
+                    </>
+                  )}
+                  {serialContributionCitation.rangeOfPageNumbers === ""
+                    ? ""
+                    : ", "}
+                  {serialContributionCitation.rangeOfPageNumbers}
+                  {")"}
+                </p>
+              </div>
             </div>
             {/* <button
               className="btn btn-primary my-2"
