@@ -1,8 +1,8 @@
 import { useRef, useState, useEffect, useContext } from "react";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
-import {ToastContainer, toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import "./BookForm.css";
@@ -24,6 +24,7 @@ const BooksForm = ({ type }) => {
   });
   const ref = useRef();
   const [result, setResult] = useState(false);
+  const [showMoreOptions, setShowMoreOptions] = useState(false);
 
   const onChanging = (e) => {
     const name = e.target.name;
@@ -44,13 +45,38 @@ const BooksForm = ({ type }) => {
   const copytext = (e) => {
     navigator.clipboard.writeText(e.target.innerText);
     toast.success("Copied to Clipboard");
-  }
+  };
+
+  const formatCreatorForCitation = (firstName, lastName) => {
+    const safeFirst = (firstName || "").trim();
+    const safeLast = (lastName || "").trim();
+    const firstInitial = safeFirst ? `${safeFirst.charAt(0).toUpperCase()}.` : "";
+    const upperLast = safeLast ? safeLast.toUpperCase() : "";
+    if (!upperLast && !firstInitial) return "";
+    if (!upperLast) return `${firstInitial}, `;
+    if (!firstInitial) return `${upperLast}, `;
+    return `${upperLast}, ${firstInitial}, `;
+  };
+
+  const formatCreatorInline = (firstName, lastName) => {
+    const safeFirst = (firstName || "").trim();
+    const safeLast = (lastName || "").trim();
+    const firstInitial = safeFirst ? `${safeFirst.charAt(0).toUpperCase()}.` : "";
+    const upperLast = safeLast ? safeLast.toUpperCase() : "";
+    return [firstInitial, upperLast].filter(Boolean).join(" ");
+  };
 
   const handleFormChange = (event, index) => {
     let data = [...formFields];
     if (event.target.name === "firstName") data[index][0] = event.target.value;
     else data[index][1] = event.target.value;
     setFormFields(data);
+  };
+
+  const handleCreatorTypeChange = (event, index) => {
+    const data = [...creatorTypes];
+    data[index] = event.target.value;
+    setCreatorTypes(data);
   };
 
   const handleInputChange = (event, UseStateName, stateName, index) => {
@@ -62,15 +88,30 @@ const BooksForm = ({ type }) => {
   // multi field inputs (first name ,last name, type, medium designation, edition, publisher, standard identifier, availability and access)
 
   const [formFields, setFormFields] = useState([["", ""]]);
+  const [creatorTypes, setCreatorTypes] = useState([""]);
   const [publisher, setPublisher] = useState([""]);
   const [standardIdentifier, setStandarIdentifier] = useState([""]);
 
   const addField = (UseStateName, stateName, obj) => {
     UseStateName([...stateName, obj]);
   };
+  const addCreatorField = () => {
+    const previousType = creatorTypes[creatorTypes.length - 1] || "";
+    setFormFields([...formFields, ["", ""]]);
+    setCreatorTypes([...creatorTypes, previousType]);
+  };
   const removeField = (UseStateName, stateName, index) => {
     stateName.splice(index, 1);
     UseStateName([...stateName]);
+  };
+
+  const removeCreatorField = (index) => {
+    const nextFields = [...formFields];
+    const nextTypes = [...creatorTypes];
+    nextFields.splice(index, 1);
+    nextTypes.splice(index, 1);
+    setFormFields(nextFields);
+    setCreatorTypes(nextTypes);
   };
 
   // listen for metadata selections from global search and autofill
@@ -78,12 +119,19 @@ const BooksForm = ({ type }) => {
   useEffect(() => {
     if (!metadata) return;
     // only autofill if chosenForm is empty or matches 'book' or 'ebook'
-    if (chosenForm && !["book", "ebook", "book-contribution"].includes(chosenForm)) return;
+    if (
+      chosenForm &&
+      !["book", "ebook", "book-contribution"].includes(chosenForm)
+    )
+      return;
     // map common fields into the form
     setBooksCitation((prev) => ({
       ...prev,
       titleOfTheItem: metadata.title || prev.titleOfTheItem,
-      year: (metadata.year && metadata.year.toString) ? metadata.year : metadata.year || prev.year,
+      year:
+        metadata.year && metadata.year.toString
+          ? metadata.year
+          : metadata.year || prev.year,
       publisher: metadata.publisher || prev.publisher,
       place: metadata.place || prev.place,
       seriesTitleAndNumber: metadata.series || prev.seriesTitleAndNumber,
@@ -91,8 +139,12 @@ const BooksForm = ({ type }) => {
 
     // authors -> formFields using mapped author objects if present
     if (metadata.authors && metadata.authors.length > 0) {
-      const newFields = metadata.authors.map((a) => [a.firstName || "", a.lastName || ""]);
+      const newFields = metadata.authors.map((a) => [
+        a.firstName || "",
+        a.lastName || "",
+      ]);
       setFormFields(newFields.length ? newFields : [["", ""]]);
+      setCreatorTypes(newFields.map(() => ""));
     }
 
     // publisher array state
@@ -107,10 +159,9 @@ const BooksForm = ({ type }) => {
   // useEffect(()=>{
   // },[formFields])
 
-
   return (
     <>
-    <ToastContainer />
+      <ToastContainer />
       <div className="bookform mx-auto max-w-4xl px-4">
         <Form
           onSubmit={(e) => {
@@ -128,7 +179,12 @@ const BooksForm = ({ type }) => {
               return (
                 <Row key={index} className="mt-2">
                   <Form.Group as={Col} md={3} controlId="formLname">
-                    <Form.Select name="lastName" defaultValue="Choose...">
+                    <Form.Select
+                      value={creatorTypes[index] || ""}
+                      onChange={(event) =>
+                        handleCreatorTypeChange(event, index)
+                      }
+                    >
                       <option>---Select Type ---</option>
                       <option>Author</option>
                       <option>Editor</option>
@@ -158,9 +214,7 @@ const BooksForm = ({ type }) => {
                     <Col className="col-sm-1">
                       <Button
                         className="removebutton md:!mt-0 !mt-2"
-                        onClick={() =>
-                          removeField(setFormFields, formFields, index)
-                        }
+                        onClick={() => removeCreatorField(index)}
                       >
                         Remove
                       </Button>
@@ -168,21 +222,16 @@ const BooksForm = ({ type }) => {
                   ) : (
                     <></>
                   )}
-                  {formFields.length - 1 === index && (
-                    <Col className="col-sm-1">
-                      <Button
-                        className="addbutton md:!mt-0 !mt-2"
-                        onClick={() =>
-                          addField(setFormFields, formFields, ["", ""])
-                        }
-                      >
-                        ADD
-                      </Button>
-                    </Col>
-                  )}
                 </Row>
               );
             })}
+            <Button
+              variant="link"
+              className="ps-0 text-decoration-none"
+              onClick={addCreatorField}
+            >
+              Add another Creator
+            </Button>
           </Row>
 
           <Row className="mb-3">
@@ -204,30 +253,6 @@ const BooksForm = ({ type }) => {
                 name="titleOfTheItem"
                 type="text"
                 placeholder="Enter Title"
-              />
-            </Form.Group>
-          </Row>
-
-          <Row className="my-3">
-            {/* <Form.Group as={Col} controlId="formScale">
-              <Form.Label>Scale</Form.Label>
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={booksCitation.scale}
-                name="scale"
-                type="text"
-                placeholder="Enter Scale"
-              />
-            </Form.Group> */}
-
-            <Form.Group as={Col} controlId="formTitle">
-              <Form.Label>Subsidiary Titles</Form.Label>
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={booksCitation.subsidiaryTitles}
-                name="subsidiaryTitles"
-                type="text"
-                placeholder="Enter Title    "
               />
             </Form.Group>
           </Row>
@@ -277,7 +302,7 @@ const BooksForm = ({ type }) => {
                             event,
                             setPublisher,
                             publisher,
-                            index
+                            index,
                           )
                         }
                         value={item}
@@ -329,28 +354,38 @@ const BooksForm = ({ type }) => {
               />
             </Form.Group> */}
           </Row>
-          <Row className="mb-3">
-            <Form.Group as={Col} md={6} controlId="formCitation">
-              <Form.Label>Date of citation</Form.Label>
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={booksCitation.dateOfCitation}
-                name="dateOfCitation"
-                type="text"
-                placeholder="Enter Date"
-              />
-            </Form.Group>
-            <Form.Group as={Col} md={6} controlId="formPlace">
-              <Form.Label>Series title and number</Form.Label>
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={booksCitation.seriesTitleAndNumber}
-                name="seriesTitleAndNumber"
-                type="text"
-                placeholder="Enter Series Title And Number"
-              />
-            </Form.Group>
-          </Row>
+          <Button
+            variant="link"
+            className="ps-0 text-decoration-none"
+            onClick={() => setShowMoreOptions((prev) => !prev)}
+          >
+            {showMoreOptions ? "Hide More Options" : "More Options"}
+          </Button>
+
+          {showMoreOptions && (
+            <Row className="mb-3">
+              <Form.Group as={Col} md={6} controlId="formCitation">
+                <Form.Label>Date of citation</Form.Label>
+                <Form.Control
+                  onChange={(e) => onChanging(e)}
+                  value={booksCitation.dateOfCitation}
+                  name="dateOfCitation"
+                  type="text"
+                  placeholder="Enter Date"
+                />
+              </Form.Group>
+              <Form.Group as={Col} md={6} controlId="formPlace">
+                <Form.Label>Series title and number</Form.Label>
+                <Form.Control
+                  onChange={(e) => onChanging(e)}
+                  value={booksCitation.seriesTitleAndNumber}
+                  name="seriesTitleAndNumber"
+                  type="text"
+                  placeholder="Enter Series Title And Number"
+                />
+              </Form.Group>
+            </Row>
+          )}
           <Row className="mb-3">
             <Form.Label>Standard Identifier</Form.Label>
             {standardIdentifier.map((item, index) => {
@@ -371,7 +406,7 @@ const BooksForm = ({ type }) => {
                           event,
                           setStandarIdentifier,
                           standardIdentifier,
-                          index
+                          index,
                         )
                       }
                       value={item}
@@ -388,7 +423,7 @@ const BooksForm = ({ type }) => {
                           removeField(
                             setStandarIdentifier,
                             standardIdentifier,
-                            index
+                            index,
                           )
                         }
                       >
@@ -440,14 +475,11 @@ const BooksForm = ({ type }) => {
             <div id="output">
               <p ref={ref} id="outputResult">
                 {formFields.map((item, index) => {
+                  const formatted = formatCreatorForCitation(item[0], item[1]);
+                  if (!formatted) return null;
                   return (
                     <span key={index}>
-                      <span  className="text-uppercase">
-                        {item[1]}
-                        {item[1] === "" || item[1] === undefined ? "" : ", "}
-                      </span>
-                      {item[0]}
-                      {item[0] === "" || item[0] === undefined ? "" : ", "}
+                      {formatted}
                     </span>
                   );
                 })}
@@ -509,61 +541,68 @@ const BooksForm = ({ type }) => {
                   </>
                 )}
               </p>
-              
+
               <Copy refs={ref} />
               <div className="md:flex  gap-10 mx-10">
-
-              <span className="text-gray-400 w-24">Narrative</span>
-              <p onClick={(e) =>{copytext(e)}} className="text-blue-500 cursor-pointer">
-                {formFields.map((item, index) => {
-                  return (
-                    <span key={index}>
-                      {item[0].replace(/^./, char => char.toUpperCase())}
-                      {item[0] === "" || item[0] === undefined ? "" : " "}
-                      {item[1].replace(/^./, char => char.toUpperCase())}
-                      {item[1] === "" || item[1] === undefined ? "" : ""}
-                    </span>
-                  );
-                })}
-                {booksCitation.year === "" ? (
-                  ""
-                ) : (
-                  <>
-                  {" "}
-                    {"("}
-                    {booksCitation.year}
-                    {")"}
-                  </>
-                )}
-              </p>
-            </div>
+                <span className="text-gray-400 w-24">Narrative</span>
+                <p
+                  onClick={(e) => {
+                    copytext(e);
+                  }}
+                  className="text-blue-500 cursor-pointer"
+                >
+                  {formFields.map((item, index) => {
+                    const formatted = formatCreatorInline(item[0], item[1]);
+                    if (!formatted) return null;
+                    return (
+                      <span key={index}>
+                        {formatted}
+                        {index < formFields.length - 1 ? ", " : ""}
+                      </span>
+                    );
+                  })}
+                  {booksCitation.year === "" ? (
+                    ""
+                  ) : (
+                    <>
+                      {" "}
+                      {"("}
+                      {booksCitation.year}
+                      {")"}
+                    </>
+                  )}
+                </p>
+              </div>
               <div className="md:flex  gap-10 mx-10">
-
-              <span className="text-gray-400 w-24">Parenthetical</span>
-              <p onClick={(e) =>{copytext(e)}} className="text-blue-500 cursor-pointer">
-                {"("}
-                {formFields.map((item, index) => {
-                  return (
-                    <span key={index}>
-                      {item[0].replace(/^./, char => char.toUpperCase())}
-                      {item[0] === "" || item[0] === undefined ? "" : " "}
-                      {item[1].replace(/^./, char => char.toUpperCase())}
-                      {item[1] === "" || item[1] === undefined ? "" : ""}
-                      {index < formFields.length - 1 ? " & " : ""}
-                    </span>
-                  );
-                })}
-                {booksCitation.year === "" ? (
-                  ""
-                ) : (
-                  <>
-                    {", "}
-                    {booksCitation.year}
-                  </>
-                )}
-                {")"}
-              </p>
-            </div>
+                <span className="text-gray-400 w-24">Parenthetical</span>
+                <p
+                  onClick={(e) => {
+                    copytext(e);
+                  }}
+                  className="text-blue-500 cursor-pointer"
+                >
+                  {"("}
+                  {formFields.map((item, index) => {
+                    const formatted = formatCreatorInline(item[0], item[1]);
+                    if (!formatted) return null;
+                    return (
+                      <span key={index}>
+                        {formatted}
+                        {index < formFields.length - 1 ? " & " : ""}
+                      </span>
+                    );
+                  })}
+                  {booksCitation.year === "" ? (
+                    ""
+                  ) : (
+                    <>
+                      {", "}
+                      {booksCitation.year}
+                    </>
+                  )}
+                  {")"}
+                </p>
+              </div>
             </div>
             {/* <button
               className="btn btn-primary my-2"

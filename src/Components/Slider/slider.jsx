@@ -47,9 +47,6 @@ export default () => {
       <SwiperSlide>
         <img src={slide2} className="w-full h-full object-fill block" alt="" />
       </SwiperSlide>
-      <SwiperSlide>
-        <img src={slide3} className="w-full h-full object-fill block" alt="" />
-      </SwiperSlide>
     </Swiper>
   );
 };

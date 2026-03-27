@@ -32,6 +32,27 @@ const WebsitesForm = () => {
     navigator.clipboard.writeText(e.target.innerText);
     toast.success("Copied to Clipboard");
   };
+  const formatCreatorForCitation = (firstName, lastName) => {
+    const safeFirst = (firstName || "").trim();
+    const safeLast = (lastName || "").trim();
+    const firstInitial = safeFirst ? `${safeFirst.charAt(0).toUpperCase()}.` : "";
+    const upperLast = safeLast ? safeLast.toUpperCase() : "";
+    if (!upperLast && !firstInitial) return "";
+    if (!upperLast) return `${firstInitial}, `;
+    if (!firstInitial) return `${upperLast}, `;
+    return `${upperLast}, ${firstInitial}, `;
+  };
+
+  const formatCreatorInline = (firstName, lastName) => {
+    const safeFirst = (firstName || "").trim();
+    const safeLast = (lastName || "").trim();
+    const firstInitial = safeFirst ? `${safeFirst.charAt(0).toUpperCase()}.` : "";
+    const upperLast = safeLast ? safeLast.toUpperCase() : "";
+    return [firstInitial, upperLast].filter(Boolean).join(" ");
+  };
+  const hasCreatorInput = formFields.some(
+    (item) => (item[0] || "").trim() || (item[1] || "").trim(),
+  );
   const ref = useRef();
 
   const [result, setResult] = useState(false);
@@ -83,19 +104,25 @@ const WebsitesForm = () => {
     setWebsitesCitation((prev) => ({
       ...prev,
       pageTitle: metadata.webpageTitle || metadata.title || prev.pageTitle,
-      websiteTitle: metadata.websiteTitle || metadata.publisher || prev.websiteTitle,
+      websiteTitle:
+        metadata.websiteTitle || metadata.publisher || prev.websiteTitle,
       dateOfPublication: metadata.dateOfPublication || prev.dateOfPublication,
       place: metadata.place || prev.place,
       publisher: metadata.publisher || prev.publisher,
-      availabilityAndAccess: metadata.url || metadata.doi || prev.availabilityAndAccess,
+      availabilityAndAccess:
+        metadata.url || metadata.doi || prev.availabilityAndAccess,
       dateOfCitation: metadata.dateOfCitation || prev.dateOfCitation,
     }));
 
     if (metadata.authors && metadata.authors.length > 0) {
-      const newFields = metadata.authors.map((a) => [a.firstName || "", a.lastName || ""]);
+      const newFields = metadata.authors.map((a) => [
+        a.firstName || "",
+        a.lastName || "",
+      ]);
       setFormFields(newFields.length ? newFields : [["", ""]]);
     }
-    if (metadata.isbn || metadata.doi) setStandarIdentifier([metadata.isbn || metadata.doi]);
+    if (metadata.isbn || metadata.doi)
+      setStandarIdentifier([metadata.isbn || metadata.doi]);
   }, [metadata, chosenForm]);
 
   const addField = (UseStateName, stateName, obj) => {
@@ -184,71 +211,13 @@ const WebsitesForm = () => {
             })}
           </Row>
 
-          <Row className="mb-3">
-            <Form.Label>
-              Standard Identifiers of creaters' public identities
-            </Form.Label>
-            {standardIdentifiersOfCreator.map((item, index) => {
-              return (
-                <Row key={index} className="mt-2">
-                  <Form.Group as={Col} controlId="formIdentifier">
-                    <Form.Select defaultValue="Choose...">
-                      <option>---Select Standar Identifier---</option>
-                      <option>eISSN</option>
-                      <option>eISBN</option>
-                      <option>DOI</option>
-                    </Form.Select>
-                  </Form.Group>
-                  <Form.Group as={Col} controlId="formPlace">
-                    <Form.Control
-                      onChange={(event) =>
-                        handleInputChange(
-                          event,
-                          setStandardIdentifiersOfCreator,
-                          standardIdentifiersOfCreator,
-                          index
-                        )
-                      }
-                      value={item}
-                      name="standardIdentifierR"
-                      type="text"
-                      placeholder="Enter Standard Identifier"
-                    />
-                  </Form.Group>
-                  {standardIdentifier.length !== 1 ? (
-                    <div as={Col} className="col-sm-1">
-                      <Button
-                        className="removebutton md:!mt-0 !mt-2"
-                        onClick={() =>
-                          removeField(
-                            setStandarIdentifier,
-                            standardIdentifier,
-                            index
-                          )
-                        }
-                      >
-                        Remove
-                      </Button>
-                    </div>
-                  ) : (
-                    <></>
-                  )}
-                  {standardIdentifier.length - 1 === index && (
-                    <div as={Col} className="col-sm-1">
-                      <Button
-                        className="addbutton md:!mt-0 !mt-2"
-                        onClick={() =>
-                          addField(setStandarIdentifier, standardIdentifier, "")
-                        }
-                      >
-                        ADD
-                      </Button>
-                    </div>
-                  )}
-                </Row>
-              );
-            })}
-          </Row>
+          {false && (
+            <Row className="mb-3">
+              <Form.Label>
+                Standard Identifiers of creaters' public identities
+              </Form.Label>
+            </Row>
+          )}
 
           <Row className="mb-3">
             <Form.Group as={Col} controlId="formGridEmail">
@@ -273,157 +242,85 @@ const WebsitesForm = () => {
             </Form.Group>
           </Row>
 
-          <Row className="mb-3">
-            <Form.Label>Edition</Form.Label>
-            {edition.map((item, index) => {
-              return (
-                <Row key={index} className="mt-2">
-                  <Form.Group as={Col} controlId="formEdition">
-                    <Form.Select defaultValue="Choose...">
-                      <option>---Select Edition---</option>
-                      <option>Edition</option>
-                      <option>Version</option>
-                      <option>Revised Edition</option>
-                    </Form.Select>
-                  </Form.Group>
-                  <Form.Group as={Col} controlId="formPlace">
-                    <Form.Control
-                      onChange={(event) =>
-                        handleInputChange(event, setEdition, edition, index)
-                      }
-                      value={item}
-                      name="editionN"
-                      type="text"
-                      placeholder="Enter edition"
-                    />
-                  </Form.Group>
-                  {edition.length !== 1 ? (
-                    <div as={Col} className="col-sm-1">
-                      <Button
-                        className="removebutton md:!mt-0 !mt-2"
-                        onClick={() => removeField(setEdition, edition, index)}
-                      >
-                        Remove
-                      </Button>
-                    </div>
-                  ) : (
-                    <></>
-                  )}
-                  {edition.length - 1 === index && (
-                    <div as={Col} className="col-sm-1">
-                      <Button
-                        className="addbutton md:!mt-0 !mt-2"
-                        onClick={() => addField(setEdition, edition, "")}
-                      >
-                        ADD
-                      </Button>
-                    </div>
-                  )}
-                </Row>
-              );
-            })}
-          </Row>
-          <Row className="mb-3">
-            <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label>Format And Resource Type</Form.Label>
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={websitesCitation.formatAndResourceType}
-                name="formatAndResourceType"
-                type="text"
-                placeholder="Enter Format and Resource Type"
-              />
-            </Form.Group>
-
-            <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label>System Requirements</Form.Label>
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={websitesCitation.systemRequirements}
-                name="systemRequirements"
-                type="text"
-                placeholder="Enter System Requirement"
-              />
-            </Form.Group>
-          </Row>
-
-          <Row className="mb-3">
-            <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label>Subsidiary Creator</Form.Label>
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={websitesCitation.subsidiaryCreator}
-                name="subsidiaryCreator"
-                type="text"
-                placeholder="Enter Subsidiary Creator"
-              />
-            </Form.Group>
-
-            <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label>Place</Form.Label>
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={websitesCitation.place}
-                name="place"
-                type="text"
-                placeholder="Enter Place"
-              />
-            </Form.Group>
-          </Row>
-
-          <Row className="mb-3">
-            <Form.Label>Publisher</Form.Label>
-            {publisher.map((item, index) => {
-              return (
-                <Row key={index} className="mt-2">
-                  <Form.Group as={Col} controlId="formPlace">
-                    <Form.Select defaultValue="Choose...">
-                      <option>---Select Publisher---</option>
-                      <option>Publisher</option>
-                      <option>Designer</option>
-                    </Form.Select>
-                  </Form.Group>
-
-                  <Form.Group as={Col} controlId="formPublisher">
-                    <Form.Control
-                      onChange={(event) =>
-                        handleInputChange(event, setPublisher, publisher, index)
-                      }
-                      value={item}
-                      name="publisher"
-                      type="text"
-                      placeholder="Enter Publisher    "
-                    />
-                  </Form.Group>
-
-                  {publisher.length !== 1 ? (
-                    <div as={Col} className="col-sm-1">
-                      <Button
-                        className="removebutton md:!mt-0 !mt-2"
-                        onClick={() =>
-                          removeField(setPublisher, publisher, index)
+          {false && (
+            <Row className="mb-3">
+              <Form.Label>Edition</Form.Label>
+              {edition.map((item, index) => {
+                return (
+                  <Row key={index} className="mt-2">
+                    <Form.Group as={Col} controlId="formEdition">
+                      <Form.Select defaultValue="Choose...">
+                        <option>---Select Edition---</option>
+                        <option>Edition</option>
+                        <option>Version</option>
+                        <option>Revised Edition</option>
+                      </Form.Select>
+                    </Form.Group>
+                    <Form.Group as={Col} controlId="formPlace">
+                      <Form.Control
+                        onChange={(event) =>
+                          handleInputChange(event, setEdition, edition, index)
                         }
-                      >
-                        Remove
-                      </Button>
-                    </div>
-                  ) : (
-                    <></>
-                  )}
-                  {publisher.length - 1 === index && (
-                    <div as={Col} className="col-sm-1">
-                      <Button
-                        className="addbutton md:!mt-0 !mt-2"
-                        onClick={() => addField(setPublisher, publisher, "")}
-                      >
-                        ADD
-                      </Button>
-                    </div>
-                  )}
-                </Row>
-              );
-            })}
-          </Row>
+                        value={item}
+                        name="editionN"
+                        type="text"
+                        placeholder="Enter edition"
+                      />
+                    </Form.Group>
+                    {edition.length !== 1 ? (
+                      <div as={Col} className="col-sm-1">
+                        <Button
+                          className="removebutton md:!mt-0 !mt-2"
+                          onClick={() =>
+                            removeField(setEdition, edition, index)
+                          }
+                        >
+                          Remove
+                        </Button>
+                      </div>
+                    ) : (
+                      <></>
+                    )}
+                    {edition.length - 1 === index && (
+                      <div as={Col} className="col-sm-1">
+                        <Button
+                          className="addbutton md:!mt-0 !mt-2"
+                          onClick={() => addField(setEdition, edition, "")}
+                        >
+                          ADD
+                        </Button>
+                      </div>
+                    )}
+                  </Row>
+                );
+              })}
+            </Row>
+          )}
+          {false && (
+            <Row className="mb-3">
+              <Form.Group as={Col} controlId="formGridEmail">
+                <Form.Label>Format And Resource Type</Form.Label>
+                <Form.Control
+                  onChange={(e) => onChanging(e)}
+                  value={websitesCitation.formatAndResourceType}
+                  name="formatAndResourceType"
+                  type="text"
+                  placeholder="Enter Format and Resource Type"
+                />
+              </Form.Group>
+
+              <Form.Group as={Col} controlId="formGridEmail">
+                <Form.Label>System Requirements</Form.Label>
+                <Form.Control
+                  onChange={(e) => onChanging(e)}
+                  value={websitesCitation.systemRequirements}
+                  name="systemRequirements"
+                  type="text"
+                  placeholder="Enter System Requirement"
+                />
+              </Form.Group>
+            </Row>
+          )}
 
           <Row className="mb-3">
             <Form.Group as={Col} controlId="formGridEmail">
@@ -437,190 +334,11 @@ const WebsitesForm = () => {
               />
             </Form.Group>
           </Row>
-          <Row className="mb-3">
-            <Form.Label>Numeration</Form.Label>
-            {numeration.map((item, index) => {
-              return (
-                <Row key={index} className="mt-3">
-                  <Form.Group as={Col} controlId="formGridState">
-                    <Form.Select defaultValue="Choose...">
-                      <option>Choose...</option>
-                      <option>Volume</option>
-                      <option>Number</option>
-                      <option>Issue</option>
-                    </Form.Select>
-                  </Form.Group>
-                  <Form.Group as={Col} controlId="formGridEmail">
-                    <Form.Control
-                      onChange={(event) =>
-                        handleInputChange(
-                          event,
-                          setNumeration,
-                          numeration,
-                          index
-                        )
-                      }
-                      value={item}
-                      name="numeration"
-                      type="text"
-                      placeholder="Enter Numeration"
-                    />
-                  </Form.Group>
-                  {numeration.length !== 1 ? (
-                    <div as={Col} className="col-sm-1">
-                      <Button
-                        className="removebutton md:!mt-0 !mt-2"
-                        onClick={() =>
-                          removeField(setNumeration, numeration, index)
-                        }
-                      >
-                        Remove
-                      </Button>
-                    </div>
-                  ) : (
-                    <></>
-                  )}
-
-                  {numeration.length - 1 === index && (
-                    <div as={Col} className="col-sm-1">
-                      <Button
-                        className="addbutton md:!mt-0 !mt-2"
-                        onClick={() => addField(setNumeration, numeration, "")}
-                      >
-                        ADD
-                      </Button>
-                    </div>
-                  )}
-                </Row>
-              );
-            })}
-            {/* <Form.Group as={Col} controlId="formGridState">
-              <Form.Select defaultValue="Choose...">
-                <option>Choose...</option>
-                <option>Volume</option>
-                <option>Number</option>
-                <option>Issue</option>
-                
-              </Form.Select>
-            </Form.Group>
-            <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Control
-                onChange={(event) =>
-                  handleInputChange(
-                    event,
-                    setNumeration,
-                    numeration,
-                    index
-                  )
-                }
-                value={websitesCitation.numeration}
-                name="numeration"
-                type="text"
-                placeholder="Enter Numeration"
-              />
-            </Form.Group>
-            {numeration.length !== 1 ? (
-                    <div as={Col} className="col-sm-1">
-                      <Button
-                        className="removebutton md:!mt-0 !mt-2"
-                        onClick={() =>
-                          removeField(setNumeration, numeration, index)
-                        }
-                      >
-                        Remove
-                      </Button>
-                    </div>
-                  ) : (
-                    <></>
-                  )}
-
-                  {numeration.length - 1 === index && (
-                    <div as={Col} className="col-sm-1">
-                      <Button
-                        className="addbutton md:!mt-0 !mt-2"
-                        onClick={() => addField(setNumeration, numeration, "")}
-                      >
-                        ADD
-                      </Button>
-                    </div>
-                  )} */}
-          </Row>
-
-          <Row className="mb-3">
-            <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label>Numeration Date</Form.Label>
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                name="numerationDate"
-                value={websitesCitation.numerationDate}
-                type="text"
-                placeholder="Enter Numeration Date"
-              />
-            </Form.Group>
-          </Row>
-          <Row className="mb-3">
-            <Form.Label>Standard Identifier</Form.Label>
-            {standardIdentifier.map((item, index) => {
-              return (
-                <Row key={index} className="mt-2">
-                  <Form.Group as={Col} controlId="formIdentifier">
-                    <Form.Select defaultValue="Choose...">
-                      <option>---Select Standar Identifier---</option>
-                      <option>eISSN</option>
-                      <option>eISBN</option>
-                      <option>DOI</option>
-                    </Form.Select>
-                  </Form.Group>
-                  <Form.Group as={Col} controlId="formPlace">
-                    <Form.Control
-                      onChange={(event) =>
-                        handleInputChange(
-                          event,
-                          setStandarIdentifier,
-                          standardIdentifier,
-                          index
-                        )
-                      }
-                      value={item}
-                      name="standardIdentifierR"
-                      type="text"
-                      placeholder="Enter Standard Identifier"
-                    />
-                  </Form.Group>
-                  {standardIdentifier.length !== 1 ? (
-                    <div as={Col} className="col-sm-1">
-                      <Button
-                        className="removebutton md:!mt-0 !mt-2"
-                        onClick={() =>
-                          removeField(
-                            setStandarIdentifier,
-                            standardIdentifier,
-                            index
-                          )
-                        }
-                      >
-                        Remove
-                      </Button>
-                    </div>
-                  ) : (
-                    <></>
-                  )}
-                  {standardIdentifier.length - 1 === index && (
-                    <div as={Col} className="col-sm-1">
-                      <Button
-                        className="addbutton md:!mt-0 !mt-2"
-                        onClick={() =>
-                          addField(setStandarIdentifier, standardIdentifier, "")
-                        }
-                      >
-                        ADD
-                      </Button>
-                    </div>
-                  )}
-                </Row>
-              );
-            })}
-          </Row>
+          {false && (
+            <Row className="mb-3">
+              <Form.Label>Numeration</Form.Label>
+            </Row>
+          )}
 
           <Row className="mb-3">
             <Form.Label>Availibility and Access</Form.Label>
@@ -643,7 +361,7 @@ const WebsitesForm = () => {
                           event,
                           setAvailability,
                           availability,
-                          index
+                          index,
                         )
                       }
                       value={item}
@@ -685,16 +403,6 @@ const WebsitesForm = () => {
 
           <Row className="mb-3">
             <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label>Relationships</Form.Label>
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                name="relationships"
-                value={websitesCitation.relationships}
-                type="text"
-                placeholder="Enter Relationships"
-              />
-            </Form.Group>
-            <Form.Group as={Col} controlId="formGridEmail">
               <Form.Label>Date of Citation</Form.Label>
               <Form.Control
                 onChange={(e) => onChanging(e)}
@@ -731,14 +439,11 @@ const WebsitesForm = () => {
             <div id="output">
               <p ref={ref} id="outputResult">
                 {formFields.map((item, index) => {
+                  const formatted = formatCreatorForCitation(item[0], item[1]);
+                  if (!formatted) return null;
                   return (
                     <span key={index}>
-                      <span className="text-uppercase">
-                        {item[1]}
-                        {item[1] === "" || item[1] === undefined ? "" : ", "}
-                      </span>
-                      {item[0]}
-                      {item[0] === "" || item[0] === undefined ? "" : ", "}
+                      {formatted}
                     </span>
                   );
                 })}
@@ -948,24 +653,20 @@ const WebsitesForm = () => {
                   }}
                   className="text-blue-500 cursor-pointer"
                 >
-                  {formFields.length > 0 && formFields[0][0] !== ""
+                  {hasCreatorInput
                     ? formFields.map((item, index) => {
+                        const formatted = formatCreatorInline(item[0], item[1]);
+                        if (!formatted) return null;
                         return (
                           <span key={index}>
-                            {item[0].replace(/^./, (char) =>
-                              char.toUpperCase()
-                            )}
-                            {item[0] === "" || item[0] === undefined ? "" : " "}
-                            {item[1].replace(/^./, (char) =>
-                              char.toUpperCase()
-                            )}
-                            {item[1] === "" || item[1] === undefined ? "" : " "}
+                            {formatted}
+                            {index < formFields.length - 1 ? ", " : ""}
                           </span>
                         );
                       })
                     : websitesCitation.pageTitle !== ""
-                    ? websitesCitation.pageTitle
-                    : websitesCitation.websiteTitle}{" "}
+                      ? websitesCitation.pageTitle
+                      : websitesCitation.websiteTitle}{" "}
                   {websitesCitation.dateOfPublication === "" ? (
                     ""
                   ) : (
@@ -986,24 +687,19 @@ const WebsitesForm = () => {
                   className="text-blue-500 cursor-pointer"
                 >
                   {"("}
-                  {formFields.length > 0 && formFields[0][0] !== ""
+                  {hasCreatorInput
                     ? formFields.map((item, index) => {
+                        const formatted = formatCreatorInline(item[0], item[1]);
+                        if (!formatted) return null;
                         return (
                           <span key={index}>
-                            {item[0].replace(/^./, (char) =>
-                              char.toUpperCase()
-                            )}
-                            {item[0] === "" || item[0] === undefined ? "" : " "}
-                            {item[1].replace(/^./, (char) =>
-                              char.toUpperCase()
-                            )}
-                            {item[1] === "" || item[1] === undefined ? "" : ""}
+                            {formatted}
                           </span>
                         );
                       })
                     : websitesCitation.pageTitle !== ""
-                    ? websitesCitation.pageTitle
-                    : websitesCitation.websiteTitle}
+                      ? websitesCitation.pageTitle
+                      : websitesCitation.websiteTitle}
                   {websitesCitation.dateOfPublication === "" ? (
                     ""
                   ) : (

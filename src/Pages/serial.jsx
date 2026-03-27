@@ -1,13 +1,13 @@
-import React from 'react';
-import SerialForm from '../Components/Serial/SerialForm';
-import CitContainer from '../Components/Container';
+import React from "react";
+import SerialForm from "../Components/Serial/SerialForm";
+import CitContainer from "../Components/Container";
 
-const Serial = ()=> {
+const Serial = () => {
   return (
-    <CitContainer title="Journal">
-       <SerialForm/>        
+    <CitContainer title="In-Print Journal">
+      <SerialForm />
     </CitContainer>
   );
-}
+};
 
 export default Serial;
