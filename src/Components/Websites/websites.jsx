@@ -35,7 +35,9 @@ const WebsitesForm = () => {
   const formatCreatorForCitation = (firstName, lastName) => {
     const safeFirst = (firstName || "").trim();
     const safeLast = (lastName || "").trim();
-    const firstInitial = safeFirst ? `${safeFirst.charAt(0).toUpperCase()}.` : "";
+    const firstInitial = safeFirst
+      ? `${safeFirst.charAt(0).toUpperCase()}.`
+      : "";
     const upperLast = safeLast ? safeLast.toUpperCase() : "";
     if (!upperLast && !firstInitial) return "";
     if (!upperLast) return `${firstInitial}, `;
@@ -46,13 +48,12 @@ const WebsitesForm = () => {
   const formatCreatorInline = (firstName, lastName) => {
     const safeFirst = (firstName || "").trim();
     const safeLast = (lastName || "").trim();
-    const firstInitial = safeFirst ? `${safeFirst.charAt(0).toUpperCase()}.` : "";
+    const firstInitial = safeFirst
+      ? `${safeFirst.charAt(0).toUpperCase()}.`
+      : "";
     const upperLast = safeLast ? safeLast.toUpperCase() : "";
     return [firstInitial, upperLast].filter(Boolean).join(" ");
   };
-  const hasCreatorInput = formFields.some(
-    (item) => (item[0] || "").trim() || (item[1] || "").trim(),
-  );
   const ref = useRef();
 
   const [result, setResult] = useState(false);
@@ -96,7 +97,9 @@ const WebsitesForm = () => {
   const [numeration, setNumeration] = useState([""]);
   const [standardIdentifier, setStandarIdentifier] = useState([""]);
   const [availability, setAvailability] = useState([""]);
-
+  const hasCreatorInput = formFields.some(
+    (item) => (item[0] || "").trim() || (item[1] || "").trim(),
+  );
   const { metadata, chosenForm } = useContext(MetadataContext);
   useEffect(() => {
     if (!metadata) return;
@@ -441,11 +444,7 @@ const WebsitesForm = () => {
                 {formFields.map((item, index) => {
                   const formatted = formatCreatorForCitation(item[0], item[1]);
                   if (!formatted) return null;
-                  return (
-                    <span key={index}>
-                      {formatted}
-                    </span>
-                  );
+                  return <span key={index}>{formatted}</span>;
                 })}
 
                 {standardIdentifiersOfCreator.length <= 1 &&
@@ -691,11 +690,7 @@ const WebsitesForm = () => {
                     ? formFields.map((item, index) => {
                         const formatted = formatCreatorInline(item[0], item[1]);
                         if (!formatted) return null;
-                        return (
-                          <span key={index}>
-                            {formatted}
-                          </span>
-                        );
+                        return <span key={index}>{formatted}</span>;
                       })
                     : websitesCitation.pageTitle !== ""
                       ? websitesCitation.pageTitle

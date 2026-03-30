@@ -1,9 +1,10 @@
 import { Routes, Route } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Serial from "./Pages/serial";
+import InPrintJournal from "./Pages/inPrintJournal";
 import Header from "./Components/Navbar";
 import Menubar from "./Components/Menubar";
 import { MetadataProvider } from "./context/MetadataContext";
+import OnlineJournal from "./Pages/onlineJournal";
 import SerialContributions from "./Pages/serialContributions";
 import Patents from "./Pages/patents";
 import ElectronicMessages from "./Pages/electronicMessages";
@@ -15,7 +16,6 @@ import NotFound from "./Pages/NotFound";
 import Example from "./Pages/example";
 import Footer from "./Components/Footer.jsx";
 import EBook from "./Pages/E-bookMonograph.jsx";
-import ESerial from "./Pages/E-seria.jsx";
 import Contact from "./Components/Contact/Contact.jsx";
 import Faq from "./Components/FAQ/Faq.jsx";
 import Pdf from "./Components/pdf/Pdf.jsx";
@@ -37,8 +37,8 @@ const App = () => {
         <div className="flex-grow">
           <Routes base>
             <Route path="/" element={<Home />} />
-            <Route path="/serial" element={<Serial />} />
-            <Route path="/E-serial" element={<ESerial />} />
+            <Route path="/serial" element={<InPrintJournal />} />
+            <Route path="/E-serial" element={<OnlineJournal />} />
             <Route
               path="/serial-contributions"
               element={<SerialContributions />}
