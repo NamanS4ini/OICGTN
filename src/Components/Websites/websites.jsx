@@ -90,6 +90,7 @@ const WebsitesForm = () => {
   // multi field inputs (first name ,last name, type, medium designation, edition, publisher, standard identifier, availability and access)
 
   const [formFields, setFormFields] = useState([["", ""]]);
+  const [creatorTypes, setCreatorTypes] = useState([""]);
   const [standardIdentifiersOfCreator, setStandardIdentifiersOfCreator] =
     useState([""]);
   const [edition, setEdition] = useState([""]);
@@ -136,6 +137,27 @@ const WebsitesForm = () => {
     UseStateName([...stateName]);
   };
 
+  const handleCreatorTypeChange = (event, index) => {
+    const data = [...creatorTypes];
+    data[index] = event.target.value;
+    setCreatorTypes(data);
+  };
+
+  const addCreatorField = () => {
+    const previousType = creatorTypes[creatorTypes.length - 1] || "";
+    setFormFields([...formFields, ["", ""]]);
+    setCreatorTypes([...creatorTypes, previousType]);
+  };
+
+  const removeCreatorField = (index) => {
+    const nextFormFields = [...formFields];
+    const nextTypes = [...creatorTypes];
+    nextFormFields.splice(index, 1);
+    nextTypes.splice(index, 1);
+    setFormFields(nextFormFields);
+    setCreatorTypes(nextTypes);
+  };
+
   return (
     <>
       <div className="serial">
@@ -153,7 +175,12 @@ const WebsitesForm = () => {
               return (
                 <Row key={index} className="mt-2">
                   <Form.Group as={Col} controlId="formLname">
-                    <Form.Select name="lastName" defaultValue="Choose...">
+                    <Form.Select
+                      value={creatorTypes[index] || ""}
+                      onChange={(event) =>
+                        handleCreatorTypeChange(event, index)
+                      }
+                    >
                       <option>---Select Type ---</option>
                       <option>Author</option>
                       <option>Editor</option>
@@ -184,9 +211,7 @@ const WebsitesForm = () => {
                     <div as={Col} className="col-sm-1">
                       <Button
                         className="removebutton md:!mt-0 !mt-2"
-                        onClick={() =>
-                          removeField(setFormFields, formFields, index)
-                        }
+                        onClick={() => removeCreatorField(index)}
                       >
                         Remove
                       </Button>
@@ -194,24 +219,16 @@ const WebsitesForm = () => {
                   ) : (
                     <></>
                   )}
-                  {formFields.length - 1 === index && (
-                    <div as={Col} className="col-sm-1">
-                      <Button
-                        className="addbutton md:!mt-0 !mt-2"
-                        onClick={() =>
-                          addField(setFormFields, formFields, ["", ""])
-                        }
-                      >
-                        ADD
-                      </Button>
-                      {/* <Button className="addbutton md:!mt-0 !mt-2" onClick={addFields}>
-                        ADD
-                      </Button> */}
-                    </div>
-                  )}
                 </Row>
               );
             })}
+            <Button
+              variant="link"
+              className="ps-0 text-decoration-none"
+              onClick={addCreatorField}
+            >
+              Add another Creator
+            </Button>
           </Row>
 
           {false && (

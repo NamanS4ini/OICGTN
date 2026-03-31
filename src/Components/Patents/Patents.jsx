@@ -48,6 +48,7 @@ const PatentsForm = () => {
   // };
 
   const [formFields, setFormFields] = useState([["", ""]]);
+  const [creatorTypes, setCreatorTypes] = useState([""]);
   const { metadata, chosenForm } = useContext(MetadataContext);
 
   // Safely converts CrossRef-style date objects or plain values to a string
@@ -109,7 +110,9 @@ const PatentsForm = () => {
   const formatCreatorForCitation = (firstName, lastName) => {
     const safeFirst = (firstName || "").trim();
     const safeLast = (lastName || "").trim();
-    const firstInitial = safeFirst ? `${safeFirst.charAt(0).toUpperCase()}.` : "";
+    const firstInitial = safeFirst
+      ? `${safeFirst.charAt(0).toUpperCase()}.`
+      : "";
     const upperLast = safeLast ? safeLast.toUpperCase() : "";
     if (!upperLast && !firstInitial) return "";
     if (!upperLast) return `${firstInitial}, `;
@@ -120,7 +123,9 @@ const PatentsForm = () => {
   const formatCreatorInline = (firstName, lastName) => {
     const safeFirst = (firstName || "").trim();
     const safeLast = (lastName || "").trim();
-    const firstInitial = safeFirst ? `${safeFirst.charAt(0).toUpperCase()}.` : "";
+    const firstInitial = safeFirst
+      ? `${safeFirst.charAt(0).toUpperCase()}.`
+      : "";
     const upperLast = safeLast ? safeLast.toUpperCase() : "";
     return [firstInitial, upperLast].filter(Boolean).join(" ");
   };
@@ -131,6 +136,27 @@ const PatentsForm = () => {
   const removeField = (UseStateName, stateName, index) => {
     stateName.splice(index, 1);
     UseStateName([...stateName]);
+  };
+
+  const handleCreatorTypeChange = (event, index) => {
+    const data = [...creatorTypes];
+    data[index] = event.target.value;
+    setCreatorTypes(data);
+  };
+
+  const addCreatorField = () => {
+    const previousType = creatorTypes[creatorTypes.length - 1] || "";
+    setFormFields([...formFields, ["", ""]]);
+    setCreatorTypes([...creatorTypes, previousType]);
+  };
+
+  const removeCreatorField = (index) => {
+    const nextFormFields = [...formFields];
+    const nextTypes = [...creatorTypes];
+    nextFormFields.splice(index, 1);
+    nextTypes.splice(index, 1);
+    setFormFields(nextFormFields);
+    setCreatorTypes(nextTypes);
   };
 
   return (
@@ -148,6 +174,20 @@ const PatentsForm = () => {
             {formFields.map((item, index) => {
               return (
                 <Row key={index} className="mb-3">
+                  <Form.Group as={Col} controlId="formLname">
+                    <Form.Select
+                      value={creatorTypes[index] || ""}
+                      onChange={(event) =>
+                        handleCreatorTypeChange(event, index)
+                      }
+                    >
+                      <option>---Select Type ---</option>
+                      <option>Author</option>
+                      <option>Editor</option>
+                      <option>Reviewer</option>
+                      <option>Translator</option>
+                    </Form.Select>
+                  </Form.Group>
                   <Form.Group as={Col} controlId="formGridEmail">
                     {/* <Form.Label>First Name</Form.Label> */}
                     <Form.Control
@@ -172,9 +212,7 @@ const PatentsForm = () => {
                     <div as={Col} className="col-sm-1">
                       <Button
                         className="removebutton md:!mt-0 !mt-2"
-                        onClick={() =>
-                          removeField(setFormFields, formFields, index)
-                        }
+                        onClick={() => removeCreatorField(index)}
                       >
                         Remove
                       </Button>
@@ -185,16 +223,12 @@ const PatentsForm = () => {
                   {formFields.length - 1 === index && (
                     <div as={Col} className="col-sm-1">
                       <Button
-                        className="addbutton md:!mt-0 !mt-2"
-                        onClick={() =>
-                          addField(setFormFields, formFields, ["", ""])
-                        }
+                        variant="link"
+                        className="ps-0 text-decoration-none"
+                        onClick={addCreatorField}
                       >
-                        ADD
+                        Add another Creator
                       </Button>
-                      {/* <Button className="addbutton md:!mt-0 !mt-2" onClick={addFields}>
-                        ADD
-                      </Button> */}
                     </div>
                   )}
                   {/* <button onClick={removeOne}>Remove</button> */}
@@ -355,11 +389,7 @@ const PatentsForm = () => {
                 {formFields.map((item, index) => {
                   const formatted = formatCreatorForCitation(item[0], item[1]);
                   if (!formatted) return null;
-                  return (
-                    <span key={index}>
-                      {formatted}
-                    </span>
-                  );
+                  return <span key={index}>{formatted}</span>;
                 })}
                 {patentsCitation.patientApplicationCountry === "" ? (
                   ""
