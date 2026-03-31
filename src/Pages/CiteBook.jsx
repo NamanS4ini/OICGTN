@@ -55,7 +55,9 @@ const CiteBook = () => {
         </button>
       </div>
 
-      <div className="mx-auto w-full max-w-6xl">{renderForm()}</div>
+      <div className="mx-auto w-full max-w-6xl" key={selectedForm}>
+        {renderForm()}
+      </div>
     </div>
   );
 };

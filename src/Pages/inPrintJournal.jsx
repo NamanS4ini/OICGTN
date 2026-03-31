@@ -1,6 +1,6 @@
-import React from 'react';
-import SerialContributionForm from '../Components/SerialContribution/SerialContribution';
-import CitContainer from '../Components/Container';
+import React from "react";
+import SerialContributionForm from "../Components/SerialContribution/SerialContribution";
+import CitContainer from "../Components/Container";
 
 const InPrintJournal = () => {
   return (
@@ -8,6 +8,6 @@ const InPrintJournal = () => {
       <SerialContributionForm />
     </CitContainer>
   );
-}
+};
 
 export default InPrintJournal;

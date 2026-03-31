@@ -31,7 +31,9 @@ const ElectronicMessage = () => {
   const formatCreatorForCitation = (firstName, lastName) => {
     const safeFirst = (firstName || "").trim();
     const safeLast = (lastName || "").trim();
-    const firstInitial = safeFirst ? `${safeFirst.charAt(0).toUpperCase()}.` : "";
+    const firstInitial = safeFirst
+      ? `${safeFirst.charAt(0).toUpperCase()}.`
+      : "";
     const upperLast = safeLast ? safeLast.toUpperCase() : "";
     if (!upperLast && !firstInitial) return "";
     if (!upperLast) return `${firstInitial}, `;
@@ -42,7 +44,9 @@ const ElectronicMessage = () => {
   const formatCreatorInline = (firstName, lastName) => {
     const safeFirst = (firstName || "").trim();
     const safeLast = (lastName || "").trim();
-    const firstInitial = safeFirst ? `${safeFirst.charAt(0).toUpperCase()}.` : "";
+    const firstInitial = safeFirst
+      ? `${safeFirst.charAt(0).toUpperCase()}.`
+      : "";
     const upperLast = safeLast ? safeLast.toUpperCase() : "";
     return [firstInitial, upperLast].filter(Boolean).join(" ");
   };
@@ -66,6 +70,7 @@ const ElectronicMessage = () => {
   // };
 
   const [formFields, setFormFields] = useState([["", ""]]);
+  const [creatorTypes, setCreatorTypes] = useState([""]);
   const [medium, setMedium] = useState([""]);
   const [availability, setAvailability] = useState([""]);
 
@@ -89,6 +94,27 @@ const ElectronicMessage = () => {
     UseStateName([...stateName]);
   };
 
+  const handleCreatorTypeChange = (event, index) => {
+    const data = [...creatorTypes];
+    data[index] = event.target.value;
+    setCreatorTypes(data);
+  };
+
+  const addCreatorField = () => {
+    const previousType = creatorTypes[creatorTypes.length - 1] || "";
+    setFormFields([...formFields, ["", ""]]);
+    setCreatorTypes([...creatorTypes, previousType]);
+  };
+
+  const removeCreatorField = (index) => {
+    const nextFormFields = [...formFields];
+    const nextTypes = [...creatorTypes];
+    nextFormFields.splice(index, 1);
+    nextTypes.splice(index, 1);
+    setFormFields(nextFormFields);
+    setCreatorTypes(nextTypes);
+  };
+
   return (
     <>
       <div className="serial">
@@ -102,6 +128,18 @@ const ElectronicMessage = () => {
           {formFields.map((item, index) => {
             return (
               <Row key={index} className="mb-3">
+                <Form.Group as={Col} controlId="formLname">
+                  <Form.Select
+                    value={creatorTypes[index] || ""}
+                    onChange={(event) => handleCreatorTypeChange(event, index)}
+                  >
+                    <option>---Select Type ---</option>
+                    <option>Author</option>
+                    <option>Editor</option>
+                    <option>Reviewer</option>
+                    <option>Translator</option>
+                  </Form.Select>
+                </Form.Group>
                 <Form.Group as={Col} controlId="formGridEmail">
                   <Form.Control
                     onChange={(event) => handleFormChange(event, index)}
@@ -124,9 +162,7 @@ const ElectronicMessage = () => {
                   <div as={Col} className="col-sm-1">
                     <Button
                       className="removebutton md:!mt-0 !mt-2"
-                      onClick={() =>
-                        removeField(setFormFields, formFields, index)
-                      }
+                      onClick={() => removeCreatorField(index)}
                     >
                       Remove
                     </Button>
@@ -137,16 +173,12 @@ const ElectronicMessage = () => {
                 {formFields.length - 1 === index && (
                   <div as={Col} className="col-sm-1">
                     <Button
-                      className="addbutton md:!mt-0 !mt-2 md:mx-5"
-                      onClick={() =>
-                        addField(setFormFields, formFields, ["", ""])
-                      }
+                      variant="link"
+                      className="ps-0 text-decoration-none"
+                      onClick={addCreatorField}
                     >
-                      ADD
+                      Add another Creator
                     </Button>
-                    {/* <Button className="addbutton md:!mt-0 !mt-2" onClick={addFields}>
-                        ADD
-                      </Button> */}
                   </div>
                 )}
               </Row>
@@ -340,11 +372,7 @@ const ElectronicMessage = () => {
                 {formFields.map((item, index) => {
                   const formatted = formatCreatorForCitation(item[0], item[1]);
                   if (!formatted) return null;
-                  return (
-                    <span key={index}>
-                      {formatted}
-                    </span>
-                  );
+                  return <span key={index}>{formatted}</span>;
                 })}
                 {electronicCitation.year === "" ? (
                   ""

@@ -33,7 +33,7 @@ const App = () => {
         <div>
           <Header />
         </div>
-          <Menubar />
+        <Menubar />
         <div className="flex-grow">
           <Routes base>
             <Route path="/" element={<Home />} />

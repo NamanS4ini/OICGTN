@@ -1,17 +1,14 @@
 import React, { useState } from "react";
-import SerialForm from "../Components/Serial/SerialForm";
 import SerialContributionForm from "../Components/SerialContribution/SerialContribution";
 
 const CiteJournal = () => {
-  const [selectedForm, setSelectedForm] = useState("journal");
+  const [selectedForm, setSelectedForm] = useState("inprint");
 
   const renderForm = () => {
     switch (selectedForm) {
-      case "journal":
-        return <SerialForm />;
-      case "ejournal":
-        return <SerialForm type="E" />;
-      case "contribution":
+      case "inprint":
+        return <SerialContributionForm />;
+      case "online":
         return <SerialContributionForm />;
       default:
         return null;
@@ -22,39 +19,30 @@ const CiteJournal = () => {
     <div className="w-full min-h-screen bg-gray-50 p-4">
       <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-center gap-3 mb-8">
         <button
-          onClick={() => setSelectedForm("journal")}
+          onClick={() => setSelectedForm("inprint")}
           className={`px-4 py-2 font-semibold rounded-lg transition duration-300 ${
-            selectedForm === "journal"
+            selectedForm === "inprint"
               ? "bg-green-600 text-white"
               : "bg-green-500 text-white hover:bg-green-600"
           }`}
         >
-          Journal
+          In-Print Journal
         </button>
         <span className="text-gray-400 text-xl hidden sm:inline">|</span>
         <button
-          onClick={() => setSelectedForm("ejournal")}
+          onClick={() => setSelectedForm("online")}
           className={`px-4 py-2 font-semibold rounded-lg transition duration-300 ${
-            selectedForm === "ejournal"
+            selectedForm === "online"
               ? "bg-green-600 text-white"
               : "bg-green-500 text-white hover:bg-green-600"
           }`}
         >
-          E-Journal
-        </button>
-        <span className="text-gray-400 text-xl hidden sm:inline">|</span>
-        <button
-          onClick={() => setSelectedForm("contribution")}
-          className={`px-4 py-2 font-semibold rounded-lg transition duration-300 ${
-            selectedForm === "contribution"
-              ? "bg-green-600 text-white"
-              : "bg-green-500 text-white hover:bg-green-600"
-          }`}
-        >
-          Journal Contribution
+          Online Journal
         </button>
       </div>
-      <div className="mx-auto w-full max-w-6xl">{renderForm()}</div>
+      <div className="mx-auto w-full max-w-6xl" key={selectedForm}>
+        {renderForm()}
+      </div>
     </div>
   );
 };
