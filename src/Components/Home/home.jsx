@@ -240,7 +240,7 @@ const HomeComponent = () => {
       </div>
       <p className="text-center text-gray-500 text-sm mt-1 mb-2">
         Select a source type below and fill in the details to generate your
-        citation
+        citation manually
       </p>
 
       {/* Sections converted to page links for streamlined same-page experiences */}
@@ -253,7 +253,7 @@ const HomeComponent = () => {
             >
               Cite a Book
             </button>
-            <p className="text-gray-600 text-sm mt-1">Book | e-Book | Book Contribution on one page</p>
+            <p className="text-gray-600 text-sm mt-1">Book | e-Book | Book Contribution</p>
           </div>
 
           <div className="flex-1 rounded-lg p-4 bg-green-50 border border-green-100">
@@ -263,7 +263,7 @@ const HomeComponent = () => {
             >
               Cite a Journal
             </button>
-            <p className="text-gray-600 text-sm mt-1">Journal | E-Journal | Journal Contribution on one page</p>
+            <p className="text-gray-600 text-sm mt-1">Journal | E-Journal | Journal Contribution</p>
           </div>
 
           <div className="flex-1 rounded-lg p-4 bg-purple-50 border border-purple-100">
@@ -273,7 +273,7 @@ const HomeComponent = () => {
             >
               Cite Other Sources
             </button>
-            <p className="text-gray-600 text-sm mt-1">Websites | Electronic Messages | Patents on one page</p>
+            <p className="text-gray-600 text-sm mt-1">Websites | Electronic Messages | Patents</p>
           </div>
         </div>
       </div>

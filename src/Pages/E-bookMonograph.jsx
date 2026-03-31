@@ -4,7 +4,7 @@ import CitContainer from '../Components/Container';
 
 const EBookMonograph = ()=> {
   return (
-    <CitContainer title="E-Book and Monograph">
+    <CitContainer title="E-Book">
        <BooksForm type={"e"}/>        
     </CitContainer>
   );

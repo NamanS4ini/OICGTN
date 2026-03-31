@@ -4,7 +4,7 @@ import CitContainer from '../Components/Container';
 
 const BookMonograph = ()=> {
   return (
-    <CitContainer title="Book and Monograph">
+    <CitContainer title="Book">
        <BooksForm/>        
     </CitContainer>
   );

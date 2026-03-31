@@ -9,7 +9,7 @@ const routeForForm = (form) => {
   switch (form) {
     case "book":
       return "/book-and-monograph";
-    case "book-contribution":
+    case "Chapter in Book":
       return "/contribution-within-book";
     case "serial-contribution":
       return "/serial-contributions";
@@ -189,8 +189,8 @@ const SearchBox = () => {
       >
         <option value="">Autofill: Any</option>
         <option value="book">Book</option>
-        <option value="book-contribution">Book Contribution</option>
-        <option value="serial-contribution">Journal Contribution</option>
+        <option value="book-contribution">Chapter in Book</option>
+        <option value="serial-contribution">Journal</option>
         <option value="website">Website</option>
         <option value="patent">Patent</option>
         <option value="electronic-message">Electronic Message</option>
