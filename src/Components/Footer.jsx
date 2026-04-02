@@ -31,10 +31,10 @@ export default function Footer() {
   ];
   return (
     <div
-      className="text-white d-flex flex-column align-items-center mt-5 pt-3"
+      className="text-white d-flex flex-column align-items-center mt-4 pt-2"
       style={{ backgroundColor: "#192F59" }}
     >
-      <span className="text-center px-2" style={{fontSize: "clamp(1rem, 2vw, 1.3rem)"}}>Designed Developed and Maintained by</span>
+      <span className="text-center px-2" style={{fontSize: "clamp(1rem, 2vw, 1.1rem)"}}>Designed Developed and Maintained by</span>
       <div
       className="footer-row"
         style={{
@@ -45,12 +45,12 @@ export default function Footer() {
       >
         <div className="footer-left" style={{flex:"3", borderLeft:"solid white 2px", paddingLeft:"clamp(1rem, 5vw, 5%)"}}>
         
-        <p style={{fontSize:"clamp(1rem, 3vw, 1.3rem)"}}><b>Mr. Naresh Kumar</b></p><a href="https://kumarnaresh.weebly.com/"> https://kumarnaresh.weebly.com/ </a>
+        <p style={{fontSize:"clamp(1rem, 3vw, 1.2rem)"}}><b>Mr. Naresh Kumar</b></p><a href="https://kumarnaresh.weebly.com/"> https://kumarnaresh.weebly.com/ </a>
         <p></p>
         {/* <p><b>Prof. Madhusudhan Margam</b></p><a href="http://atfi.dlis.du.ac.in/drmadhusudhan.php"> http://atfi.dlis.du.ac.in/drmadhusudhan.php </a> */}
         </div>
          <div className="footer-right" style={{flex:"3", borderLeft:"solid white 2px", paddingLeft:"clamp(1rem, 5vw, 5%)"}}>
-          <div className="text-center" style={{fontSize:"clamp(1rem, 3vw, 1.3rem)"}}><p><b>Prof. Madhusudhan Margam</b></p></div>
+          <div className="text-center" style={{fontSize:"clamp(1rem, 3vw, 1.2rem)"}}><p><b>Prof. Madhusudhan Margam</b></p></div>
           <div className="d-flex justify-content-around" id="developersName">
           <a href="http://atfi.dlis.du.ac.in/drmadhusudhan.php"> http://atfi.dlis.du.ac.in/drmadhusudhan.php </a>
             {/* {data.map((person, i) => (
