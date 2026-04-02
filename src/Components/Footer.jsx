@@ -34,7 +34,7 @@ export default function Footer() {
       className="text-white d-flex flex-column align-items-center mt-5 pt-3"
       style={{ backgroundColor: "#192F59" }}
     >
-      <span className="text-center px-2" style={{fontSize: "clamp(1rem, 3vw, 1.3rem)"}}>Designed Developed and Maintained by</span>
+      <span className="text-center px-2" style={{fontSize: "clamp(1rem, 2vw, 1.3rem)"}}>Designed Developed and Maintained by</span>
       <div
       className="footer-row"
         style={{

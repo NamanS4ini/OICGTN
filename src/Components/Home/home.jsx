@@ -284,8 +284,8 @@ const HomeComponent = () => {
         <Slider />
       </div>
 
-      <div className="w-70 mt-10 md:ml-20 md:mr-20 rounded-lg flex font-sans justify-center items-center flex-col bg-gray-200">
-        <h4 className="mt-4 md:p-0 p-2 font-bold text-center font-sans text-base">
+      <div className="w-70 mt-10 md:ml-20 md:mr-20 rounded-lg flex font-sans justify-center items-center flex-col bg-light_blue-200">
+        <h4 className="mt-5 md:p-0 p-2 font-bold text-center font-sans text-base">
           About Online Indian Citation Generation Tool
         </h4>
         <p className="col-lg-10 md:p-0 p-2 fs-5">
@@ -296,7 +296,7 @@ const HomeComponent = () => {
           information resources, including books, serial publications, websites,
           and patents, in accordance with the Indian Bibliographic Reference
           Style. By streamlining the citation process, the tool supports
-          accuracy, consistency, and improved academic productivity..
+          accuracy, consistency, and improved academic productivity.
         </p>
       </div>
 
