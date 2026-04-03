@@ -501,7 +501,14 @@ const BooksForm = ({ type }) => {
                     [{booksCitation.year}]{". "}
                   </>
                 )}
-                <span className="title">{booksCitation.titleOfTheItem}</span>{" "}
+                {booksCitation.titleOfTheItem === "" ? (
+                  ""
+                ) : (
+                  <>
+                    <span className="title">{booksCitation.titleOfTheItem}</span>
+                    {". "}
+                  </>
+                )}
                 {booksCitation.place === "" ? "" : <>{booksCitation.place}: </>}
                 {publisher.length <= 1 &&
                 (publisher[0] === "" || publisher[0] === undefined) ? (

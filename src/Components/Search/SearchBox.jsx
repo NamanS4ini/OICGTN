@@ -9,6 +9,8 @@ const routeForForm = (form) => {
   switch (form) {
     case "book":
       return "/book-and-monograph";
+    case "book-contribution":
+      return "/contribution-within-book";
     case "Chapter in Book":
       return "/contribution-within-book";
     case "serial-contribution":

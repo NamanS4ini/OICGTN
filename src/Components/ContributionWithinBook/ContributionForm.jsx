@@ -38,23 +38,42 @@ const ContributionForm = () => {
     toast.success("Copied to Clipboard");
   };
 
-  const formatCreatorForCitation = (firstName, lastName) => {
+  const getAuthorDisplayName = (firstName, lastName, mode) => {
     const safeFirst = (firstName || "").trim();
     const safeLast = (lastName || "").trim();
-    const firstInitial = safeFirst ? `${safeFirst.charAt(0).toUpperCase()}.` : "";
     const upperLast = safeLast ? safeLast.toUpperCase() : "";
+
+    if (mode === "inText") {
+      return upperLast;
+    }
+
+    const firstInitial = safeFirst ? `${safeFirst.charAt(0).toUpperCase()}.` : "";
     if (!upperLast && !firstInitial) return "";
     if (!upperLast) return `${firstInitial}, `;
     if (!firstInitial) return `${upperLast}, `;
     return `${upperLast}, ${firstInitial}, `;
   };
 
-  const formatCreatorInline = (firstName, lastName) => {
-    const safeFirst = (firstName || "").trim();
-    const safeLast = (lastName || "").trim();
-    const firstInitial = safeFirst ? `${safeFirst.charAt(0).toUpperCase()}.` : "";
-    const upperLast = safeLast ? safeLast.toUpperCase() : "";
-    return [firstInitial, upperLast].filter(Boolean).join(" ");
+  const formatAuthors = (authors, mode) => {
+    const normalizedAuthors = authors
+      .map((author) => getAuthorDisplayName(author[0], author[1], mode))
+      .filter(Boolean);
+
+    if (normalizedAuthors.length === 0) return "";
+
+    if (normalizedAuthors.length > 5) {
+      return `${normalizedAuthors.slice(0, 5).join(mode === "reference" ? "" : ", ")} et al.`;
+    }
+
+    if (mode === "inText") {
+      if (normalizedAuthors.length === 2) {
+        return normalizedAuthors.join(" & ");
+      }
+
+      return normalizedAuthors.join(", ");
+    }
+
+    return normalizedAuthors.join("");
   };
   const ref = useRef();
   const [result, setResult] = useState(false);
@@ -724,15 +743,7 @@ const ContributionForm = () => {
           <center>
             <div id="output">
               <p ref={ref} id="outputResult">
-                {formFields.map((item, index) => {
-                  const formatted = formatCreatorForCitation(item[0], item[1]);
-                  if (!formatted) return null;
-                  return (
-                    <span key={index}>
-                      {formatted}
-                    </span>
-                  );
-                })}
+                {formatAuthors(formFields, "reference")}
                 {contributionCitation.year === "" ? (
                   ""
                 ) : (
@@ -954,27 +965,22 @@ const ContributionForm = () => {
                   }}
                   className="text-blue-500 cursor-pointer"
                 >
-                  {formFields.map((item, index) => {
-                    const formatted = formatCreatorInline(item[0], item[1]);
-                    if (!formatted) return null;
-                    return (
-                      <span key={index}>
-                        {formatted}
-                        {index < formFields.length - 1 ? ", " : ""}
-                      </span>
-                    );
-                  })}{" "}
-                  {contributionCitation.year === "" ? (
+                  {formatAuthors(formFields, "inText")}{" "}
+                  {contributionCitation.year === "" &&
+                  contributionCitation.rangeOfPageNumbersOfTheContribution ===
+                    "" ? (
                     ""
                   ) : (
                     <>
                       {"("}
                       {contributionCitation.year}
+                      {contributionCitation.rangeOfPageNumbersOfTheContribution ===
+                      ""
+                        ? ""
+                        : `${contributionCitation.year === "" ? "" : ", "}p. ${contributionCitation.rangeOfPageNumbersOfTheContribution}`}
                       {")"}
                     </>
                   )}
-                  {contributionCitation.rangeOfPageNumbers === "" ? "" : ", "}
-                  {contributionCitation.rangeOfPageNumbersOfTheContribution}
                 </p>
               </div>
               <div className="md:flex  gap-10 mx-10">
@@ -986,16 +992,7 @@ const ContributionForm = () => {
                   className="text-blue-500 cursor-pointer"
                 >
                   {"("}
-                  {formFields.map((item, index) => {
-                    const formatted = formatCreatorInline(item[0], item[1]);
-                    if (!formatted) return null;
-                    return (
-                      <span key={index}>
-                        {formatted}
-                        {index < formFields.length - 1 ? " & " : ""}
-                      </span>
-                    );
-                  })}
+                  {formatAuthors(formFields, "inText")}
                   {contributionCitation.year === "" ? (
                     ""
                   ) : (
