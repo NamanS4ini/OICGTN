@@ -970,20 +970,19 @@ const SerialContributionForm = () => {
                   className="text-blue-500 cursor-pointer"
                 >
                   {formatAuthors(formFields, "inText")}
-                  {serialContributionCitation.year === "" ? (
+                  {serialContributionCitation.year === "" &&
+                  serialContributionCitation.rangeOfPageNumbers === "" ? (
                     ""
                   ) : (
                     <>
-                      {" "}
-                      {"("}
+                      {" ("}
                       {serialContributionCitation.year}
+                      {serialContributionCitation.rangeOfPageNumbers === ""
+                        ? ""
+                        : `${serialContributionCitation.year === "" ? "" : ", "}p. ${serialContributionCitation.rangeOfPageNumbers}`}
                       {")"}
                     </>
                   )}
-                  {serialContributionCitation.rangeOfPageNumbers === ""
-                    ? ""
-                    : ", "}
-                  {serialContributionCitation.rangeOfPageNumbers}
                 </p>
               </div>
               <div className="md:flex  gap-10 mx-10">
