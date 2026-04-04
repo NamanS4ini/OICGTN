@@ -98,7 +98,7 @@ const SerialForm = ({type}) => {
         >
           <Row className="mb-3">
             <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label>Title of the Journal</Form.Label>
+              <Form.Label><b>Title of the Journal</b></Form.Label>
               <Form.Control
                 onChange={(e) => onChanging(e)}
                 value={serialCitation.titleOfTheSerial}
@@ -110,7 +110,7 @@ const SerialForm = ({type}) => {
           </Row>
           <Row className="mb-3">
             <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label>Subsidiary Title</Form.Label>
+              <Form.Label><b>Subsidiary Title</b></Form.Label>
               <Form.Control
                 onChange={(e) => onChanging(e)}
                 value={serialCitation.subsidiaryTitles}
@@ -122,7 +122,7 @@ const SerialForm = ({type}) => {
           </Row>
 
           <Row className="mb-3">
-            <Form.Label>Medium Designation</Form.Label>
+            <Form.Label><b>Medium Designation</b></Form.Label>
             {medium.map((item, index) => {
               return (
                 <Row key={index} className="mt-2">
@@ -171,7 +171,7 @@ const SerialForm = ({type}) => {
           </Row>
 
           <Row className="mb-3">
-            <Form.Label>Edition</Form.Label>
+            <Form.Label><b>Edition</b></Form.Label>
             <Form.Group as={Col} controlId="formGridState">
               {/* <Form.Label>Edition</Form.Label> */}
               <Form.Select
@@ -200,7 +200,7 @@ const SerialForm = ({type}) => {
 
           <Row className="mb-3">
             <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label>Year</Form.Label>
+              <Form.Label><b>Year</b></Form.Label>
               <Form.Control
                 onChange={(e) => onChanging(e)}
                 value={serialCitation.year}
@@ -211,7 +211,7 @@ const SerialForm = ({type}) => {
             </Form.Group>
 
             <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label>Place</Form.Label>
+              <Form.Label><b>Place</b></Form.Label>
               <Form.Control
                 onChange={(e) => onChanging(e)}
                 value={serialCitation.place}
@@ -221,7 +221,7 @@ const SerialForm = ({type}) => {
               />
             </Form.Group>
             <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label>Date of Publication</Form.Label>
+              <Form.Label><b>Date of Publication</b></Form.Label>
               <Form.Control
                 onChange={(e) => onChanging(e)}
                 value={serialCitation.dateOfPublication}
@@ -233,7 +233,7 @@ const SerialForm = ({type}) => {
           </Row>
 
           <Row className="mb-3">
-            <Form.Label>Publisher</Form.Label>
+            <Form.Label><b>Publisher</b></Form.Label>
             <Form.Group as={Col} controlId="formGridState">
               <Form.Select
                 defaultValue="Choose..."
@@ -256,7 +256,7 @@ const SerialForm = ({type}) => {
           </Row>
 
           <Row className="mb-3">
-            <Form.Label>Numeration</Form.Label>
+            <Form.Label><b>Numeration</b></Form.Label>
             {numeration.map((item, index) => {
               return (
                 <Row key={index} className="mt-2">
@@ -312,7 +312,7 @@ const SerialForm = ({type}) => {
           </Row>
           <Row className="mb-3">
             <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label>Date of Citation</Form.Label>
+              <Form.Label><b>Date of Citation</b></Form.Label>
               <Form.Control
                 onChange={(e) => onChanging(e)}
                 name="dateOfCitation"
@@ -334,7 +334,7 @@ const SerialForm = ({type}) => {
           </Row>
 
           <Row className="mb-3">
-          <Form.Label>Standard Identifier</Form.Label>
+          <Form.Label><b>Standard Identifier</b></Form.Label>
             <Form.Group as={Col} controlId="formGridState">
               <Form.Select
                 // onChange={(e) => onChanging(e)}
@@ -358,7 +358,7 @@ const SerialForm = ({type}) => {
           </Form.Group>
         </Row>
         <Row>
-            <Form.Label>Availibility and Access</Form.Label>
+            <Form.Label><b>Availibility and Access</b></Form.Label>
             <Form.Group as={Col} controlId="formGridState">              
               <Form.Select
                 // onChange={(e) => onChanging(e)}
@@ -384,7 +384,7 @@ const SerialForm = ({type}) => {
           </Form.Group>
           </Row>
           {type ? null:<Row className="mb-3">
-          <Form.Label>Location</Form.Label>
+          <Form.Label><b>Location</b></Form.Label>
           <Form.Group className="mb-3" controlId="formGridAddress1">
             <Form.Control
               onChange={(e) => onChanging(e)}

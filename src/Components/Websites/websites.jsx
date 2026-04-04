@@ -97,7 +97,6 @@ const WebsitesForm = () => {
   const [publisher, setPublisher] = useState([""]);
   const [numeration, setNumeration] = useState([""]);
   const [standardIdentifier, setStandarIdentifier] = useState([""]);
-  const [availability, setAvailability] = useState([""]);
   const hasCreatorInput = formFields.some(
     (item) => (item[0] || "").trim() || (item[1] || "").trim(),
   );
@@ -169,7 +168,7 @@ const WebsitesForm = () => {
         >
           <Row className="mb-3">
             <Form.Label>
-              <p>Name of Creator(s)</p>
+              <p><b>Name of Creator(s)</b></p>
             </Form.Label>
             {formFields.map((item, index) => {
               return (
@@ -241,7 +240,7 @@ const WebsitesForm = () => {
 
           <Row className="mb-3">
             <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label>Page Title</Form.Label>
+              <Form.Label><b>Page Title</b></Form.Label>
               <Form.Control
                 onChange={(e) => onChanging(e)}
                 value={websitesCitation.pageTitle}
@@ -251,7 +250,7 @@ const WebsitesForm = () => {
               />
             </Form.Group>
             <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label>Website Title</Form.Label>
+              <Form.Label><b>Website Title</b></Form.Label>
               <Form.Control
                 onChange={(e) => onChanging(e)}
                 value={websitesCitation.websiteTitle}
@@ -344,7 +343,7 @@ const WebsitesForm = () => {
 
           <Row className="mb-3">
             <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label>Date of Publication</Form.Label>
+              <Form.Label><b>Date of Publication</b></Form.Label>
               <Form.Control
                 onChange={(e) => onChanging(e)}
                 value={websitesCitation.dateOfPublication}
@@ -361,69 +360,19 @@ const WebsitesForm = () => {
           )}
 
           <Row className="mb-3">
-            <Form.Label>Availibility and Access</Form.Label>
-            {availability.map((item, index) => {
-              return (
-                <Row key={index} className="mt-2">
-                  <Form.Group as={Col} controlId="formAvailability">
-                    <Form.Select defaultValue="Choose...">
-                      <option>---Select Availability and Access---</option>
-                      <option>DOI</option>
-                      <option>URI</option>
-                      <option>URL</option>
-                    </Form.Select>
-                  </Form.Group>
-                  <Form.Group as={Col} controlId="formAvailability">
-                    {/* <Form.Label>Location</Form.Label> */}
-                    <Form.Control
-                      onChange={(event) =>
-                        handleInputChange(
-                          event,
-                          setAvailability,
-                          availability,
-                          index,
-                        )
-                      }
-                      value={item}
-                      name="availabilityY"
-                      type="text"
-                      placeholder={"Enter availability"}
-                    />
-                  </Form.Group>
-                  {availability.length !== 1 ? (
-                    <div as={Col} className="col-sm-1">
-                      <Button
-                        className="removebutton md:!mt-0 !mt-2"
-                        onClick={() =>
-                          removeField(setAvailability, availability, index)
-                        }
-                      >
-                        Remove
-                      </Button>
-                    </div>
-                  ) : (
-                    <></>
-                  )}
-                  {availability.length - 1 === index && (
-                    <div as={Col} className="col-sm-1">
-                      <Button
-                        className="addbutton md:!mt-0 !mt-2"
-                        onClick={() =>
-                          addField(setAvailability, availability, "")
-                        }
-                      >
-                        ADD
-                      </Button>
-                    </div>
-                  )}
-                </Row>
-              );
-            })}
+              <Form.Label><b>URL</b></Form.Label>
+            <Form.Control
+              onChange={(e) => onChanging(e)}
+              value={websitesCitation.availabilityAndAccess}
+              name="availabilityAndAccess"
+              type="text"
+              placeholder={"Enter URL"}
+            />
           </Row>
 
           <Row className="mb-3">
             <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label>Date of Citation</Form.Label>
+              <Form.Label><b>Date of Citation</b></Form.Label>
               <Form.Control
                 onChange={(e) => onChanging(e)}
                 name="dateOfCitation"
@@ -464,34 +413,7 @@ const WebsitesForm = () => {
                   return <span key={index}>{formatted}</span>;
                 })}
 
-                {standardIdentifiersOfCreator.length <= 1 &&
-                (standardIdentifiersOfCreator[0] === "" ||
-                  standardIdentifiersOfCreator[0] === undefined) ? (
-                  ""
-                ) : (
-                  <>
-                    [
-                    {standardIdentifiersOfCreator.map((item, key) => {
-                      return (
-                        <span key={key}>
-                          {item}
-                          {key < standardIdentifiersOfCreator.length - 1 &&
-                            ", "}
-                        </span>
-                      );
-                    })}
-                    ]{". "}
-                  </>
-                )}
 
-                {/* {standardIdentifiersOfCreator.map((item, index) => {
-                  return (
-                    <span key={index}>
-                      {standardIdentifiersOfCreator[index]} {index < standardIdentifiersOfCreator.length - 1 && ', '}{" "}
-                    </>
-                  );
-                })}
-               .{" "} */}
 
                 {websitesCitation.pageTitle === "" ? (
                   ""
@@ -634,20 +556,11 @@ const WebsitesForm = () => {
                     {". "}
                   </>
                 )}
-                {availability.length <= 1 &&
-                (availability[0] === "" || availability[0] === undefined) ? (
+                {websitesCitation.availabilityAndAccess === "" ? (
                   ""
                 ) : (
                   <>
-                    Available from:
-                    {availability.map((item, index) => {
-                      return (
-                        <span key={index}>
-                          {availability[index]}
-                          {index < availability.length - 1 && ", "}
-                        </span>
-                      );
-                    })}
+                    Available from: {websitesCitation.availabilityAndAccess}
                     {". "}
                   </>
                 )}

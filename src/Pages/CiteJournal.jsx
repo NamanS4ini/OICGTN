@@ -7,9 +7,9 @@ const CiteJournal = () => {
   const renderForm = () => {
     switch (selectedForm) {
       case "inprint":
-        return <SerialContributionForm />;
+        return <SerialContributionForm type="print" />;
       case "online":
-        return <SerialContributionForm />;
+        return <SerialContributionForm type="online" />;
       default:
         return null;
     }

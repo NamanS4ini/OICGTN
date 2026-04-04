@@ -27,7 +27,6 @@ const PatentsForm = () => {
     relationships: "",
   });
   const ref = useRef(null);
-  const [showMoreOptions, setShowMoreOptions] = useState(false);
 
   const [result, setResult] = useState(false);
   const onChanging = (e) => {
@@ -169,7 +168,7 @@ const PatentsForm = () => {
           }}
         >
           <Row className="mb-3">
-            <Form.Label>Name of Creator(s)</Form.Label>
+            <Form.Label><b>Name of Creator(s)</b></Form.Label>
             {/* <p></p> */}
             {formFields.map((item, index) => {
               return (
@@ -238,7 +237,7 @@ const PatentsForm = () => {
           </Row>
           <Row className="mb-3">
             <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label>Patent application country</Form.Label>
+              <Form.Label><b>Patent application country</b></Form.Label>
               <Form.Control
                 onChange={(e) => onChanging(e)}
                 value={patentsCitation.patientApplicationCountry}
@@ -250,7 +249,7 @@ const PatentsForm = () => {
           </Row>
           <Row className="mb-3">
             <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label>Title of the information resource</Form.Label>
+              <Form.Label><b>Title of the information resource</b></Form.Label>
               <Form.Control
                 onChange={(e) => onChanging(e)}
                 value={patentsCitation.titleOfTheInformationSource}
@@ -263,7 +262,7 @@ const PatentsForm = () => {
 
           <Row className="mb-3">
             <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label>Date Of Application</Form.Label>
+              <Form.Label><b>Date Of Application</b></Form.Label>
               <Form.Control
                 onChange={(e) => onChanging(e)}
                 value={patentsCitation.dateOfApplication}
@@ -276,7 +275,7 @@ const PatentsForm = () => {
 
           <Row className="mb-3">
             <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label>Date Of Issuance</Form.Label>
+              <Form.Label><b>Date Of Issuance</b></Form.Label>
               <Form.Control
                 onChange={(e) => onChanging(e)}
                 value={patentsCitation.dateOfIssuance}
@@ -286,7 +285,7 @@ const PatentsForm = () => {
               />
             </Form.Group>
             <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label>Patent Number</Form.Label>
+              <Form.Label><b>Patent Number</b></Form.Label>
               <Form.Control
                 onChange={(e) => onChanging(e)}
                 value={patentsCitation.patentNumber}
@@ -296,72 +295,6 @@ const PatentsForm = () => {
               />
             </Form.Group>
           </Row>
-          <Button
-            variant="link"
-            className="ps-0 text-decoration-none"
-            onClick={() => setShowMoreOptions((prev) => !prev)}
-          >
-            {showMoreOptions ? "Hide More Options" : "More Options"}
-          </Button>
-
-          {showMoreOptions && (
-            <>
-              <Row className="mb-3">
-                <Form.Label>
-                  Standard Identifiers of creaters' public identities
-                </Form.Label>
-                <Form.Group as={Col} controlId="formGridState">
-                  <Form.Select defaultValue="Choose...">
-                    <option>Choose...</option>
-                    <option>Orcid Id</option>
-                  </Form.Select>
-                </Form.Group>
-                <Form.Group as={Col} controlId="formGridEmail">
-                  <Form.Control
-                    onChange={(e) => onChanging(e)}
-                    value={patentsCitation.standardIdentifiersOfCreator}
-                    name="standardIdentifiersOfCreator"
-                    type="text"
-                    placeholder="Enter Standard Identifiers Of Creator"
-                  />
-                </Form.Group>
-              </Row>
-
-              <Row className="mb-3">
-                <Form.Label>Persistent Identifiers</Form.Label>
-                <Form.Group as={Col} controlId="formGridState">
-                  <Form.Select defaultValue="Choose...">
-                    <option>Choose...</option>
-                    <option>URL</option>
-                    <option>URI</option>
-                    <option>DOI</option>
-                  </Form.Select>
-                </Form.Group>
-                <Form.Group as={Col} controlId="formGridEmail">
-                  <Form.Control
-                    onChange={(e) => onChanging(e)}
-                    value={patentsCitation.persistentIdentifiers}
-                    name="persistentIdentifiers"
-                    type="text"
-                    placeholder="Enter Item Persistent Identifiers"
-                  />
-                </Form.Group>
-              </Row>
-              <Row className="mb-3">
-                <Form.Group as={Col} controlId="formGridEmail">
-                  <Form.Label>Date of Citation</Form.Label>
-                  <Form.Control
-                    onChange={(e) => onChanging(e)}
-                    value={patentsCitation.dateOfCitation}
-                    name="dateOfCitation"
-                    type="text"
-                    placeholder="Enter Date"
-                  />
-                </Form.Group>
-              </Row>
-            </>
-          )}
-
           <div>
             <center>
               <Button variant="primary" type="submit">

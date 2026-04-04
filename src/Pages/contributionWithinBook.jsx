@@ -4,7 +4,7 @@ import CitContainer from '../Components/Container';
 
 const ContributionWithinBook = () => {
   return (
-    <CitContainer title="Chapter in Book">
+    <CitContainer title="Book Chapter">
       <ContributionForm />
     </CitContainer>
   );

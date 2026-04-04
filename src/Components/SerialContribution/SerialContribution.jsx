@@ -9,7 +9,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { MetadataContext } from "../../context/MetadataContext";
 import { mapToFormMetadata } from "../../api/metadataMapper";
 
-const SerialContributionForm = () => {
+const SerialContributionForm = ({ type }) => {
   const [serialContributionCitation, setSerialContributionCitation] = useState({
     lastName: "",
     firstName: "",
@@ -24,7 +24,8 @@ const SerialContributionForm = () => {
     publisher: "",
     dateOfPublication: "",
     numeration: "",
-    rangeOfPageNumbers: "",
+    pageStart: "",
+    pageEnd: "",
     dateOfCitation: "",
     standardIdentifier: "",
     availabilityAndAccess: "",
@@ -74,7 +75,6 @@ const SerialContributionForm = () => {
   };
   const ref = useRef();
   const [result, setResult] = useState(false);
-  const [showMoreOptions, setShowMoreOptions] = useState(false);
   const onChanging = (e) => {
     const name = e.target.name;
     setSerialContributionCitation({
@@ -134,6 +134,7 @@ const SerialContributionForm = () => {
   const [standardIdentifier, setStandarIdentifier] = useState([""]);
   const [availability, setAvailability] = useState([""]);
   const { metadata, chosenForm } = useContext(MetadataContext);
+  const isOnline = type === "online";
   useEffect(() => {
     if (!metadata) return;
     if (chosenForm && chosenForm !== "serial-contribution" && chosenForm !== "")
@@ -148,7 +149,14 @@ const SerialContributionForm = () => {
       place: metadata.place || prev.place,
       dateOfPublication: metadata.dateOfPublication || prev.dateOfPublication,
       numeration: metadata.volume || prev.numeration,
-      rangeOfPageNumbers: metadata.pages || prev.rangeOfPageNumbers,
+      pageStart:
+        metadata.pages && metadata.pages.toString().split(/[-–]/)[0]
+          ? metadata.pages.toString().split(/[-–]/)[0]
+          : prev.pageStart,
+      pageEnd:
+        metadata.pages && metadata.pages.toString().split(/[-–]/)[1]
+          ? metadata.pages.toString().split(/[-–]/)[1]
+          : prev.pageEnd,
       availabilityAndAccess:
         metadata.url || metadata.doi || prev.availabilityAndAccess,
     }));
@@ -275,25 +283,27 @@ const SerialContributionForm = () => {
           </Row>
 
           <Row className="mb-3">
-            <Form.Group as={Col} controlId="formYear">
-              <Form.Label>Year</Form.Label>
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={serialContributionCitation.year}
-                name="year"
-                type="text"
-                placeholder="Enter Year"
-              />
-            </Form.Group>
-
             <Form.Group as={Col} controlId="formContribution">
-              <Form.Label>Title of the contribution</Form.Label>
+              <Form.Label><b>Title</b></Form.Label>
               <Form.Control
                 onChange={(e) => onChanging(e)}
                 value={serialContributionCitation.titleOfTheContribution}
                 name="titleOfTheContribution"
                 type="text"
                 placeholder="Enter Title"
+              />
+            </Form.Group>
+          </Row>
+
+          <Row className="mb-3">
+            <Form.Group as={Col} controlId="formYear">
+              <Form.Label><b>Year</b></Form.Label>
+              <Form.Control
+                onChange={(e) => onChanging(e)}
+                value={serialContributionCitation.year}
+                name="year"
+                type="text"
+                placeholder="Enter Year"
               />
             </Form.Group>
           </Row>
@@ -317,13 +327,13 @@ const SerialContributionForm = () => {
                 </Form.Select>
               </Form.Group>
               <Form.Group as={Col} controlId="formHost">
-                <Form.Label>Title of the host Journal</Form.Label>
+                <Form.Label><b>Journal Name</b></Form.Label>
                 <Form.Control
                   onChange={(e) => onChanging(e)}
                   value={serialContributionCitation.titleOfTheHostSerial}
                   name="titleOfTheHostSerial"
                   type="text"
-                  placeholder="Enter Title "
+                  placeholder="Enter Journal Name "
                 />
               </Form.Group>
             </Row>
@@ -331,13 +341,13 @@ const SerialContributionForm = () => {
 
           <Row className="mb-3">
             <Form.Group as={Col} controlId="formHost">
-              <Form.Label>Title of the host Journal</Form.Label>
+              <Form.Label><b>Journal Name</b></Form.Label>
               <Form.Control
                 onChange={(e) => onChanging(e)}
                 value={serialContributionCitation.titleOfTheHostSerial}
                 name="titleOfTheHostSerial"
                 type="text"
-                placeholder="Enter Title "
+                placeholder="Enter Journal Name "
               />
             </Form.Group>
           </Row>
@@ -510,7 +520,7 @@ const SerialContributionForm = () => {
             </Row>
           )}
           <Row className="mb-3">
-            <Form.Label>Numeration</Form.Label>
+            <Form.Label><b>Volume/Number/Issue</b></Form.Label>
             {numeration.map((item, index) => {
               return (
                 <Row key={index} className="mt-2">
@@ -568,173 +578,60 @@ const SerialContributionForm = () => {
             })}
           </Row>
           <Row className="mb-3">
-            <Form.Group as={Col} controlId="formRange">
-              <Form.Label>Range of page number(s) </Form.Label>
+            <Form.Group as={Col} controlId="formPageStart">
+              <Form.Label><b>Page Start</b></Form.Label>
               <Form.Control
                 onChange={(e) => onChanging(e)}
-                value={serialContributionCitation.rangeOfPageNumbers}
-                name="rangeOfPageNumbers"
+                value={serialContributionCitation.pageStart}
+                name="pageStart"
                 type="text"
-                placeholder="Enter Range "
+                placeholder="Enter Page Start"
+              />
+            </Form.Group>
+            <Form.Group as={Col} controlId="formPageEnd">
+              <Form.Label><b>Page End</b></Form.Label>
+              <Form.Control
+                onChange={(e) => onChanging(e)}
+                value={serialContributionCitation.pageEnd}
+                name="pageEnd"
+                type="text"
+                placeholder="Enter Page End"
               />
             </Form.Group>
           </Row>
-          <Button
-            variant="link"
-            className="ps-0 text-decoration-none"
-            onClick={() => setShowMoreOptions((prev) => !prev)}
-          >
-            {showMoreOptions ? "Hide More Options" : "More Options"}
-          </Button>
 
-          {showMoreOptions && (
+          {isOnline && (
             <Row className="mb-3">
-              <Form.Group as={Col} controlId="formCitation">
-                <Form.Label>Date of citation</Form.Label>
+              <Form.Group as={Col} controlId="formIdentifier">
+                <Form.Label><b>DOI</b></Form.Label>
                 <Form.Control
-                  onChange={(e) => onChanging(e)}
-                  value={serialContributionCitation.dateOfCitation}
-                  name="dateOfCitation"
+                  onChange={(event) =>
+                    handleInputChange(event, setStandarIdentifier, standardIdentifier, 0)
+                  }
+                  value={standardIdentifier[0] || ""}
+                  name="standardIdentifier"
                   type="text"
-                  placeholder="Enter Date"
+                  placeholder="Enter DOI"
                 />
               </Form.Group>
             </Row>
           )}
-          {showMoreOptions && (
+          {isOnline && (
             <Row className="mb-3">
-              <Form.Label>Standard Identifier</Form.Label>
-              {standardIdentifier.map((item, index) => {
-                return (
-                  <Row key={index} className="mt-2">
-                    <Form.Group as={Col} controlId="formIdentifier">
-                      <Form.Select>
-                        <option value>Choose...</option>
-                        <option>ISSN</option>
-                        <option>eISSN</option>
-
-                        <option>DOI</option>
-                      </Form.Select>
-                    </Form.Group>
-                    <Form.Group as={Col} controlId="formRange">
-                      <Form.Control
-                        onChange={(event) =>
-                          handleInputChange(
-                            event,
-                            setStandarIdentifier,
-                            standardIdentifier,
-                            index,
-                          )
-                        }
-                        value={item}
-                        name="standardIdentifier"
-                        type="text"
-                        placeholder="Enter Standard Identifier "
-                      />
-                    </Form.Group>
-                    {standardIdentifier.length !== 1 ? (
-                      <div as={Col} className="col-sm-1">
-                        <Button
-                          className="removebutton md:!mt-0 !mt-2"
-                          onClick={() =>
-                            removeField(
-                              setStandarIdentifier,
-                              standardIdentifier,
-                              index,
-                            )
-                          }
-                        >
-                          Remove
-                        </Button>
-                      </div>
-                    ) : (
-                      <></>
-                    )}
-
-                    {standardIdentifier.length - 1 === index && (
-                      <div as={Col} className="col-sm-1">
-                        <Button
-                          className="addbutton md:!mt-0 !mt-2"
-                          onClick={() =>
-                            addField(
-                              setStandarIdentifier,
-                              standardIdentifier,
-                              "",
-                            )
-                          }
-                        >
-                          ADD
-                        </Button>
-                      </div>
-                    )}
-                  </Row>
-                );
-              })}
+              <Form.Group as={Col} controlId="formURL">
+                <Form.Label><b>URL</b></Form.Label>
+                <Form.Control
+                  onChange={(event) =>
+                    handleInputChange(event, setAvailability, availability, 0)
+                  }
+                  value={availability[0] || ""}
+                  name="availabilityAndAccess"
+                  type="text"
+                  placeholder="Enter URL"
+                />
+              </Form.Group>
             </Row>
           )}
-          <Row className="mb-3">
-            <Form.Label>Availability and access</Form.Label>
-            {availability.map((item, index) => {
-              return (
-                <Row key={index} className="mt-2">
-                  <Form.Group as={Col} controlId="formAccess">
-                    <Form.Select
-                      onChange={(e) => onChanging(e)}
-                      value={serialContributionCitation.availabilityAndAccess}
-                      name="availabilityAndAccess"
-                    >
-                      <option value>Choose...</option>
-                      <option>DOI</option>
-                      <option>URI</option>
-                      <option>URL</option>
-                    </Form.Select>
-                  </Form.Group>
-                  <Form.Group as={Col} controlId="formRange">
-                    <Form.Control
-                      onChange={(event) =>
-                        handleInputChange(
-                          event,
-                          setAvailability,
-                          availability,
-                          index,
-                        )
-                      }
-                      value={item}
-                      name="availabilityAndAccess"
-                      type="text"
-                      placeholder="Enter Availability And Access "
-                    />
-                  </Form.Group>
-                  {availability.length !== 1 ? (
-                    <div as={Col} className="col-sm-1">
-                      <Button
-                        className="removebutton md:!mt-0 !mt-2"
-                        onClick={() =>
-                          removeField(setAvailability, availability, index)
-                        }
-                      >
-                        Remove
-                      </Button>
-                    </div>
-                  ) : (
-                    <></>
-                  )}
-                  {availability.length - 1 === index && (
-                    <div as={Col} className="col-sm-1">
-                      <Button
-                        className="addbutton md:!mt-0 !mt-2"
-                        onClick={() =>
-                          addField(setAvailability, availability, "")
-                        }
-                      >
-                        ADD
-                      </Button>
-                    </div>
-                  )}
-                </Row>
-              );
-            })}
-          </Row>
           {false && (
             <Row className="mb-3">
               <Form.Group as={Col} controlId="formLocation">
@@ -902,13 +799,17 @@ const SerialContributionForm = () => {
                   }
                   return numStr ? `${numStr}. ` : "";
                 })()}
-                {serialContributionCitation.rangeOfPageNumbers === "" ? (
+                {(serialContributionCitation.pageStart === "" &&
+                  serialContributionCitation.pageEnd === "") ? (
                   ""
                 ) : (
                   <>
                     {"pp. "}
-                    {serialContributionCitation.rangeOfPageNumbers}
-                    {", "}
+                    {serialContributionCitation.pageStart}
+                    {serialContributionCitation.pageEnd
+                      ? `–${serialContributionCitation.pageEnd}`
+                      : ""}
+                    {". "}
                   </>
                 )}
                 {serialContributionCitation.dateOfCitation === "" ? (
@@ -918,9 +819,18 @@ const SerialContributionForm = () => {
                     [viewed {serialContributionCitation.dateOfCitation}]{". "}
                   </>
                 )}
-                {standardIdentifier.length <= 1 &&
-                (standardIdentifier[0] === "" ||
-                  standardIdentifier[0] === undefined) ? (
+                {isOnline ? (
+                  standardIdentifier[0] && standardIdentifier[0] !== "" ? (
+                    <>
+                      DOI {standardIdentifier[0]}
+                      {". "}
+                    </>
+                  ) : (
+                    ""
+                  )
+                ) : standardIdentifier.length <= 1 &&
+                  (standardIdentifier[0] === "" ||
+                    standardIdentifier[0] === undefined) ? (
                   ""
                 ) : (
                   <>
@@ -970,16 +880,20 @@ const SerialContributionForm = () => {
                   className="text-blue-500 cursor-pointer"
                 >
                   {formatAuthors(formFields, "inText")}
-                  {serialContributionCitation.year === "" &&
-                  serialContributionCitation.rangeOfPageNumbers === "" ? (
+                  {(serialContributionCitation.year === "" &&
+                  serialContributionCitation.pageStart === "" &&
+                  serialContributionCitation.pageEnd === "") ? (
                     ""
                   ) : (
                     <>
                       {" ("}
                       {serialContributionCitation.year}
-                      {serialContributionCitation.rangeOfPageNumbers === ""
-                        ? ""
-                        : `${serialContributionCitation.year === "" ? "" : ", "}p. ${serialContributionCitation.rangeOfPageNumbers}`}
+                      {(serialContributionCitation.pageStart !== "" ||
+                        serialContributionCitation.pageEnd !== "") ? (
+                        `${serialContributionCitation.year === "" ? "" : ", "}p. ${serialContributionCitation.pageStart}${serialContributionCitation.pageEnd ? `–${serialContributionCitation.pageEnd}` : ""}`
+                      ) : (
+                        ""
+                      )}
                       {")"}
                     </>
                   )}
@@ -1003,10 +917,18 @@ const SerialContributionForm = () => {
                       {serialContributionCitation.year}
                     </>
                   )}
-                  {serialContributionCitation.rangeOfPageNumbers === ""
-                    ? ""
-                    : ", "}
-                  {serialContributionCitation.rangeOfPageNumbers}
+                  {(serialContributionCitation.pageStart !== "" ||
+                    serialContributionCitation.pageEnd !== "") ? (
+                    <>
+                      {", "}
+                      {serialContributionCitation.pageStart}
+                      {serialContributionCitation.pageEnd
+                        ? `–${serialContributionCitation.pageEnd}`
+                        : ""}
+                    </>
+                  ) : (
+                    ""
+                  )}
                   {")"}
                 </p>
               </div>

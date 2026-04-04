@@ -77,7 +77,6 @@ const ContributionForm = () => {
   };
   const ref = useRef();
   const [result, setResult] = useState(false);
-  const [showMoreOptions, setShowMoreOptions] = useState(false);
   const onChanging = (e) => {
     const name = e.target.name;
     setContributionCitation({
@@ -122,7 +121,6 @@ const ContributionForm = () => {
   const [formFields, setFormFields] = useState([["", ""]]);
   const [creatorTypes, setCreatorTypes] = useState([""]);
   const [creatorHost, setCreatorHost] = useState([""]);
-  const [medium, setMedium] = useState([""]);
   const [edition, setEdition] = useState([""]);
   const [numeration, setNumeration] = useState([""]);
   const [publisher, setPublisher] = useState([""]);
@@ -163,13 +161,13 @@ const ContributionForm = () => {
       setStandarIdentifier([metadata.isbn || metadata.doi]);
   }, [metadata, chosenForm]);
 
-  const addField = (UseStateName, stateName, obj) => {
-    UseStateName([...stateName, obj]);
-  };
   const addCreatorField = () => {
     const previousType = creatorTypes[creatorTypes.length - 1] || "";
     setFormFields([...formFields, ["", ""]]);
     setCreatorTypes([...creatorTypes, previousType]);
+  };
+  const addField = (UseStateName, stateName, obj) => {
+    UseStateName([...stateName, obj]);
   };
   const removeField = (UseStateName, stateName, index) => {
     stateName.splice(index, 1);
@@ -194,8 +192,48 @@ const ContributionForm = () => {
             setResult(true);
           }}
         >
+
           <Row className="mb-3">
-            <Form.Label>Name of creator(s)</Form.Label>
+            <Form.Group as={Col} controlId="formContribution">
+              <Form.Label><b>Chapter Title</b></Form.Label>
+              <Form.Control
+                onChange={(e) => onChanging(e)}
+                value={contributionCitation.titleOfTheContribution}
+                name="titleOfTheContribution"
+                type="text"
+                placeholder="Enter Chapter Title"
+              />
+            </Form.Group>
+          </Row>
+
+          <Row className="mb-3">
+            <Form.Group as={Col} controlId="formYear">
+              <Form.Label><b>Year</b></Form.Label>
+              <Form.Control
+                onChange={(e) => onChanging(e)}
+                value={contributionCitation.year}
+                name="year"
+                type="text"
+                placeholder="Enter Year"
+              />
+            </Form.Group>
+          </Row>
+
+          <Row className="mb-3">
+            <Form.Group as={Col} controlId="formHost">
+              <Form.Label><b>Book Title</b></Form.Label>
+              <Form.Control
+                onChange={(e) => onChanging(e)}
+                value={contributionCitation.titleOfTheHostItem}
+                name="titleOfTheHostItem"
+                type="text"
+                placeholder="Enter Book Title"
+              />
+            </Form.Group>
+          </Row>
+
+          <Row className="mb-3">
+            <Form.Label><b>Name of Creator(s)</b></Form.Label>
             {formFields.map((item, index) => {
               return (
                 <Row key={index} className="mt-2">
@@ -206,26 +244,15 @@ const ContributionForm = () => {
                         handleCreatorTypeChange(event, index)
                       }
                     >
-                      <option value>Choose...</option>
+                      <option>---Select Type ---</option>
                       <option>Author</option>
                       <option>Editor</option>
-
                       <option>Reviewer</option>
                       <option>Reviser</option>
                       <option>Translator</option>
                     </Form.Select>
                   </Form.Group>
                   <Form.Group as={Col} controlId="formFname">
-                    <Form.Control
-                      onChange={(event) => handleFormChange(event, index)}
-                      value={item[1]}
-                      name="lastName"
-                      type="text"
-                      placeholder="Enter Last Name"
-                    />
-                  </Form.Group>
-                  <Form.Group as={Col} controlId="formFname">
-                    {/* <Form.Label>First Name</Form.Label> */}
                     <Form.Control
                       onChange={(event) => handleFormChange(event, index)}
                       value={item[0]}
@@ -234,70 +261,45 @@ const ContributionForm = () => {
                       placeholder="Enter First Name"
                     />
                   </Form.Group>
+                  <Form.Group as={Col} controlId="formLname">
+                    <Form.Control
+                      onChange={(event) => handleFormChange(event, index)}
+                      value={item[1]}
+                      name="lastName"
+                      type="text"
+                      placeholder="Enter Last Name"
+                    />
+                  </Form.Group>
                   {formFields.length !== 1 ? (
-                    <div as={Col} className="col-sm-1">
+                    <Col className="col-sm-1">
                       <Button
                         className="removebutton md:!mt-0 !mt-2"
                         onClick={() => removeCreatorField(index)}
                       >
                         Remove
                       </Button>
-                    </div>
-                  ) : (
-                    <></>
-                  )}
+                    </Col>
+                  ) : null}
+                  {formFields.length - 1 === index ? (
+                    <Col className="col-sm-1">
+                      <Button
+                        className="addbutton md:!mt-0 !mt-2"
+                        onClick={addCreatorField}
+                      >
+                        ADD
+                      </Button>
+                    </Col>
+                  ) : null}
                 </Row>
               );
             })}
-            <Button
-              variant="link"
-              className="ps-0 text-decoration-none"
-              onClick={addCreatorField}
-            >
-              Add another Creator
-            </Button>
           </Row>
 
           <Row className="mb-3">
-            <Form.Group as={Col} controlId="formYear">
-              <Form.Label>Year</Form.Label>
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={contributionCitation.year}
-                name="year"
-                type="text"
-                placeholder="Enter Year"
-              />
-            </Form.Group>
-
-            <Form.Group as={Col} controlId="formContribution">
-              <Form.Label>Title of the contribution</Form.Label>
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={contributionCitation.titleOfTheContribution}
-                name="titleOfTheContribution"
-                type="text"
-                placeholder="Enter Title"
-              />
-            </Form.Group>
-          </Row>
-
-          <Row className="mb-3">
-            <Form.Label>Name of creators of the host item</Form.Label>
+            <Form.Label><b>Editor</b></Form.Label>
             {creatorHost.map((item, index) => {
               return (
                 <Row key={index} className="mt-2">
-                  <Form.Group as={Col} controlId="formName">
-                    <Form.Select defaultValue="Choose...">
-                      <option value>Choose...</option>
-                      <option>Author</option>
-
-                      <option>Editor</option>
-                      <option>Reviewer</option>
-                      <option>Reviser</option>
-                      <option>Translator</option>
-                    </Form.Select>
-                  </Form.Group>
                   <Form.Group as={Col} controlId="formHost">
                     <Form.Control
                       onChange={(event) =>
@@ -311,12 +313,11 @@ const ContributionForm = () => {
                       value={item}
                       name="titleOfTheHostItem"
                       type="text"
-                      placeholder="Enter Name of creators of the host item "
+                      placeholder="Enter Editor"
                     />
                   </Form.Group>
-
                   {creatorHost.length !== 1 ? (
-                    <div as={Col} className="col-sm-1">
+                    <Col className="col-sm-1">
                       <Button
                         className="removebutton md:!mt-0 !mt-2"
                         onClick={() =>
@@ -325,39 +326,21 @@ const ContributionForm = () => {
                       >
                         Remove
                       </Button>
-                    </div>
-                  ) : (
-                    <></>
-                  )}
-
-                  {creatorHost.length - 1 === index && (
-                    <div as={Col} className="col-sm-1">
+                    </Col>
+                  ) : null}
+                  {creatorHost.length - 1 === index ? (
+                    <Col className="col-sm-1">
                       <Button
                         className="addbutton md:!mt-0 !mt-2"
-                        onClick={() =>
-                          addField(setCreatorHost, creatorHost, "")
-                        }
+                        onClick={() => addField(setCreatorHost, creatorHost, "")}
                       >
                         ADD
                       </Button>
-                    </div>
-                  )}
+                    </Col>
+                  ) : null}
                 </Row>
               );
             })}
-          </Row>
-
-          <Row className="mb-3">
-            <Form.Group as={Col} controlId="formHost">
-              <Form.Label>Title of the host Item</Form.Label>
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={contributionCitation.titleOfTheHostItem}
-                name="titleOfTheHostItem"
-                type="text"
-                placeholder="Enter Title "
-              />
-            </Form.Group>
           </Row>
 
           {/* <Row className="mb-3">
@@ -375,7 +358,7 @@ const ContributionForm = () => {
 
           <Row className="mb-3">
             <Form.Group as={Col} controlId="formPlace">
-              <Form.Label>Place</Form.Label>
+              <Form.Label><b>Place</b></Form.Label>
               <Form.Control
                 onChange={(e) => onChanging(e)}
                 value={contributionCitation.place}
@@ -386,7 +369,7 @@ const ContributionForm = () => {
             </Form.Group>
           </Row>
           <Row className="mb-3">
-            <Form.Label>Publisher</Form.Label>
+            <Form.Label><b>Publisher</b></Form.Label>
             {publisher.map((item, index) => {
               return (
                 <Row key={index} className="mt-2">
@@ -402,7 +385,7 @@ const ContributionForm = () => {
                     />
                   </Form.Group>
                   {publisher.length !== 1 ? (
-                    <div as={Col} className="col-sm-1">
+                    <div className="col-sm-1">
                       <Button
                         className="removebutton md:!mt-0 !mt-2"
                         onClick={() =>
@@ -415,17 +398,6 @@ const ContributionForm = () => {
                   ) : (
                     <></>
                   )}
-
-                  {publisher.length - 1 === index && (
-                    <div as={Col} className="col-sm-1">
-                      <Button
-                        className="addbutton md:!mt-0 !mt-2"
-                        onClick={() => addField(setPublisher, publisher, "")}
-                      >
-                        ADD
-                      </Button>
-                    </div>
-                  )}
                 </Row>
               );
             })}
@@ -434,7 +406,7 @@ const ContributionForm = () => {
           <Row className="mb-3">
             <Form.Group as={Col} controlId="formRange">
               <Form.Label>
-                Range of page number(s) of the contribution
+                <b>Page range</b>
               </Form.Label>
               <Form.Control
                 onChange={(e) => onChanging(e)}
@@ -445,278 +417,46 @@ const ContributionForm = () => {
               />
             </Form.Group>
           </Row>
-          <Button
-            variant="link"
-            className="ps-0 text-decoration-none"
-            onClick={() => setShowMoreOptions((prev) => !prev)}
-          >
-            {showMoreOptions ? "Hide More Options" : "More Options"}
-          </Button>
 
-          {showMoreOptions && (
-            <>
-              <Row className="mb-3">
-                <Form.Label>Edition</Form.Label>
-                {edition.map((item, index) => {
-                  return (
-                    <Row key={index} className="mt-2">
-                      <Form.Group as={Col} controlId="formPlace">
-                        <Form.Control
-                          onChange={(event) =>
-                            handleInputChange(event, setEdition, edition, index)
-                          }
-                          value={item}
-                          name="editionN"
-                          type="text"
-                          placeholder="Enter edition"
-                        />
-                      </Form.Group>
-                      {edition.length !== 1 ? (
-                        <div as={Col} className="col-sm-1">
-                          <Button
-                            className="removebutton md:!mt-0 !mt-2"
-                            onClick={() =>
-                              removeField(setEdition, edition, index)
-                            }
-                          >
-                            Remove
-                          </Button>
-                        </div>
-                      ) : (
-                        <></>
-                      )}
-                      {edition.length - 1 === index && (
-                        <div as={Col} className="col-sm-1">
-                          <Button
-                            className="addbutton md:!mt-0 !mt-2"
-                            onClick={() => addField(setEdition, edition, "")}
-                          >
-                            ADD
-                          </Button>
-                        </div>
-                      )}
-                    </Row>
-                  );
-                })}
-              </Row>
+          <Row className="mb-3">
+            <Form.Group as={Col} controlId="formDOI">
+              <Form.Label><b>DOI</b></Form.Label>
+              <Form.Control
+                onChange={(event) =>
+                  handleInputChange(
+                    event,
+                    setStandarIdentifier,
+                    standardIdentifier,
+                    0,
+                  )
+                }
+                value={standardIdentifier[0] || ""}
+                name="standardIdentifier"
+                type="text"
+                placeholder="Enter DOI"
+              />
+            </Form.Group>
+          </Row>
 
-              <Row className="mb-3">
-                <Form.Label>Numeration (of volume)</Form.Label>
-                {numeration.map((item, index) => {
-                  return (
-                    <Row key={index} className="mt-2">
-                      <Form.Group as={Col} controlId="formGridState">
-                        <Form.Select name="numeration" defaultValue="Choose...">
-                          <option value>Choose...</option>
-                          <option>Volume</option>
-                          <option>Number</option>
-                          <option>Issue</option>
-                        </Form.Select>
-                      </Form.Group>
-                      <Form.Group as={Col} controlId="formRange">
-                        <Form.Control
-                          onChange={(event) =>
-                            handleInputChange(
-                              event,
-                              setNumeration,
-                              numeration,
-                              index,
-                            )
-                          }
-                          value={item}
-                          name="rangeOfPageNumbersOfTheContribution"
-                          type="text"
-                          placeholder="Enter Numeration "
-                        />
-                      </Form.Group>
-                      {numeration.length !== 1 ? (
-                        <div as={Col} className="col-sm-1">
-                          <Button
-                            className="removebutton md:!mt-0 !mt-2"
-                            onClick={() =>
-                              removeField(setNumeration, numeration, index)
-                            }
-                          >
-                            Remove
-                          </Button>
-                        </div>
-                      ) : (
-                        <></>
-                      )}
-                      {numeration.length - 1 === index && (
-                        <div as={Col} className="col-sm-1">
-                          <Button
-                            className="addbutton md:!mt-0 !mt-2"
-                            onClick={() =>
-                              addField(setNumeration, numeration, "")
-                            }
-                          >
-                            ADD
-                          </Button>
-                        </div>
-                      )}
-                    </Row>
-                  );
-                })}
-              </Row>
-
-              <Row className="mb-3">
-                <Form.Group as={Col} controlId="formCitation">
-                  <Form.Label>Date of citation</Form.Label>
-                  <Form.Control
-                    onChange={(e) => onChanging(e)}
-                    value={contributionCitation.dateOfCitation}
-                    name="dateOfCitation"
-                    type="text"
-                    placeholder="Enter Date"
-                  />
-                </Form.Group>
-              </Row>
-
-              <Row className="mb-3">
-                <Form.Group as={Col} controlId="formTitle">
-                  <Form.Label>Series title and number</Form.Label>
-                  <Form.Control
-                    onChange={(e) => onChanging(e)}
-                    value={contributionCitation.seriesTitleAndNumber}
-                    name="seriesTitleAndNumber"
-                    type="text"
-                    placeholder="Enter Title "
-                  />
-                </Form.Group>
-              </Row>
-
-              <Row className="mb-3">
-                <Form.Label>Standard Identifier</Form.Label>
-                {standardIdentifier.map((item, index) => {
-                  return (
-                    <Row key={index} className="mt-2">
-                      <Form.Group as={Col} controlId="formIdentifier">
-                        <Form.Select defaultValue="Choose...">
-                          <option value>Choose...</option>
-                          <option>ISBN</option>
-                          <option>eISBN</option>
-                          <option>DOI</option>
-                        </Form.Select>
-                      </Form.Group>
-                      <Form.Group as={Col} controlId="formTitle">
-                        <Form.Control
-                          onChange={(event) =>
-                            handleInputChange(
-                              event,
-                              setStandarIdentifier,
-                              standardIdentifier,
-                              index,
-                            )
-                          }
-                          value={item}
-                          name="seriesTitleAndNumber"
-                          type="text"
-                          placeholder="Enter Title "
-                        />
-                      </Form.Group>
-
-                      {standardIdentifier.length !== 1 ? (
-                        <div as={Col} className="col-sm-1">
-                          <Button
-                            className="removebutton md:!mt-0 !mt-2"
-                            onClick={() =>
-                              removeField(
-                                setStandarIdentifier,
-                                standardIdentifier,
-                                index,
-                              )
-                            }
-                          >
-                            Remove
-                          </Button>
-                        </div>
-                      ) : (
-                        <></>
-                      )}
-
-                      {standardIdentifier.length - 1 === index && (
-                        <div as={Col} className="col-sm-1">
-                          <Button
-                            className="addbutton md:!mt-0 !mt-2"
-                            onClick={() =>
-                              addField(
-                                setStandarIdentifier,
-                                standardIdentifier,
-                                "",
-                              )
-                            }
-                          >
-                            ADD
-                          </Button>
-                        </div>
-                      )}
-                    </Row>
-                  );
-                })}
-              </Row>
-
-              <Row className="mb-3">
-                <Form.Label>Availability and access</Form.Label>
-                {availability.map((item, index) => {
-                  return (
-                    <Row key={index} className="mt-2">
-                      <Form.Group as={Col} controlId="formAccess">
-                        <Form.Select defaultValue="Choose...">
-                          <option value>Choose...</option>
-                          <option>DOI</option>
-                          <option>URI</option>
-                          <option>URL</option>
-                        </Form.Select>
-                      </Form.Group>
-                      <Form.Group as={Col} controlId="formLocation">
-                        <Form.Control
-                          onChange={(event) =>
-                            handleInputChange(
-                              event,
-                              setAvailability,
-                              availability,
-                              index,
-                            )
-                          }
-                          value={item}
-                          name="availiabilityAndAccess"
-                          type="text"
-                          placeholder="Enter Availability and access"
-                        />
-                      </Form.Group>
-                      {availability.length !== 1 ? (
-                        <div as={Col} className="col-sm-1">
-                          <Button
-                            className="removebutton md:!mt-0 !mt-2"
-                            onClick={() =>
-                              removeField(setAvailability, availability, index)
-                            }
-                          >
-                            Remove
-                          </Button>
-                        </div>
-                      ) : (
-                        <></>
-                      )}
-                      {availability.length - 1 === index && (
-                        <div as={Col} className="col-sm-1">
-                          <Button
-                            className="addbutton md:!mt-0 !mt-2"
-                            onClick={() =>
-                              addField(setAvailability, availability, "")
-                            }
-                          >
-                            ADD
-                          </Button>
-                        </div>
-                      )}
-                    </Row>
-                  );
-                })}
-              </Row>
-            </>
-          )}
+          <Row className="mb-3">
+            <Form.Group as={Col} controlId="formURL">
+              <Form.Label><b>URL</b></Form.Label>
+              <Form.Control
+                onChange={(event) =>
+                  handleInputChange(
+                    event,
+                    setAvailability,
+                    availability,
+                    0,
+                  )
+                }
+                value={availability[0] || ""}
+                name="availiabilityAndAccess"
+                type="text"
+                placeholder="Enter URL"
+              />
+            </Form.Group>
+          </Row>
 
           <div>
             <center>
@@ -794,23 +534,7 @@ const ContributionForm = () => {
                     {". "}
                   </>
                 )}
-                {medium.length <= 1 &&
-                (medium[0] === "" || medium[0] === undefined) ? (
-                  ""
-                ) : (
-                  <>
-                    [
-                    {medium.map((item, key) => {
-                      return (
-                        <span key={key}>
-                          {item}
-                          {key < medium.length - 1 && ", "}
-                        </span>
-                      );
-                    })}
-                    ]{". "}
-                  </>
-                )}
+
                 {contributionCitation.subsidiaryTitles === "" ? (
                   ""
                 ) : (
@@ -1004,7 +728,7 @@ const ContributionForm = () => {
                   {contributionCitation.rangeOfPageNumbersOfTheContribution ===
                   ""
                     ? ""
-                    : ", "}
+                    : ", p. "}
                   {contributionCitation.rangeOfPageNumbersOfTheContribution}
                   {")"}
                 </p>

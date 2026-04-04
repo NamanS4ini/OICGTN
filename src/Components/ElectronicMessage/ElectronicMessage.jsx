@@ -22,7 +22,6 @@ const ElectronicMessage = () => {
     otherInformation: "",
   });
   const ref = useRef();
-  const [showMoreOptions, setShowMoreOptions] = useState(false);
   const copytext = (e) => {
     navigator.clipboard.writeText(e.target.innerText);
     toast.success("Copied to Clipboard");
@@ -88,27 +87,12 @@ const ElectronicMessage = () => {
 
   const [formFields, setFormFields] = useState([["", ""]]);
   const [creatorTypes, setCreatorTypes] = useState([""]);
-  const [medium, setMedium] = useState([""]);
-  const [availability, setAvailability] = useState([""]);
 
   const handleFormChange = (event, index) => {
     let data = [...formFields];
     if (event.target.name == "firstName") data[index][0] = event.target.value;
     else data[index][1] = event.target.value;
     setFormFields(data);
-  };
-
-  const handleInputChange = (event, UseStateName, stateName, index) => {
-    let data = [...stateName];
-    data[index] = event.target.value;
-    UseStateName(data);
-  };
-  const addField = (UseStateName, stateName, obj) => {
-    UseStateName([...stateName, obj]);
-  };
-  const removeField = (UseStateName, stateName, index) => {
-    stateName.splice(index, 1);
-    UseStateName([...stateName]);
   };
 
   const handleCreatorTypeChange = (event, index) => {
@@ -141,7 +125,7 @@ const ElectronicMessage = () => {
             setResult(true);
           }}
         >
-          <Form.Label>Name of Creator(s)</Form.Label>
+          <Form.Label><b>Name of Creator(s)</b></Form.Label>
           {formFields.map((item, index) => {
             return (
               <Row key={index} className="mb-3">
@@ -176,19 +160,19 @@ const ElectronicMessage = () => {
                   />
                 </Form.Group>
                 {formFields.length !== 1 ? (
-                  <div as={Col} className="col-sm-1">
+                  <Col className="col-sm-1">
                     <Button
                       className="removebutton md:!mt-0 !mt-2"
                       onClick={() => removeCreatorField(index)}
                     >
                       Remove
                     </Button>
-                  </div>
+                  </Col>
                 ) : (
                   <></>
                 )}
                 {formFields.length - 1 === index && (
-                  <div as={Col} className="col-sm-1">
+                  <Col className="col-sm-1">
                     <Button
                       variant="link"
                       className="ps-0 text-decoration-none"
@@ -196,14 +180,14 @@ const ElectronicMessage = () => {
                     >
                       Add another Creator
                     </Button>
-                  </div>
+                  </Col>
                 )}
               </Row>
             );
           })}
           <Row className="mb-3">
             <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label>Title of The Message</Form.Label>
+              <Form.Label><b>Title of The Message</b></Form.Label>
               <Form.Control
                 onChange={(e) => onChanging(e)}
                 value={electronicCitation.titleOfTheMessage}
@@ -216,7 +200,7 @@ const ElectronicMessage = () => {
 
           <Row className="mb-3">
             <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label>Title of the host message system</Form.Label>
+              <Form.Label><b>E-mail/Message Board/Online</b></Form.Label>
               <Form.Control
                 onChange={(e) => onChanging(e)}
                 value={electronicCitation.titleOfTheHostMessageSystem}
@@ -228,7 +212,7 @@ const ElectronicMessage = () => {
           </Row>
           <Row className="mb-3">
             <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label>Date Message Was Sent</Form.Label>
+              <Form.Label><b>Date Message Was Sent</b></Form.Label>
               <Form.Control
                 onChange={(e) => onChanging(e)}
                 value={electronicCitation.dateMessageWasSent}
@@ -238,7 +222,7 @@ const ElectronicMessage = () => {
               />
             </Form.Group>
             <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label>Time Message Was Sent</Form.Label>
+              <Form.Label><b>Time Message Was Sent</b></Form.Label>
               <Form.Control
                 onChange={(e) => onChanging(e)}
                 value={electronicCitation.timeMessageWasSent}
@@ -249,118 +233,18 @@ const ElectronicMessage = () => {
             </Form.Group>
           </Row>
 
-          <Button
-            variant="link"
-            className="ps-0 text-decoration-none"
-            onClick={() => setShowMoreOptions((prev) => !prev)}
-          >
-            {showMoreOptions ? "Hide More Options" : "More Options"}
-          </Button>
-
-          {showMoreOptions && (
-            <>
-              <Row className="mb-3">
-                <Form.Label>Medium Designation</Form.Label>
-                {medium.map((item, index) => {
-                  return (
-                    <Row key={index} className="mt-2">
-                      <Form.Group as={Col} controlId="formDegination">
-                        <Form.Select defaultValue="Choose...">
-                          <option>---Select Medium Designation---</option>
-                          <option>Online</option>
-                          <option>Electronic mail</option>
-                          <option>Message board</option>
-                        </Form.Select>
-                      </Form.Group>
-                      <Form.Group as={Col} controlId="formTitle">
-                        <Form.Control
-                          onChange={(event) =>
-                            handleInputChange(event, setMedium, medium, index)
-                          }
-                          value={item}
-                          name="mediumD"
-                          type="text"
-                          placeholder="Enter Medium Designation"
-                        />
-                      </Form.Group>
-
-                      {medium.length !== 1 ? (
-                        <div as={Col} className="col-sm-1">
-                          <Button
-                            className="removebutton md:!mt-0 !mt-2"
-                            onClick={() =>
-                              removeField(setMedium, medium, index)
-                            }
-                          >
-                            Remove
-                          </Button>
-                        </div>
-                      ) : (
-                        <></>
-                      )}
-
-                      {medium.length - 1 === index && (
-                        <div as={Col} className="col-sm-1">
-                          <Button
-                            className="addbutton md:!mt-0 !mt-2"
-                            onClick={() => addField(setMedium, medium, "")}
-                          >
-                            ADD
-                          </Button>
-                        </div>
-                      )}
-                    </Row>
-                  );
-                })}
-              </Row>
-
-              <Row className="mb-3">
-                <Form.Group as={Col} controlId="formGridEmail">
-                  <Form.Label>Date Of Citation</Form.Label>
-                  <Form.Control
-                    onChange={(e) => onChanging(e)}
-                    value={electronicCitation.dateOfCitation}
-                    name="dateOfCitation"
-                    type="text"
-                    placeholder="Enter Date"
-                  />
-                </Form.Group>
-              </Row>
-
-              <Row className="mb-3">
-                <Form.Label>Availability and access</Form.Label>
-                <Form.Group as={Col} controlId="formAvailability">
-                  <Form.Select defaultValue="Choose...">
-                    <option>Choose...</option>
-                    <option>DOI</option>
-                    <option>URI</option>
-                    <option>URL</option>
-                  </Form.Select>
-                </Form.Group>
-                <Form.Group as={Col} controlId="formGridEmail">
-                  <Form.Control
-                    onChange={(e) => onChanging(e)}
-                    value={electronicCitation.availabilityAndAccess}
-                    name="availabilityAndAccess"
-                    type="text"
-                    placeholder="Enter Availability And Access"
-                  />
-                </Form.Group>
-              </Row>
-              <Row className="mb-3">
-                <Form.Group as={Col} controlId="formGridEmail">
-                  <Form.Label>Other Information</Form.Label>
-                  <Form.Control
-                    onChange={(e) => onChanging(e)}
-                    value={electronicCitation.otherInformation}
-                    name="otherInformation"
-                    type="text"
-                    placeholder="Enter Other Information"
-                  />
-                </Form.Group>
-              </Row>
-            </>
-          )}
+          <Row className="mb-3">
+            <Form.Group as={Col} controlId="formGridEmail">
+              <Form.Label><b>URL</b></Form.Label>
+              <Form.Control
+                onChange={(e) => onChanging(e)}
+                value={electronicCitation.availabilityAndAccess}
+                name="availabilityAndAccess"
+                type="text"
+                placeholder="Enter URL"
+              />
+            </Form.Group>
+          </Row>
 
           <div>
             <center>
@@ -411,23 +295,6 @@ const ElectronicMessage = () => {
                     {/* <span className="title">{electronicCitation.titleOfTheMessage}{". "}</span> */}
                     {electronicCitation.titleOfTheHostMessageSystem}
                     {". "}
-                  </>
-                )}
-                {medium.length <= 1 &&
-                (medium[0] === "" || medium[0] === undefined) ? (
-                  ""
-                ) : (
-                  <>
-                    [
-                    {medium.map((item, key) => {
-                      return (
-                        <span key={key}>
-                          {item}
-                          {key < medium.length - 1 && ", "}
-                        </span>
-                      );
-                    })}
-                    ]{". "}
                   </>
                 )}
                 {electronicCitation.dateMessageWasSent === "" ? (
