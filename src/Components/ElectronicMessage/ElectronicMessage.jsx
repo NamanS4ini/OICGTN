@@ -15,8 +15,6 @@ const ElectronicMessage = () => {
     titleOfTheMessage: "",
     titleOfTheHostMessageSystem: "",
     mediumDesignation: "",
-    dateMessageWasSent: "",
-    timeMessageWasSent: "",
     dateOfCitation: "",
     availabilityAndAccess: "",
     otherInformation: "",
@@ -212,23 +210,13 @@ const ElectronicMessage = () => {
           </Row>
           <Row className="mb-3">
             <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label><b>Date Message Was Sent</b></Form.Label>
+              <Form.Label><b>Year</b></Form.Label>
               <Form.Control
                 onChange={(e) => onChanging(e)}
-                value={electronicCitation.dateMessageWasSent}
-                name="dateMessageWasSent"
+                value={electronicCitation.year}
+                name="year"
                 type="text"
-                placeholder="Enter Date"
-              />
-            </Form.Group>
-            <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label><b>Time Message Was Sent</b></Form.Label>
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={electronicCitation.timeMessageWasSent}
-                name="timeMessageWasSent"
-                type="text"
-                placeholder="Enter Time"
+                placeholder="Enter Year"
               />
             </Form.Group>
           </Row>
@@ -297,19 +285,6 @@ const ElectronicMessage = () => {
                     {". "}
                   </>
                 )}
-                {electronicCitation.dateMessageWasSent === "" ? (
-                  ""
-                ) : (
-                  <>
-                    {electronicCitation.dateMessageWasSent}
-                    {"; "}
-                  </>
-                )}
-                {electronicCitation.timeMessageWasSent === "" ? (
-                  ""
-                ) : (
-                  <>{electronicCitation.timeMessageWasSent} </>
-                )}
                 {electronicCitation.dateOfCitation === "" ? (
                   ""
                 ) : (
@@ -321,7 +296,7 @@ const ElectronicMessage = () => {
                   ""
                 ) : (
                   <>
-                    Available from: [{electronicCitation.availabilityAndAccess}]
+                    Available from: {electronicCitation.availabilityAndAccess}
                     {". "}
                   </>
                 )}
