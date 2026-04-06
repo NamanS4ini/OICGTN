@@ -206,19 +206,7 @@ const ContributionForm = () => {
             </Form.Group>
           </Row>
 
-          <Row className="mb-3">
-            <Form.Group as={Col} controlId="formYear">
-              <Form.Label><b>Year</b></Form.Label>
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={contributionCitation.year}
-                name="year"
-                type="text"
-                placeholder="Enter Year"
-              />
-            </Form.Group>
-          </Row>
-
+          
           <Row className="mb-3">
             <Form.Group as={Col} controlId="formHost">
               <Form.Label><b>Book Title</b></Form.Label>
@@ -372,7 +360,7 @@ const ContributionForm = () => {
             <Form.Label><b>Publisher</b></Form.Label>
             {publisher.map((item, index) => {
               return (
-                <Row key={index} className="mt-2">
+                <Row key={index} className="mt-1">
                   <Form.Group as={Col} controlId="formGridState">
                     <Form.Control
                       onChange={(event) =>
@@ -401,6 +389,19 @@ const ContributionForm = () => {
                 </Row>
               );
             })}
+          </Row>
+          
+          <Row className="mb-3">
+            <Form.Group as={Col} controlId="formYear">
+              <Form.Label><b>Date of Publication(Year)</b></Form.Label>
+              <Form.Control
+                onChange={(e) => onChanging(e)}
+                value={contributionCitation.year}
+                name="year"
+                type="text"
+                placeholder="Enter Year"
+              />
+            </Form.Group>
           </Row>
 
           <Row className="mb-3">
@@ -648,7 +649,7 @@ const ContributionForm = () => {
                     {standardIdentifier.map((item, index) => {
                       return (
                         <span key={index}>
-                          ISBN {standardIdentifier[index]}
+                          DOI {standardIdentifier[index]}
                           {index < standardIdentifier.length - 1 && ", "}
                         </span>
                       );
@@ -661,7 +662,7 @@ const ContributionForm = () => {
                   ""
                 ) : (
                   <>
-                    Available from: [
+                    Available from:  
                     {availability.map((item, index) => {
                       return (
                         <span key={index}>
@@ -670,7 +671,7 @@ const ContributionForm = () => {
                         </span>
                       );
                     })}
-                    ]{". "}
+                    {". "}
                   </>
                 )}{" "}
                 {contributionCitation.location === "" ? (
@@ -721,7 +722,7 @@ const ContributionForm = () => {
                     ""
                   ) : (
                     <>
-                      {", "}
+                      {" "}
                       {contributionCitation.year}
                     </>
                   )}

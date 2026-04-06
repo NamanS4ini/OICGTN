@@ -232,9 +232,9 @@ const SerialContributionForm = ({ type }) => {
 
                       <option>Editor</option>
 
-                      <option>Reviewer</option>
-
                       <option>Translator</option>
+
+                      <option>Organisation</option>
                     </Form.Select>
                   </Form.Group>
                   <Form.Group as={Col} controlId="formFname">
@@ -297,7 +297,7 @@ const SerialContributionForm = ({ type }) => {
 
           <Row className="mb-3">
             <Form.Group as={Col} controlId="formYear">
-              <Form.Label><b>Year</b></Form.Label>
+              <Form.Label><b>Date of Publication (Year)</b></Form.Label>
               <Form.Control
                 onChange={(e) => onChanging(e)}
                 value={serialContributionCitation.year}
@@ -921,7 +921,7 @@ const SerialContributionForm = ({ type }) => {
                     serialContributionCitation.pageEnd !== "") ? (
                     <>
                       {", "}
-                      {serialContributionCitation.pageStart}
+                      p. {serialContributionCitation.pageStart}
                       {serialContributionCitation.pageEnd
                         ? `–${serialContributionCitation.pageEnd}`
                         : ""}

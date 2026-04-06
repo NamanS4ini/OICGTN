@@ -184,7 +184,6 @@ const WebsitesForm = () => {
                       <option>Author</option>
                       <option>Editor</option>
                       <option>Designer</option>
-                      <option>Reviewer</option>
                       <option>Translator</option>
                     </Form.Select>
                   </Form.Group>
@@ -208,6 +207,7 @@ const WebsitesForm = () => {
                   </Form.Group>
                   {formFields.length !== 1 ? (
                     <div as={Col} className="col-sm-1">
+
                       <Button
                         className="removebutton md:!mt-0 !mt-2"
                         onClick={() => removeCreatorField(index)}

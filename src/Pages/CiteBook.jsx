@@ -51,7 +51,7 @@ const CiteBook = () => {
               : "bg-blue-500 text-white hover:bg-blue-600"
           }`}
         >
-          Chapter in Book
+          Book Chapter
         </button>
       </div>
 

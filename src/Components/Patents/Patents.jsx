@@ -249,7 +249,7 @@ const PatentsForm = () => {
           </Row>
           <Row className="mb-3">
             <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label><b>Title of the information resource</b></Form.Label>
+              <Form.Label><b>Title</b></Form.Label>
               <Form.Control
                 onChange={(e) => onChanging(e)}
                 value={patentsCitation.titleOfTheInformationSource}
@@ -262,7 +262,7 @@ const PatentsForm = () => {
 
           <Row className="mb-3">
             <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label><b>Date Of Application</b></Form.Label>
+              <Form.Label><b>Date</b></Form.Label>
               <Form.Control
                 onChange={(e) => onChanging(e)}
                 value={patentsCitation.dateOfApplication}
@@ -274,16 +274,6 @@ const PatentsForm = () => {
           </Row>
 
           <Row className="mb-3">
-            <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label><b>Date Of Issuance</b></Form.Label>
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={patentsCitation.dateOfIssuance}
-                name="dateOfIssuance"
-                type="text"
-                placeholder="Enter Date"
-              />
-            </Form.Group>
             <Form.Group as={Col} controlId="formGridEmail">
               <Form.Label><b>Patent Number</b></Form.Label>
               <Form.Control
@@ -369,14 +359,6 @@ const PatentsForm = () => {
                 ) : (
                   <>
                     {patentsCitation.dateOfApplication}
-                    {". "}
-                  </>
-                )}
-                {patentsCitation.dateOfIssuance === "" ? (
-                  ""
-                ) : (
-                  <>
-                    {patentsCitation.dateOfIssuance}
                     {". "}
                   </>
                 )}

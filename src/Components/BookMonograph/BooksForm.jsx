@@ -20,7 +20,7 @@ const BooksForm = ({ type }) => {
     url: "",
     dateOfCitation: "",
     seriesTitleAndNumber: "",
-    standardIdentifier: "ISBN ",
+    standardIdentifier: "",
     // eLink:""
   });
   const ref = useRef();
@@ -205,11 +205,11 @@ const BooksForm = ({ type }) => {
                       <option>---Select Type ---</option>
                       <option>Author</option>
                       <option>Editor</option>
-                      <option>Reviewer</option>
                       <option>Translator</option>
+                      <option>Organisation</option>
                     </Form.Select>
                   </Form.Group>
-                  <Form.Group as={Col} md={3} controlId="formFname">
+                  <Form.Group as={Col} md={4} controlId="formFname">
                     <Form.Control
                       onChange={(event) => handleFormChange(event, index)}
                       value={item[0]}
@@ -218,7 +218,7 @@ const BooksForm = ({ type }) => {
                       placeholder="Enter First Name"
                     />
                   </Form.Group>
-                  <Form.Group as={Col} md={3} controlId="formLname">
+                  <Form.Group as={Col} md={4} controlId="formLname">
                     <Form.Control
                       onChange={(event) => handleFormChange(event, index)}
                       value={item[1]}
@@ -253,7 +253,7 @@ const BooksForm = ({ type }) => {
 
           <Row className="mb-3">
             <Form.Group as={Col} controlId="formTitle">
-              <Form.Label><b>Title of the Item</b></Form.Label>
+              <Form.Label><b>Title</b></Form.Label>
               <Form.Control
                 onChange={(e) => onChanging(e)}
                 value={booksCitation.titleOfTheItem}
@@ -264,7 +264,7 @@ const BooksForm = ({ type }) => {
             </Form.Group>
           </Row>
           <Row className="mb-3">
-            <Form.Group as={Col} md={4} controlId="formYear">
+            <Form.Group as={Col} md={12} controlId="formYear">
               <Form.Label><b>Date of Publication (Year)</b></Form.Label>
               <Form.Control
                 onChange={(e) => onChanging(e)}
@@ -275,7 +275,18 @@ const BooksForm = ({ type }) => {
               />
             </Form.Group>
           </Row>
-
+          <Row className="mb-3">
+            <Form.Group as={Col} controlId="formEdition">
+              <Form.Label><b>Edition</b></Form.Label>
+              <Form.Control
+                onChange={(e) => onChanging(e)}
+                value={booksCitation.edition}
+                name="edition"
+                type="text"
+                placeholder="Enter Edition"
+              />
+            </Form.Group>
+          </Row>
           {/* <Row className="my-3">
             <Form.Group as={Col} controlId="formCreatore">
               <Form.Label>Subsidiary Creator</Form.Label>
@@ -289,7 +300,7 @@ const BooksForm = ({ type }) => {
             </Form.Group>
           </Row> */}
           <Row className="my-3">
-            <Form.Group as={Col} md={8} controlId="formPlace">
+            <Form.Group as={Col} md={12} controlId="formPlace">
               <Form.Label><b>Place</b></Form.Label>
               <Form.Control
                 onChange={(e) => onChanging(e)}
@@ -303,8 +314,8 @@ const BooksForm = ({ type }) => {
               <Form.Label><b>Publisher</b></Form.Label>
               {publisher.map((item, index) => {
                 return (
-                  <Row key={index} className="mt-2">
-                    <Form.Group as={Col} controlId="formPublisher">
+                  <Row key={index} className="mt-1">
+                    <Form.Group as={Col} md={12} controlId="formPublisher">
                       <Form.Control
                         onChange={(event) =>
                           handleInputChange(
@@ -322,7 +333,7 @@ const BooksForm = ({ type }) => {
                     </Form.Group>
 
                     {publisher.length !== 1 ? (
-                      <Col className="col-sm-1">
+                      <Col className="col-sm-6">
                         <Button
                           className="removebutton"
                           onClick={() =>
@@ -338,18 +349,7 @@ const BooksForm = ({ type }) => {
               })}
             </Row>
           </Row>
-          <Row className="mb-3">
-            <Form.Group as={Col} controlId="formEdition">
-              <Form.Label><b>Edition</b></Form.Label>
-              <Form.Control
-                onChange={(e) => onChanging(e)}
-                value={booksCitation.edition}
-                name="edition"
-                type="text"
-                placeholder="Enter Edition"
-              />
-            </Form.Group>
-          </Row>
+          
           {type === "e" && (
             <Row className="mb-3">
               <Form.Group as={Col} controlId="formURL">
@@ -462,7 +462,7 @@ const BooksForm = ({ type }) => {
                   ""
                 ) : (
                   <>
-                    Available from: [{booksCitation.url}]{". "}
+                    Available from: {booksCitation.url}{". "}
                   </>
                 )}
                 {standardIdentifier.length <= 1 &&
@@ -520,7 +520,7 @@ const BooksForm = ({ type }) => {
                     ""
                   ) : (
                     <>
-                      {", "}
+                      {" "}
                       {booksCitation.year}
                     </>
                   )}
